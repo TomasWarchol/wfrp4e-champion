@@ -1,0 +1,42 @@
+<header class="champion-hud">
+  {{!-- Górny wiersz: Aktywna Postawa i Przewagi Aktora --}}
+  <div class="hud-row stance-advantage-row">
+    <div class="active-stance-badge">
+      <span class="hud-label"><i class="fas {{activeStance.icon}}"></i> {{localize "CHAMPION.Hud.Stance"}}</span>
+      <strong class="stance-title">{{activeStance.name}}</strong>
+      <small class="stance-school">({{activeStance.school}})</small>
+    </div>
+    <div class="advantage-badge-wrapper">
+      <span class="hud-label"><i class="fas fa-bolt"></i> {{localize "CHAMPION.Hud.Advantage"}}</span>
+      <span class="advantage-val" title="{{localize "CHAMPION.Hud.AdvantageTooltip"}}">{{currentAdvantage}}</span>
+    </div>
+  </div>
+
+  {{!-- Dolny wiersz: Mandat Krwi i Chłopski Mir --}}
+  <div class="hud-row sliders-row">
+    {{!-- Mandat Krwi Slider --}}
+    <div class="slider-box mandate-box">
+      <div class="slider-header">
+        <span class="hud-label"><i class="fas fa-scale-balanced"></i> {{localize "CHAMPION.Hud.Mandate"}}</span>
+        <span class="mandate-val-display">{{champFormatMandate champ.mandate}}</span>
+      </div>
+      <div class="slider-control-wrapper">
+        <span class="pole-label left">{{localize "CHAMPION.Hud.Commons"}}</span>
+        <input type="range" name="mandate-slider" min="-10" max="10" value="{{champ.mandate}}" class="mandate-slider" />
+        <span class="pole-label right">{{localize "CHAMPION.Hud.Crown"}}</span>
+      </div>
+    </div>
+
+    {{!-- Chłopski Mir (Posłuch u gminu i wojska) --}}
+    <div class="folk-box">
+      <div class="folk-header">
+        <span class="hud-label"><i class="fas fa-people-roof"></i> {{localize "CHAMPION.Hud.Folk"}}</span>
+        <div class="folk-input-wrapper">
+          <input type="number" name="folkStanding" value="{{champ.folkStanding}}" min="0" max="100" class="folk-input" title="{{localize "CHAMPION.Hud.FolkTooltip"}}" />
+          <span class="folk-denom">%</span>
+        </div>
+      </div>
+      <div class="folk-hint"><small>{{localize "CHAMPION.Hud.FolkHint"}}</small></div>
+    </div>
+  </div>
+</header>

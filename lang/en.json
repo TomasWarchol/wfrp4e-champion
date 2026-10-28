@@ -1,0 +1,332 @@
+{
+  "CHAMPION": {
+    "Title": "Iron Mandate: Champion",
+    "WindowTitle": "WFRP4e – Iron Mandate: Champion",
+    "SheetButton": "Iron Mandate: Champion",
+    "Init": "Initialising Iron Mandate: Champion for WFRP4e…",
+    "Ready": "Module ready. API registered as game.champion.",
+    "Settings": {
+      "AutoDeductName": "Deduct Advantage automatically",
+      "AutoDeductHint": "Whether executing a manoeuvre automatically reduces the character's current Advantage on the sheet."
+    },
+    "Mandate": {
+      "Crown": "+{value} (Crown)",
+      "Commons": "{value} (Commons)",
+      "Balance": "0 (Balance)"
+    },
+    "Notify": {
+      "SelectToken": "Select a token or assign a character to open the Champion panel.",
+      "OpenError": "Error while opening the Champion panel: {error}",
+      "SelectChampionToken": "Select the Champion's token on the map.",
+      "GambitNotFound": "The selected manoeuvre could not be found.",
+      "NoAdvantage": "Not enough Advantage! “{name}” needs {cost} Advantage (you have {current}).",
+      "GambitDone": "Manoeuvre performed: {name}! Roll the opposed test.",
+      "NoFavors": "{name} owes you no more debts of honour!",
+      "FavorUsed": "Called in a favour from {name}! Debts left: {left}.",
+      "ChallengePosted": "Challenge posted to chat!",
+      "StanceTaken": "Combat stance taken: {name}",
+      "KeepOneCourt": "You must keep at least one court!",
+      "AlreadyPinned": "{name} is already pinned to this court!",
+      "Pinned": "{name} pinned to {court}!"
+    },
+    "Tabs": {
+      "Combat": "School of Combat & Stances",
+      "Courts": "Court Influence (Nuln / Middenheim)",
+      "Challenge": "Ritual of Challenge & Rival Study"
+    },
+    "Hud": {
+      "Stance": "Combat stance:",
+      "Advantage": "Advantage:",
+      "AdvantageTooltip": "Current Advantage on the character sheet",
+      "Mandate": "Blood Mandate:",
+      "Commons": "COMMONS (−10)",
+      "Crown": "CROWN (+10)",
+      "Folk": "Folk Standing:",
+      "FolkTooltip": "Authority among commoners, the watch and the rank and file (0–100%)",
+      "FolkHint": "Respect of the crowd, militia and servants"
+    },
+    "Combat": {
+      "Stances": "CHAMPION'S COMBAT STANCES:",
+      "Active": "Active",
+      "Manoeuvres": "SPECIAL ACTIONS & FENCING MANOEUVRES:",
+      "AddManoeuvre": "Add Custom Manoeuvre",
+      "Hint": "Advantage lets you declare a manoeuvre, but every one of them still needs the listed opposed test!",
+      "CostTooltip": "Cost in Advantage",
+      "CostShort": "A",
+      "RequiredTest": "Required test:",
+      "Execute": "Perform Manoeuvre",
+      "Edit": "Edit",
+      "Delete": "Delete"
+    },
+    "Courts": {
+      "AddTooltip": "Add a new court (e.g. Altdorf, Talabheim)",
+      "Add": "Add Court",
+      "Influence": "Court influence:",
+      "DeleteTooltip": "Remove this court",
+      "DropZone": "Drag and drop an Actor from the Foundry sidebar to pin them to this court!",
+      "Favors": "Debts of honour / favours:",
+      "FavorDown": "Reduce debt",
+      "FavorUp": "Increase debt",
+      "Hooks": "Hooks & secrets:",
+      "Notes": "Notes:",
+      "UseTooltip": "Spend 1 debt and announce your demand in chat",
+      "Use": "Call in Influence",
+      "EditTooltip": "Edit relationship",
+      "RemoveTooltip": "Remove from court",
+      "Empty": "No notables pinned to this court yet. Drag characters from the Foundry sidebar!"
+    },
+    "Challenge": {
+      "Banner": "RITUAL OF CHALLENGE & RIVAL STUDY",
+      "BannerDesc": "Pre-duel scouting, studying the opponent's weaknesses and a formal challenge to a trial by combat or a clash before the armies.",
+      "Scale": "Scale of the clash:",
+      "Study": "Rival study (opponent's known weaknesses):",
+      "RivalName": "Opponent's name and title:",
+      "RivalNamePlaceholder": "e.g. Baron Heinrich von Todbringer / Champion of Nurgle",
+      "RivalStatus": "Social status / rank:",
+      "RivalStatusPlaceholder": "e.g. Gold 3 / Commander",
+      "Weaknesses": "Weaknesses and fighting style found (click to mark):",
+      "CustomWeakness": "Other weakness / note from the investigation:",
+      "CustomWeaknessPlaceholder": "e.g. Drinks spirits before a fight / Blind in the left eye",
+      "Stakes": "Stakes of the challenge:",
+      "StakesPlaceholder": "What is the fight about? (e.g. freeing prisoners, family honour, surrender of the gate)",
+      "Conditions": "Terms of the duel:",
+      "ConditionsPlaceholder": "e.g. To first blood, on trodden ground, no magic or firearms",
+      "Post": "THROW DOWN THE GAUNTLET IN CHAT",
+      "DefaultTarget": "Appointed opponent",
+      "DefaultTargetStatus": "Aristocrat / Champion",
+      "DefaultStakes": "Establishing truth and honour",
+      "DefaultConditions": "To first blood, on trodden ground"
+    },
+    "Scale": {
+      "personal": {
+        "Title": "Law & Honour",
+        "Desc": "Personal scale (trial by combat, disputes, betrayal, honour)",
+        "Label": "Duel of Law and Honour (personal scale)"
+      },
+      "tactical": {
+        "Title": "Breaking the Will",
+        "Desc": "Tactical scale (warband chief, pack alpha, breaking morale)",
+        "Label": "Breaking the Will / Chieftain's Call (tactical scale)"
+      },
+      "strategic": {
+        "Title": "Before the Ranks",
+        "Desc": "War scale (clash of leaders, truce, fate of a garrison)",
+        "Label": "Clash Before the Ranks (war scale)"
+      }
+    },
+    "Weakness": {
+      "kneeInjury": "Old leg injury (vulnerable to sweeps)",
+      "hotTempered": "Hot-tempered (easy to provoke)",
+      "bladePoisoner": "Poisons the blade (antidote ready)",
+      "superstitious": "Superstitious fear of the gods",
+      "rigidStyle": "Rigid textbook style (vulnerable to ripostes)"
+    },
+    "Category": {
+      "prowokacja": "Provocation",
+      "kontra": "Counter / Riposte",
+      "sztuczka": "Dirty Trick",
+      "finiszer": "Finisher / Display",
+      "default": "Champion's Action"
+    },
+    "Relationship": {
+      "patron": "Protector / Patron",
+      "debtor": "Debtor of Honour",
+      "blackmailed": "Cornered / Blackmail",
+      "rival": "Bitter Rival"
+    },
+    "Dialog": {
+      "AddCourtTitle": "Add a New Court / Seat of Influence",
+      "CourtName": "Court name:",
+      "CourtNamePlaceholder": "e.g. Court of Altdorf / Palace in Talabheim",
+      "CourtDesc": "Description and character:",
+      "CourtDescPlaceholder": "What makes this court distinctive…",
+      "CourtDefaultDesc": "A political centre of the Empire.",
+      "Add": "Add",
+      "Save": "Save",
+      "UseFavorTitle": "Call in a Favour: {name}",
+      "FavorsAvailable": "Favours available:",
+      "FavorsCount": "{count} debt(s).",
+      "Hooks": "Hooks:",
+      "NoHooks": "No particular hooks.",
+      "Demand": "What do you demand in return for the debt?",
+      "DemandPlaceholder": "e.g. Force a private audience with the Countess / Withdraw a warrant / Deliver black powder…",
+      "UseAndAnnounce": "Call In and Announce in Chat",
+      "DefaultDemand": "Forcing an audience, a letter of safe conduct or support in a political dispute.",
+      "EditPinnedTitle": "Edit Relationship: {name}",
+      "RelationshipType": "Relationship type:",
+      "FavorCount": "Debts / favours (0–5):",
+      "HooksField": "Hooks and dirty secrets:",
+      "MeetingNotes": "Notes from meetings:",
+      "NewContactHooks": "A fresh contact from the session.",
+      "DefaultStatus": "Noble / Burgher",
+      "EditGambitTitle": "Edit Manoeuvre: {name}",
+      "NewGambitTitle": "New Champion Manoeuvre",
+      "GambitName": "Manoeuvre name:",
+      "Category": "Category:",
+      "Cost": "Cost in Advantage:",
+      "OpposedTest": "Required opposed test:",
+      "OpposedTestPlaceholder": "e.g. Melee (−10) vs Melee",
+      "Effect": "Effect on success and failure:",
+      "Tags": "Tags:",
+      "NewGambitName": "New Combat Manoeuvre",
+      "NewGambitTest": "Melee vs Dodge / Melee",
+      "NewGambitEffect": "Describe the test and its effects on success and failure…",
+      "NewGambitTags": "Melee"
+    },
+    "Chat": {
+      "ChallengeTitle": "⚔️ RITUAL OF CHALLENGED STEEL",
+      "Challenger": "Challenger:",
+      "MandateTag": "Mandate: {value}",
+      "Target": "Challenged:",
+      "Stakes": "Stakes of the duel:",
+      "Conditions": "Terms imposed:",
+      "Weaknesses": "Rival's weaknesses uncovered (study):",
+      "ChallengeFlavor": "„When the law fails and diplomacy becomes a lie, the justice of steel and the verdict of the gods speak.”",
+      "DossierTitle": "📜 COURT INFLUENCE CALLED IN",
+      "FavorsLeft": "Debts left:",
+      "Demand": "The Champion's demand:",
+      "HookUsed": "Hook used:",
+      "DossierFlavor": "„A noble may deny his words, but he cannot deny a blood debt to a Champion.”",
+      "GambitTitle": "⚔️ CHAMPION'S MANOEUVRE",
+      "GambitLine": "performs a manoeuvre in the stance: {stance}!",
+      "Cost": "Cost: {cost} Advantage",
+      "RequiredTest": "Required opposed test:",
+      "Effects": "Effects of the manoeuvre:",
+      "RemainingAdvantage": "Actor's remaining Advantage:"
+    },
+    "Defaults": {
+      "Stances": {
+        "peasant": {
+          "Name": "Peasant Barricade",
+          "School": "Middenland style",
+          "Desc": "+10 to Strength-based tests and Parry. Immune to Prone. You may take a blow aimed at an adjacent ally on your own guard without a roll.",
+          "Bonus": "+10 Strength/Parry, protect an ally"
+        },
+        "court": {
+          "Name": "Nuln Fencer",
+          "School": "Southern style (sword and rapier)",
+          "Desc": "+10 to Initiative and Agility. Every clean successful parry grants +1 extra Advantage. Attacks from surprise ignore the enemy's Armour Points.",
+          "Bonus": "+10 Initiative/Agility, +1 Advantage per parry"
+        },
+        "gutter": {
+          "Name": "Alley Cardsharp",
+          "School": "Dirty brawler",
+          "Desc": "No penalties for improvised weapons, knives and main gauches. All Dirty Tricks cost 1 Advantage less.",
+          "Bonus": "Improvised weapons without penalty, Dirty Tricks 1 A cheaper"
+        }
+      },
+      "Gambits": {
+        "act-taunt-1": {
+          "Name": "Cold Mockery",
+          "Test": "Intimidate vs enemy's Cool",
+          "Effect": "The enemy loses 1 Advantage (+1 per 2 SL of difference) and focuses their next attack on you alone. On failure: the Advantage is lost.",
+          "Tags": "Provocation, Control"
+        },
+        "act-taunt-2": {
+          "Name": "Feigned Weakness",
+          "Test": "Acting vs enemy's Intuition",
+          "Effect": "You fake a stumble. The enemy charges with +10, but if you parry that blow the opponent immediately becomes Surprised. Failure: the enemy gains +1 Advantage.",
+          "Tags": "Deceit, Surprise"
+        },
+        "act-riposte-1": {
+          "Name": "Nuln Riposte",
+          "Test": "Melee (+10) vs Dodge / Melee",
+          "Effect": "An immediate counter-attack after a successful parry with +10 to hit. Deals normal damage with the Fast quality.",
+          "Tags": "Riposte, Quick strike"
+        },
+        "act-riposte-2": {
+          "Name": "Hilt Catch (Bind)",
+          "Test": "Strength / Melee vs enemy's Strength",
+          "Effect": "You lock the enemy's blade. The rival's weapon is Trapped – the enemy cannot attack or parry with it until they spend an action on a Strength test.",
+          "Tags": "Bind, Weapon trap"
+        },
+        "act-riposte-3": {
+          "Name": "Step Behind",
+          "Test": "Agility vs enemy's Initiative",
+          "Effect": "A smooth pass in melee. You gain a flanking position (+20 to your next attack) and the enemy loses 1 Advantage from disorientation.",
+          "Tags": "Positioning, Flank"
+        },
+        "act-trick-1": {
+          "Name": "Sand and Sewage",
+          "Test": "Agility vs enemy's Dodge (a helmet gives +20)",
+          "Effect": "Dust thrown in the eyes. The opponent gains 1 Blinded Condition. Failure: no effect, the Advantage is lost.",
+          "Tags": "Blinding, Dirty fighting"
+        },
+        "act-trick-2": {
+          "Name": "Tendon Stamp",
+          "Test": "Melee / Strength vs enemy's Dodge / Strength",
+          "Effect": "A foot sweep or a kick to the knee. The opponent becomes Prone. On failure: the Champion loses balance (−10 to defence until the end of the round).",
+          "Tags": "Sweep, Knockdown"
+        },
+        "act-trick-3": {
+          "Name": "Pommel to the Teeth",
+          "Test": "Melee (−10) vs Melee / Dodge",
+          "Effect": "A pommel strike with the Pummel quality. If it deals at least 1 Wound after armour, the enemy must pass an Endurance test or become Stunned.",
+          "Tags": "Stun, Blunt strike"
+        },
+        "act-finisher-1": {
+          "Name": "Cheek Cut (Humiliation)",
+          "Test": "Melee (−20, target: face) vs Melee / Dodge",
+          "Effect": "Deals 1–2 Wounds. The enemy must immediately pass a Difficult (−10) Cool test. On failure: loses 2 Advantage, becomes Broken and loses face at court. On success: falls into a Frenzy.",
+          "Tags": "Finisher, Humiliation, Applause"
+        },
+        "act-finisher-2": {
+          "Name": "Masterful Disarm (Nuln Flick)",
+          "Test": "Melee (−10) vs enemy's Melee (+2 SL)",
+          "Effect": "Needs at least +2 SL in the opposed test. The enemy's weapon flies 1d10 m through the air. The enemy is disarmed and must give ground or reach for a knife.",
+          "Tags": "Finisher, Disarm"
+        },
+        "act-finisher-3": {
+          "Name": "Breaking Beheading",
+          "Test": "Intimidate (+10 per critical wound) vs enemies' Cool",
+          "Effect": "After slaying the enemy leader: every subordinate within the Champion's Willpower range tests Cool against your SL or Panics / Flees.",
+          "Tags": "Finisher, Horde panic"
+        }
+      },
+      "Courts": {
+        "court-middenheim": {
+          "Name": "Court of Middenheim",
+          "Desc": "City of the White Wolf. Stern aristocracy, intrigues of the Law Lords, priests of Ulric and the constant shadow of carnival plots."
+        },
+        "court-nuln": {
+          "Name": "Court of Nuln",
+          "Desc": "Jewel of the South, ruled by Countess Emmanuelle. A realm of fashion, rapier duels, cannon and university intrigue."
+        }
+      },
+      "Pins": {
+        "pin-1": {
+          "Name": "Graf Boris Todbringer",
+          "Status": "Gold 5 (Ruler)",
+          "Hooks": "I know about his worsening state of mind and the visits of a suspicious physician from Altdorf.",
+          "Notes": "Grants private audiences and protection from the accusations of the Law Lords."
+        },
+        "pin-2": {
+          "Name": "Baron Heinrich von Todbringer",
+          "Status": "Gold 3",
+          "Hooks": "I saved his life and reputation in a disputed duel with an Ostland swordsman during the carnival.",
+          "Notes": "Young and hot-headed, but ready to vouch for us before the City Council."
+        },
+        "pin-3": {
+          "Name": "Gotthard von Witgenstein",
+          "Status": "Gold 2",
+          "Hooks": "I know the details of his shady dealings with the merchants' guild and his contacts with dubious types from the docks.",
+          "Notes": "He hates me, but must yield as long as I hold the evidence."
+        },
+        "pin-4": {
+          "Name": "Countess Emmanuelle von Liebwitz",
+          "Status": "Gold 5 (Elector)",
+          "Hooks": "She likes to surround herself with unusual people from the provinces, as long as they bring her renown and elegance at balls.",
+          "Notes": "Her favour opens the doors to the cannon foundries and fencing schools."
+        },
+        "pin-5": {
+          "Name": "Don Esteban de la Vega",
+          "Status": "Silver 5 (Fencing master)",
+          "Hooks": "He never forgave me for winning on the river pier; he seeks an official rematch.",
+          "Notes": "Superb with a rapier, knows every fencing master from Nuln to Altdorf."
+        }
+      },
+      "ChallengeStakes": "Release of the prisoner and a public withdrawal of the accusations",
+      "ChallengeConditions": "To first blood, on trodden ground, steel only"
+    }
+  }
+}

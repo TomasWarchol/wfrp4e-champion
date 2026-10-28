@@ -1,0 +1,219 @@
+{
+  "CHAMPION": {
+    "Title": "Żelazny Mandat: Szampierz",
+    "WindowTitle": "WFRP4e – Żelazny Mandat: Szampierz",
+    "SheetButton": "Żelazny Mandat: Szampierz",
+    "Init": "Inicjalizacja modułu Żelazny Mandat: Szampierz dla WFRP4e…",
+    "Ready": "Moduł gotowy. API zarejestrowane jako game.champion.",
+    "Settings": {
+      "AutoDeductName": "Automatyczne potrącanie Przewag",
+      "AutoDeductHint": "Czy wykonanie manewru ma automatycznie zmniejszać aktualne Przewagi postaci na karcie."
+    },
+    "Mandate": {
+      "Crown": "+{value} (Korona)",
+      "Commons": "{value} (Gmin)",
+      "Balance": "0 (Równowaga)"
+    },
+    "Notify": {
+      "SelectToken": "Wybierz token lub przypisz postać, aby otworzyć panel Szampierza!",
+      "OpenError": "Błąd podczas otwierania panelu Szampierza: {error}",
+      "SelectChampionToken": "Wybierz token postaci Szampierza na mapie.",
+      "GambitNotFound": "Nie znaleziono wybranej akcji bojowej!",
+      "NoAdvantage": "Brak Przewag! Manewr „{name}” wymaga {cost} Przewag (posiadasz: {current}).",
+      "GambitDone": "Wykonano manewr: {name}! Wykonaj test przeciwstawny.",
+      "NoFavors": "{name} nie ma już u ciebie żadnych długów honorowych!",
+      "FavorUsed": "Wykorzystano przysługę u: {name}! Zostało długów: {left}.",
+      "ChallengePosted": "Wysłano wyzwanie na czat!",
+      "StanceTaken": "Przyjęto postawę bojową: {name}",
+      "KeepOneCourt": "Musisz zachować przynajmniej jeden Dwór!",
+      "AlreadyPinned": "{name} jest już przypięty do tego Dworu!",
+      "Pinned": "Przypięto postać {name} do: {court}!"
+    },
+    "Tabs": {
+      "Combat": "Szkoła Walki i Postawy",
+      "Courts": "Wpływy na Dworach (Nuln / Middenheim)",
+      "Challenge": "Rytuał Wyzwania i Studium Rywala"
+    },
+    "Hud": {
+      "Stance": "Postawa Bojowa:",
+      "Advantage": "Przewagi Aktora:",
+      "AdvantageTooltip": "Aktualne punkty Przewag na karcie postaci",
+      "Mandate": "Mandat Krwi:",
+      "Commons": "GMIN (−10)",
+      "Crown": "KORONA (+10)",
+      "Folk": "Chłopski Mir:",
+      "FolkTooltip": "Autorytet u pospólstwa, straży miejskiej i szeregowców (0–100%)",
+      "FolkHint": "Posłuch u tłumu, milicji i służby"
+    },
+    "Combat": {
+      "Stances": "POSTAWY BOJOWE SZAMPIERZA:",
+      "Active": "Aktywna",
+      "Manoeuvres": "SPECJALNE AKCJE I MANEWRY SZERMIERCZE:",
+      "AddManoeuvre": "Dodaj Własny Manewr",
+      "Hint": "Przewaga pozwala zadeklarować manewr, ale każdy z nich wymaga wykonania wskazanego testu przeciwstawnego!",
+      "CostTooltip": "Koszt w Przewagach",
+      "CostShort": "P",
+      "RequiredTest": "Wymagany Test:",
+      "Execute": "Wykonaj Manewr",
+      "Edit": "Edytuj",
+      "Delete": "Usuń"
+    },
+    "Courts": {
+      "AddTooltip": "Dodaj nowy dwór (np. Altdorf, Talabheim)",
+      "Add": "Dodaj Dwór",
+      "Influence": "Wpływ na Dworze:",
+      "DeleteTooltip": "Usuń ten Dwór",
+      "DropZone": "Przeciągnij i upuść Aktora z paska bocznego Foundry, aby przypiąć go do Dworu!",
+      "Favors": "Długi Honorowe / Przysługi:",
+      "FavorDown": "Zmniejsz dług",
+      "FavorUp": "Zwiększ dług",
+      "Hooks": "Haki i Sekrety:",
+      "Notes": "Notatki:",
+      "UseTooltip": "Wykorzystaj 1 dług i ogłoś żądanie na czacie",
+      "Use": "Wykorzystaj Wpływ",
+      "EditTooltip": "Edytuj Zależność",
+      "RemoveTooltip": "Usuń z Dworu",
+      "Empty": "Brak przypiętych osobistości do tego Dworu. Przeciągnij postacie z paska Foundry!"
+    },
+    "Challenge": {
+      "Banner": "RYTUAŁ WYZWANIA I STUDIUM RYWALA",
+      "BannerDesc": "Przedpojedynkowy zwiad, badanie słabości przeciwnika i oficjalne wyzwanie do Sądu Bożego lub starcia przed armiami.",
+      "Scale": "Skala Starcia:",
+      "Study": "Studium Rywala (Zbadane Słabości Przeciwnika):",
+      "RivalName": "Imię i Tytuł Przeciwnika:",
+      "RivalNamePlaceholder": "np. Baron Heinrich von Todbringer / Czempion Nurgla",
+      "RivalStatus": "Status Społeczny / Ranga:",
+      "RivalStatusPlaceholder": "np. Złoto 3 / Dowódca",
+      "Weaknesses": "Wykryte Słabości i Cechy Stylu Walki (kliknij, by zaznaczyć):",
+      "CustomWeakness": "Inna słabość / uwaga ze śledztwa:",
+      "CustomWeaknessPlaceholder": "np. Pije gorzałę przed walką / Nie widzi na lewe oko",
+      "Stakes": "Stawka Wyzwania:",
+      "StakesPlaceholder": "O co toczy się walka? (np. uwolnienie więźniów, honor rodu, kapitulacja bramy)",
+      "Conditions": "Warunki Pojedynku:",
+      "ConditionsPlaceholder": "np. Do pierwszej krwi, na ubitej ziemi, zakaz magii i broni palnej",
+      "Post": "RZUĆ RĘKAWICĘ NA CZAT",
+      "DefaultTarget": "Wyznaczony Przeciwnik",
+      "DefaultTargetStatus": "Arystokrata / Czempion",
+      "DefaultStakes": "Ustalenie prawdy i honoru",
+      "DefaultConditions": "Do pierwszej krwi, na ubitej ziemi"
+    },
+    "Scale": {
+      "personal": { "Title": "Prawo i Honor", "Desc": "Skala Osobista (Sąd Boży, spory, zdrada, honor)", "Label": "Pojedynek Prawa i Honoru (Skala Osobista)" },
+      "tactical": { "Title": "Przełamanie Woli", "Desc": "Skala Taktyczna (Wódz watahy, Alfa stada, rozbicie morale)", "Label": "Przełamanie Woli / Zew Wodza (Skala Taktyczna)" },
+      "strategic": { "Title": "Przed Szeregiem", "Desc": "Skala Wojenna (Starcie wodzów, rozejm, los garnizonu)", "Label": "Starcie przed Szeregiem (Skala Wojenna)" }
+    },
+    "Weakness": {
+      "kneeInjury": "Stara kontuzja nogi (podatny na podcięcia)",
+      "hotTempered": "Porywczy furiat (łatwa prowokacja)",
+      "bladePoisoner": "Zatruwa ostrze (odtrutka gotowa)",
+      "superstitious": "Zabobonny lęk przed bogami",
+      "rigidStyle": "Sztywny styl podręcznikowy (podatny na riposty)"
+    },
+    "Category": {
+      "prowokacja": "Prowokacja",
+      "kontra": "Kontra / Riposta",
+      "sztuczka": "Brudna Sztuczka",
+      "finiszer": "Finiszer / Pokaz",
+      "default": "Akcja Szampierza"
+    },
+    "Relationship": {
+      "patron": "Protektor / Mecenas",
+      "debtor": "Dłużnik Honorowy",
+      "blackmailed": "Zaszachowany / Szantaż",
+      "rival": "Zaciekły Rywal"
+    },
+    "Dialog": {
+      "AddCourtTitle": "Dodaj Nowy Dwór / Ośrodek Wpływu",
+      "CourtName": "Nazwa Dworu:",
+      "CourtNamePlaceholder": "np. Dwór w Altdorfie / Pałac w Talabheim",
+      "CourtDesc": "Opis i Charakterystyka:",
+      "CourtDescPlaceholder": "Cechy charakterystyczne dworu…",
+      "CourtDefaultDesc": "Ośrodek polityczny Imperium.",
+      "Add": "Dodaj",
+      "Save": "Zapisz",
+      "UseFavorTitle": "Wykorzystaj Przysługę: {name}",
+      "FavorsAvailable": "Dostępne przysługi:",
+      "FavorsCount": "{count} dług(i).",
+      "Hooks": "Haki:",
+      "NoHooks": "Brak szczególnych haków.",
+      "Demand": "Czego żądasz w zamian za dług?",
+      "DemandPlaceholder": "np. Wymuszenie prywatnej audiencji u Hrabiny / Anulowanie listu gończego / Dostarczenie prochu…",
+      "UseAndAnnounce": "Wykorzystaj i Ogłoś na Czacie",
+      "DefaultDemand": "Wymuszenie audiencji, glejtu ochronnego lub poparcia w sporze politycznym.",
+      "EditPinnedTitle": "Edycja Zależności: {name}",
+      "RelationshipType": "Typ Relacji:",
+      "FavorCount": "Liczba Długów / Przysług (0–5):",
+      "HooksField": "Haki i Brudne Sekrety:",
+      "MeetingNotes": "Notatki ze spotkań:",
+      "NewContactHooks": "Świeżo pozyskany kontakt z sesji.",
+      "DefaultStatus": "Szlachcic / Mieszczanin",
+      "EditGambitTitle": "Edycja Manewru: {name}",
+      "NewGambitTitle": "Nowy Manewr Szampierza",
+      "GambitName": "Nazwa Manewru:",
+      "Category": "Kategoria:",
+      "Cost": "Koszt w Przewagach:",
+      "OpposedTest": "Wymagany Test Przeciwstawny:",
+      "OpposedTestPlaceholder": "np. Broń Biała (−10) vs Broń Biała",
+      "Effect": "Efekt przy Sukcesie i Porażce:",
+      "Tags": "Tagi:",
+      "NewGambitName": "Nowy Manewr Bojowy",
+      "NewGambitTest": "Broń Biała vs Unik / Broń Biała",
+      "NewGambitEffect": "Opis testu, skutków przy sukcesie i porażce…",
+      "NewGambitTags": "Walka wręcz"
+    },
+    "Chat": {
+      "ChallengeTitle": "⚔️ RYTUAŁ WYZWANEJ STALI",
+      "Challenger": "Wzywający:",
+      "MandateTag": "Mandat: {value}",
+      "Target": "Cel Wyzwania:",
+      "Stakes": "Stawka Pojedynku:",
+      "Conditions": "Narzucone Warunki:",
+      "Weaknesses": "Odkryte Słabości Rywala (Studium):",
+      "ChallengeFlavor": "„Gdy prawo zawodzi, a dyplomacja staje się kłamstwem, przemawia sprawiedliwość stali i wyrok bogów.”",
+      "DossierTitle": "📜 WYKORZYSTANIE WPŁYWU DWORU",
+      "FavorsLeft": "Pozostałe długi:",
+      "Demand": "Żądanie Szampierza:",
+      "HookUsed": "Wykorzystany Hak:",
+      "DossierFlavor": "„Szlachcic może wypierać się słów, ale nie może wyprzeć się długu krwi wobec Szampierza.”",
+      "GambitTitle": "⚔️ MANEWR SZAMPIERZA",
+      "GambitLine": "wykonuje manewr w postawie: {stance}!",
+      "Cost": "Koszt: {cost} Przewag",
+      "RequiredTest": "Wymagany Test Przeciwstawny:",
+      "Effects": "Skutki Manewru:",
+      "RemainingAdvantage": "Pozostałe Przewagi aktora:"
+    },
+    "Defaults": {
+      "Stances": {
+        "peasant": { "Name": "Chłopska Barykada", "School": "Styl Middenlandzki", "Desc": "+10 do Krzepy i Parowania. Niewrażliwość na stan Powalony. Możesz bez rzutu przyjąć cios wymierzony w sojusznika obok ciebie na własną gardę.", "Bonus": "+10 Krzepa/Parowanie, ochrona sojusznika" },
+        "court": { "Name": "Nulnijski Szermierz", "School": "Styl Południowy (szpada i rapier)", "Desc": "+10 do Inicjatywy i Zwinności. Każde czyste udane sparowanie generuje +1 dodatkową Przewagę. Ataki z zaskoczenia ignorują Punkty Pancerza wroga.", "Bonus": "+10 Inicjatywa/Zwinność, +1 Przewaga za parowanie" },
+        "gutter": { "Name": "Szuler z Zaułka", "School": "Brudny Brawler", "Desc": "Brak kar za broń improwizowaną, noże i lewaki. Wszystkie Brudne Sztuczki kosztują o 1 Przewagę mniej.", "Bonus": "Broń improwizowana bez kar, Brudne Sztuczki tańsze o 1 P" }
+      },
+      "Gambits": {
+        "act-taunt-1": { "Name": "Zimna Drwina", "Test": "Zastraszanie vs Opanowanie wroga", "Effect": "Wróg traci 1 Przewagę (+1 za każde 2 PS różnicy) i skupia swój najbliższy atak wyłącznie na tobie. Przy porażce: Przewaga przepada.", "Tags": "Prowokacja, Kontrola" },
+        "act-taunt-2": { "Name": "Pozorna Słabość", "Test": "Aktorstwo vs Intuicja wroga", "Effect": "Udajesz potknięcie. Wróg szarżuje z bonusem +10, ale jeśli sparujesz ten cios, przeciwnik natychmiast otrzymuje stan Zaskoczony. Porażka: wróg zyskuje +1 Przewagę.", "Tags": "Podstęp, Zaskoczenie" },
+        "act-riposte-1": { "Name": "Nulnijska Riposta", "Test": "Broń Biała (+10) vs Unik / Broń Biała", "Effect": "Natychmiastowy kontratak po udanym parowaniu z bonusem +10 do trafienia. Zadaje normalne obrażenia z cechą Szybki.", "Tags": "Riposta, Szybki cios" },
+        "act-riposte-2": { "Name": "Przechwycenie Jelca (Klin)", "Test": "Krzepa / Broń Biała vs Krzepa wroga", "Effect": "Zakleszczasz ostrze wroga. Broń rywala zostaje pochwycona – wróg nie może nią atakować ani parować, dopóki nie poświęci akcji na test Krzepy.", "Tags": "Blokada, Pochwycenie broni" },
+        "act-riposte-3": { "Name": "Krok za Plecy", "Test": "Zwinność vs Inicjatywa wroga", "Effect": "Płynne minięcie w zwarciu. Zyskujesz pozycję z flanki (+20 do następnego ataku), a wróg traci 1 Przewagę z dezorientacji.", "Tags": "Pozycjonowanie, Flanka" },
+        "act-trick-1": { "Name": "Piach i Ścieki", "Test": "Zwinność vs Unik wroga (hełm daje +20)", "Effect": "Sypnięcie pyłem w oczy. Przeciwnik otrzymuje 1 stan Oślepiony. Porażka: brak efektu, Przewaga przepada.", "Tags": "Oślepienie, Brudna walka" },
+        "act-trick-2": { "Name": "Zdeptanie Ścięgien", "Test": "Broń Biała / Krzepa vs Unik / Krzepa wroga", "Effect": "Podcięcie stopy lub uderzenie w kolano. Przeciwnik otrzymuje stan Powalony. Przy porażce: Szampierz traci równowagę (−10 do obrony do końca rundy).", "Tags": "Podcięcie, Powalenie" },
+        "act-trick-3": { "Name": "Cios Głowicą w Zęby", "Test": "Broń Biała (−10) vs Broń Biała / Unik", "Effect": "Cios głowicą z cechą Ogłuszający. Jeśli zada choć 1 ranę po pancerzu, wróg musi zdać test Odporności pod groźbą stanu Ogłuszony.", "Tags": "Ogłuszenie, Broń obuchowa" },
+        "act-finisher-1": { "Name": "Cięcie po Policzku (Upokorzenie)", "Test": "Broń Biała (−20, cel: twarz) vs Broń Biała / Unik", "Effect": "Zadaje 1–2 Rany. Wróg musi natychmiast zdać Trudny (−10) test Opanowania. Oblewa: traci 2 Przewagi, stan Spanikowany i traci twarz na dworze. Zdaje: wpada w Szał.", "Tags": "Finiszer, Upokorzenie, Poklask" },
+        "act-finisher-2": { "Name": "Kunsztowne Rozbrojenie (Nulnijskie Wybicie)", "Test": "Broń Biała (−10) vs Broń Biała wroga (+2 PS)", "Effect": "Wymaga co najmniej +2 PS w teście przeciwstawnym. Broń wroga wylatuje w powietrze na 1k10 m. Wróg zostaje rozbrojony i musi ustąpić pola lub sięgać po nóż.", "Tags": "Finiszer, Rozbrojenie" },
+        "act-finisher-3": { "Name": "Ścięcie Przełamania", "Test": "Zastraszanie (+10 za ranę kryt.) vs Opanowanie wrogów", "Effect": "Po zabiciu dowódcy wroga: wszyscy podkomendni w zasięgu Siły Woli Szampierza testują Opanowanie przeciwko twojemu PS pod groźbą Paniki / Ucieczki.", "Tags": "Finiszer, Panika hordy" }
+      },
+      "Courts": {
+        "court-middenheim": { "Name": "Dwór w Middenheim", "Desc": "Miasto Białego Wilka. Surowa arystokracja, intrygi Lordów Prawa, Kapłani Ulryka i ciągły cień karnawałowych spisków." },
+        "court-nuln": { "Name": "Dwór w Nuln", "Desc": "Klejnot Południa, rządzony przez Hrabinę Emmanuelle. Królestwo mody, pojedynków na rapiery, armat i uniwersyteckich intryg." }
+      },
+      "Pins": {
+        "pin-1": { "Name": "Graf Boris Todbringer", "Status": "Złoto 5 (Władca)", "Hooks": "Wiem o jego pogarszającym się zdrowiu psychicznym i wizytach podejrzanego medyka z Altdorfu.", "Notes": "Daje dostęp do prywatnych audiencji i ochrony przed oskarżeniami Lordów Prawa." },
+        "pin-2": { "Name": "Baron Heinrich von Todbringer", "Status": "Złoto 3", "Hooks": "Ocaliłem mu życie i reputację w spornym pojedynku z szermierzem z Ostlandu na karnawale.", "Notes": "Młody i porywczy, ale gotów poręczyć za nas przed Radą Miejską." },
+        "pin-3": { "Name": "Gotthard von Witgenstein", "Status": "Złoto 2", "Hooks": "Znam szczegóły jego podejrzanych transakcji z gildią kupców i kontaktów z podejrzanymi typami z doków.", "Notes": "Nienawidzi mnie, ale musi ulegać, dopóki trzymam w ręku dowody." },
+        "pin-4": { "Name": "Hrabina Emmanuelle von Liebwitz", "Status": "Złoto 5 (Elektorka)", "Hooks": "Lubi otaczać się niezwykłymi ludźmi z prowincji, dopóki przynoszą jej rozgłos i elegancję na balach.", "Notes": "Jej przychylność otwiera drzwi do odlewni dział i szkół szermierczych." },
+        "pin-5": { "Name": "Don Esteban de la Vega", "Status": "Srebro 5 (Fechmistrz)", "Hooks": "Nigdy nie wybaczył mi wygranej na pomoście rzecznym; dąży do oficjalnego rewanżu.", "Notes": "Znakomity z rapierem, zna każdego fechmistrza od Nuln po Altdorf." }
+      },
+      "ChallengeStakes": "Uwolnienie więźnia i publiczne wycofanie oskarżeń",
+      "ChallengeConditions": "Do pierwszej krwi, na ubitej ziemi, tylko stal"
+    }
+  }
+}

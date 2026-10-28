@@ -1,0 +1,72 @@
+<div class="champion-tab-content combat-content">
+  {{!-- 1. Wybór Postawy Bojowej (Stances) --}}
+  <div class="stances-section">
+    <div class="section-title"><i class="fas fa-person-falling-burst"></i> {{localize "CHAMPION.Combat.Stances"}}</div>
+    <div class="stances-grid">
+      {{#each champ.stances}}
+        <div class="stance-card {{#if (bajeryEq this.id ../champ.activeStance)}}active{{/if}}" data-action="select-stance" data-stance-id="{{this.id}}">
+          <div class="stance-card-header">
+            <i class="fas {{this.icon}} stance-icon"></i>
+            <div class="stance-titles">
+              <strong class="stance-name">{{this.name}}</strong>
+              <small class="stance-school">{{this.school}}</small>
+            </div>
+            {{#if (bajeryEq this.id ../champ.activeStance)}}
+              <span class="active-pill"><i class="fas fa-check"></i> {{localize "CHAMPION.Combat.Active"}}</span>
+            {{/if}}
+          </div>
+          <div class="stance-desc">{{this.description}}</div>
+          <div class="stance-bonus-tag">{{this.bonusText}}</div>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+
+  {{!-- 2. Katalog Manewrów Bojowych --}}
+  <div class="combat-actions-section">
+    <div class="actions-header-bar">
+      <div class="section-title"><i class="fas fa-swords"></i> {{localize "CHAMPION.Combat.Manoeuvres"}}</div>
+      <button type="button" class="btn-add-item" data-action="add-gambit">
+        <i class="fas fa-plus"></i> {{localize "CHAMPION.Combat.AddManoeuvre"}}
+      </button>
+    </div>
+    <div class="actions-hint">
+      <em>{{localize "CHAMPION.Combat.Hint"}}</em>
+    </div>
+
+    <div class="actions-cards-grid">
+      {{#each champ.gambits}}
+        <div class="action-card category-{{this.category}}">
+          <div class="action-card-header">
+            <div class="action-identity">
+              <span class="category-badge {{this.category}}">{{this.categoryLabel}}</span>
+              <strong class="action-name">{{this.name}}</strong>
+            </div>
+            <div class="action-cost-badge" title="{{localize "CHAMPION.Combat.CostTooltip"}}">
+              <i class="fas fa-bolt"></i> {{this.costAdvantage}} {{localize "CHAMPION.Combat.CostShort"}}
+            </div>
+          </div>
+
+          <div class="action-test-box">
+            <span class="test-label"><i class="fas fa-dice"></i> {{localize "CHAMPION.Combat.RequiredTest"}}</span>
+            <strong class="test-name">{{this.opposedTest}}</strong>
+          </div>
+
+          <div class="action-effect-box">
+            {{this.effect}}
+          </div>
+
+          <div class="action-card-footer">
+            <button type="button" class="btn-execute-action" data-action="execute-gambit" data-gambit-id="{{this.id}}">
+              <i class="fas fa-swords"></i> {{localize "CHAMPION.Combat.Execute"}}
+            </button>
+            <div class="action-row-tools">
+              <button type="button" class="btn-icon" data-action="edit-gambit" data-gambit-id="{{this.id}}" title="{{localize "CHAMPION.Combat.Edit"}}"><i class="fas fa-pencil"></i></button>
+              <button type="button" class="btn-icon danger" data-action="delete-gambit" data-gambit-id="{{this.id}}" title="{{localize "CHAMPION.Combat.Delete"}}"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+</div>
