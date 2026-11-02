@@ -73,23 +73,48 @@ export const CROWD_ADVANTAGE_AT = 2;
 export const MAX_RIVAL_EDGES = 3;
 
 /**
- * Sekundanci: rola → umiejętność (klucz nazwy WFRP4e) i cecha zapasowa, gdy postać nie ma umiejętności.
- * Każda rola wykonuje jeden test w Przygotowaniu.
+ * Przygotowania do pojedynku: szampierz sam wybiera najwyżej dwa i wykonuje test swoją postacią.
+ * Umiejętność to klucz nazwy WFRP4e; cecha zapasowa, gdy postać jej nie ma.
  */
-export const SECOND_ROLES = {
+export const PREPS = {
   scout: { skill: "Gossip", characteristic: "fel", icon: "fa-solid fa-eye" },
-  herald: { skill: "Charm", characteristic: "fel", icon: "fa-solid fa-bullhorn" },
-  bookie: { skill: "Gamble", characteristic: "int", icon: "fa-solid fa-coins" },
-  armsman: { skill: "Perception", characteristic: "i", icon: "fa-solid fa-magnifying-glass" },
-  surgeon: { skill: "Heal", characteristic: "int", icon: "fa-solid fa-kit-medical" }
+  crowd: { skill: "Charm", characteristic: "fel", icon: "fa-solid fa-bullhorn" },
+  bet: { skill: "Gamble", characteristic: "int", icon: "fa-solid fa-coins" },
+  arms: { skill: "Perception", characteristic: "i", icon: "fa-solid fa-magnifying-glass" },
+  surgeon: { skill: "Haggle", characteristic: "fel", icon: "fa-solid fa-kit-medical" }
 };
-export const SECOND_ROLE_IDS = Object.keys(SECOND_ROLES);
+export const PREP_IDS = Object.keys(PREPS);
+export const MAX_PREPS = 2;
+
+/** Szybki pojedynek: tyle trafień kończy walkę zależnie od warunków. */
+export const HITS_NEEDED = { firstBlood: 1, yield: 2, death: 3 };
+/** Podejścia w wymianie. Natarcie bije fintę, finta bije gardę, garda bije natarcie. Brudny chwyt zawsze daje premię. */
+export const APPROACHES = ["attack", "guard", "feint", "dirty"];
+export const RIVAL_APPROACHES = ["attack", "guard", "feint"];
+export const APPROACH_ICON = {
+  attack: "fa-solid fa-burst",
+  guard: "fa-solid fa-shield",
+  feint: "fa-solid fa-wand-sparkles",
+  dirty: "fa-solid fa-hand-sparkles"
+};
+const BEATS = { attack: "feint", feint: "guard", guard: "attack" };
+export const APPROACH_BONUS = 20;
+export const CROWD_TEST_BONUS = 10;
+/** Przewaga w wymianie od tej różnicy PS liczy się jako podwójne trafienie. */
+export const DOUBLE_HIT_MARGIN = 4;
+
+/** Kto widział czyn → Waga opowieści (0: brak świadków, zostaje tylko w kronice). */
+export const WITNESSES = ["none", "few", "crowd", "great"];
+export function witnessWeight(witness) {
+  return Math.max(0, WITNESSES.indexOf(witness));
+}
 
 /** Echo Sławy: k10 ≤ (Poziom + 1) oznacza, że sława ściąga coś na szampierza. */
-export const ECHO_TYPES = ["petition", "petition", "petition", "challenger", "challenger", "ballad", "darkRumor", "impostor", "offer", "notice"];
+export const ECHO_TYPES = ["petition", "petition", "petition", "challenger", "rivalMove", "ballad", "darkRumor", "impostor", "offer", "notice"];
 export const ECHO_ICON = {
   petition: "fa-solid fa-hands-praying",
   challenger: "fa-solid fa-hand-back-fist",
+  rivalMove: "fa-solid fa-chess-knight",
   ballad: "fa-solid fa-music",
   darkRumor: "fa-solid fa-comment-slash",
   impostor: "fa-solid fa-user-secret",
@@ -98,6 +123,8 @@ export const ECHO_ICON = {
 };
 /** Wydarzenia echa, o których wie tylko MG (wprowadza je w fikcji). */
 export const ECHO_SECRET = new Set(["offer", "notice"]);
+/** Ruchy rywala z urazą (Echo Sławy). */
+export const RIVAL_MOVES = ["slander", "thugs", "bribe", "insult"];
 
 /* -------------------------------------------- */
 /*  Narzędzia                                   */
@@ -131,10 +158,13 @@ export function defaultState() {
     name: { declared: "", face: "protector" },
     homeland: "",
     tales: [],
+    deeds: [],
     petitions: [],
     rivals: [],
     duel: null,
+    pendingChallenge: null,
     chronicle: [],
+    incognito: false,
     nameCalledSession: null,
     fallen: false,
     heirOf: null
@@ -189,6 +219,7 @@ export function normalizeRival(raw = {}) {
     title: String(raw.title ?? ""),
     notes: String(raw.notes ?? ""),
     grudge: clamp(Math.round(Number(raw.grudge ?? 0)), 0, MAX_GRUDGE),
+    bribe: clamp(Math.round(Number(raw.bribe ?? 0)), 0, MAX_RIVAL_EDGES),
     status: oneOf(raw.status, RIVAL_STATUS, "active"),
     higherStatus: !!raw.higherStatus,
     record: {
@@ -200,41 +231,63 @@ export function normalizeRival(raw = {}) {
   };
 }
 
-export function emptySeconds() {
-  return Object.fromEntries(SECOND_ROLE_IDS.map(role => [role, { actorUuid: "", name: "", img: "", result: null }]));
+export function emptyPreps() {
+  return Object.fromEntries(PREP_IDS.map(id => [id, null]));
 }
 
 export function normalizeDuel(raw) {
   if (!raw) return null;
-  const seconds = emptySeconds();
-  for (const role of SECOND_ROLE_IDS) {
-    const s = raw.seconds?.[role] ?? {};
-    seconds[role] = {
-      actorUuid: String(s.actorUuid ?? ""),
-      name: String(s.name ?? ""),
-      img: String(s.img ?? ""),
-      result: s.result ? { sl: Number(s.result.sl) || 0, success: !!s.result.success, roll: Number(s.result.roll) || 0 } : null
-    };
+  const preps = emptyPreps();
+  for (const id of PREP_IDS) {
+    const r = raw.preps?.[id];
+    preps[id] = r ? { sl: Number(r.sl) || 0, success: !!r.success } : null;
   }
   return {
     id: raw.id || newId("duel"),
     stage: oneOf(raw.stage, DUEL_STAGES, "challenge"),
+    mode: oneOf(raw.mode, ["quick", "full"], "quick"),
     rivalId: String(raw.rivalId ?? ""),
     terms: oneOf(raw.terms, DUEL_TERMS, "firstBlood"),
     audience: clamp(Math.round(Number(raw.audience ?? 2)), 1, 3),
     venue: String(raw.venue ?? ""),
     stakes: String(raw.stakes ?? ""),
     wager: String(raw.wager ?? ""),
-    seconds,
+    rivalSkill: clamp(Math.round(Number(raw.rivalSkill ?? 45)), 1, 150),
+    preps,
     edges: (raw.edges ?? []).map(e => ({ id: e.id || newId("edge"), kind: String(e.kind ?? "weakness"), used: !!e.used })),
     rivalEdges: clamp(Math.round(Number(raw.rivalEdges ?? 0)), 0, MAX_RIVAL_EDGES),
     negatedEdges: clamp(Math.round(Number(raw.negatedEdges ?? 0)), 0, MAX_RIVAL_EDGES),
+    rivalEdgesUsed: clamp(Math.round(Number(raw.rivalEdgesUsed ?? 0)), 0, MAX_RIVAL_EDGES),
     crowd: clamp(Math.round(Number(raw.crowd ?? 0)), CROWD_MIN, CROWD_MAX),
     odds: Number(raw.odds) || 0,
     dirty: Math.max(0, Number(raw.dirty) || 0),
     surgeonHeal: Math.max(0, Number(raw.surgeonHeal) || 0),
+    champScore: Math.max(0, Number(raw.champScore) || 0),
+    rivalScore: Math.max(0, Number(raw.rivalScore) || 0),
+    exchanges: (raw.exchanges ?? []).map(x => ({
+      n: Number(x.n) || 0,
+      champApproach: oneOf(x.champApproach, APPROACHES, "attack"),
+      rivalApproach: oneOf(x.rivalApproach, RIVAL_APPROACHES, "attack"),
+      champSL: Number(x.champSL) || 0,
+      rivalSL: Number(x.rivalSL) || 0,
+      winner: oneOf(x.winner, ["champion", "rival", "none"], "none"),
+      margin: Number(x.margin) || 0,
+      hits: Number(x.hits) || 0,
+      wounds: Number(x.wounds) || 0
+    })),
+    result: oneOf(raw.result, ["win", "loss", ""], ""),
     combatId: String(raw.combatId ?? ""),
     started: Number(raw.started) || 0
+  };
+}
+
+export function normalizeDeed(raw = {}) {
+  return {
+    id: raw.id || newId("deed"),
+    text: String(raw.text ?? ""),
+    source: String(raw.source ?? "manual"),
+    ts: Number(raw.ts) || 0,
+    created: Number(raw.created) || 0
   };
 }
 
@@ -249,9 +302,16 @@ export function normalizeState(raw) {
     },
     homeland: String(raw.homeland ?? ""),
     tales: (raw.tales ?? []).map(normalizeTale),
+    deeds: (raw.deeds ?? []).map(normalizeDeed),
     petitions: (raw.petitions ?? []).map(normalizePetition),
     rivals: (raw.rivals ?? []).map(normalizeRival),
     duel: normalizeDuel(raw.duel),
+    pendingChallenge: raw.pendingChallenge ? {
+      name: String(raw.pendingChallenge.name ?? ""),
+      img: String(raw.pendingChallenge.img ?? ""),
+      actorUuid: String(raw.pendingChallenge.actorUuid ?? ""),
+      skill: clamp(Math.round(Number(raw.pendingChallenge.skill ?? 45)), 1, 150)
+    } : null,
     chronicle: (raw.chronicle ?? []).map(e => ({
       id: e.id || newId("chr"),
       ts: Number(e.ts) || 0,
@@ -259,6 +319,7 @@ export function normalizeState(raw) {
       text: String(e.text ?? ""),
       icon: String(e.icon ?? "fa-solid fa-feather")
     })),
+    incognito: !!raw.incognito,
     nameCalledSession: raw.nameCalledSession ?? null,
     fallen: !!raw.fallen,
     heirOf: raw.heirOf ? { name: String(raw.heirOf.name ?? ""), uuid: String(raw.heirOf.uuid ?? "") } : null
@@ -375,8 +436,8 @@ export const INVOKE_SKILLS = {
   dark: ["Intimidate"]
 };
 
-export function canInvoke(tale, sessionId) {
-  return tale.weight >= MIN_WEIGHT && !tale.lie && tale.invokedSession !== sessionId;
+export function canInvoke(tale, sessionId, incognito = false) {
+  return !incognito && tale.weight >= MIN_WEIGHT && !tale.lie && tale.invokedSession !== sessionId;
 }
 
 /** Premia: +1 PS za każdy punkt Wagi. */
@@ -437,6 +498,23 @@ export function balladTarget(state) {
   return liveTales(state)
     .filter(t => !t.lie && t.weight < MAX_WEIGHT)
     .sort((a, b) => a.weight - b.weight || b.created - a.created)[0] ?? null;
+}
+
+/* -------------------------------------------- */
+/*  Czyny (do ogłoszenia po scenie)             */
+/* -------------------------------------------- */
+
+export function addDeed(state, raw, ts = 0) {
+  const next = clone(state);
+  const deed = normalizeDeed({ ...raw, ts: raw.ts || ts, created: raw.created || Date.now() });
+  next.deeds.push(deed);
+  return { state: next, deed };
+}
+
+export function removeDeed(state, deedId) {
+  const next = clone(state);
+  next.deeds = next.deeds.filter(d => d.id !== deedId);
+  return next;
 }
 
 /* -------------------------------------------- */
@@ -505,6 +583,11 @@ export function resolvePetition(state, petitionId, action, { ts = 0, face = "pro
   return { state: next, effect: { type: "noop" } };
 }
 
+/** Drobną prośbę (stawka 1) można załatwić w tle jako przedsięwzięcie między przygodami. */
+export function canEndeavour(petition) {
+  return petition.stake === 1 && ["open", "accepted"].includes(petition.status);
+}
+
 /** Dni do terminu (zaokrąglone w górę); null bez terminu. */
 export function daysLeft(petition, now, secondsPerDay = 86400) {
   if (petition.deadline === null || petition.deadline === undefined) return null;
@@ -522,6 +605,11 @@ export function addRival(state, raw) {
   return { state: next, rival };
 }
 
+/** Rywal, który wykona ruch w Echu Sławy: żywy, z urazą (największa pierwsza). */
+export function movingRival(state) {
+  return grudgeChallenger(state);
+}
+
 /** Pretendent z echa: rywal z największą urazą (żywy), inaczej null (wtedy nowy zabijaka). */
 export function grudgeChallenger(state) {
   return state.rivals
@@ -535,38 +623,51 @@ export function grudgeChallenger(state) {
 
 export function startDuel(state, raw, ts = 0) {
   const next = clone(state);
-  next.duel = normalizeDuel({ ...raw, id: newId("duel"), stage: "challenge", started: ts, seconds: emptySeconds(), edges: [], crowd: 0 });
+  next.duel = normalizeDuel({ ...raw, id: newId("duel"), stage: raw.stage ?? "challenge", started: ts, preps: emptyPreps(), edges: [], crowd: 0, exchanges: [] });
+  // Przekupstwo rywala (Echo Sławy) zamienia się w Atuty w najbliższym pojedynku
+  const rival = next.rivals.find(r => r.id === next.duel.rivalId);
+  if (rival?.bribe) {
+    next.duel.rivalEdges = clamp(next.duel.rivalEdges + rival.bribe, 0, MAX_RIVAL_EDGES);
+    rival.bribe = 0;
+  }
   return next;
 }
 
+export function prepsDone(duel) {
+  return PREP_IDS.filter(id => duel.preps[id]).length;
+}
+
+export function canPrep(duel, id) {
+  return duel.stage === "prep" && !duel.preps[id] && prepsDone(duel) < MAX_PREPS;
+}
+
 /**
- * Skutek testu sekundanta. Zwraca nowy pojedynek.
- * - scout: sukces → Atut „Słabość rywala”; PS ≥ 3 → dwa,
- * - herald: Tłum startuje od +1 (PS ≥ 3: +2); porażka o 3+ PS → −1,
- * - bookie: kurs 2:1 (PS ≥ 3: 3:1); porażka → 1:1,
- * - armsman: unieważnia jeden Atut rywala (PS ≥ 3: dwa),
- * - surgeon: po walce leczy 1 + PS Żywotności (minimum 1 przy sukcesie).
+ * Skutek przygotowania (test szampierza). Zwraca nowy pojedynek.
+ * - scout: sukces → Atut „Słabość rywala” (PS ≥ 3: dwa),
+ * - crowd: Tłum startuje od +1 (PS ≥ 3: +2); porażka o 3+ PS → −1,
+ * - bet: kurs 2:1 (PS ≥ 3: 3:1); porażka → 1:1,
+ * - arms: unieważnia Atut rywala (PS ≥ 3: dwa),
+ * - surgeon: po walce 1 + PS Żywotności.
  */
-export function applySecondResult(duel, role, result) {
+export function applyPrep(duel, id, result) {
   const d = clone(duel);
   const sl = Number(result.sl) || 0;
   const success = !!result.success;
-  d.seconds[role].result = { sl, success, roll: Number(result.roll) || 0 };
-
-  switch (role) {
+  d.preps[id] = { sl, success };
+  switch (id) {
     case "scout": {
-      d.edges = d.edges.filter(e => e.kind !== "weakness");
+      d.edges = d.edges.filter(e => e.kind !== "weakness" || e.used);
       const count = success ? (sl >= 3 ? 2 : 1) : 0;
       for (let i = 0; i < count; i++) d.edges.push({ id: newId("edge"), kind: "weakness", used: false });
       break;
     }
-    case "herald":
+    case "crowd":
       d.crowd = success ? (sl >= 3 ? 2 : 1) : (sl <= -3 ? -1 : 0);
       break;
-    case "bookie":
+    case "bet":
       d.odds = success ? (sl >= 3 ? 3 : 2) : 1;
       break;
-    case "armsman":
+    case "arms":
       d.negatedEdges = success ? Math.min(d.rivalEdges, sl >= 3 ? 2 : 1) : 0;
       break;
     case "surgeon":
@@ -576,19 +677,105 @@ export function applySecondResult(duel, role, result) {
   return d;
 }
 
-/** Zwolnienie sekundanta cofa skutek jego testu. */
-export function resetSecond(duel, role) {
+/** Cofnięcie przygotowania (np. pomyłka MG). */
+export function resetPrep(duel, id) {
   const d = clone(duel);
-  const had = d.seconds[role]?.result;
-  d.seconds[role] = { actorUuid: "", name: "", img: "", result: null };
-  if (!had) return d;
-  switch (role) {
+  if (!d.preps[id]) return d;
+  d.preps[id] = null;
+  switch (id) {
     case "scout": d.edges = d.edges.filter(e => e.kind !== "weakness" || e.used); break;
-    case "herald": d.crowd = 0; break;
-    case "bookie": d.odds = 0; break;
-    case "armsman": d.negatedEdges = 0; break;
+    case "crowd": d.crowd = 0; break;
+    case "bet": d.odds = 0; break;
+    case "arms": d.negatedEdges = 0; break;
     case "surgeon": d.surgeonHeal = 0; break;
   }
+  return d;
+}
+
+export function hitsNeeded(duel) {
+  return HITS_NEEDED[duel.terms] ?? 1;
+}
+
+/** Premia z podejścia dla „mine” przeciw „theirs” (+20 albo 0). Brudny chwyt zawsze +20. */
+export function approachBonus(mine, theirs) {
+  if (mine === "dirty") return APPROACH_BONUS;
+  return BEATS[mine] === theirs ? APPROACH_BONUS : 0;
+}
+
+/** Premia od Tłumu dla strony (champion | rival): +10 przy ±2. */
+export function crowdBonus(side, crowd) {
+  const favour = crowdFavours(crowd);
+  return favour === side ? CROWD_TEST_BONUS : 0;
+}
+
+/** PS testu WFRP: dziesiątki progu minus dziesiątki rzutu; 01–05 zawsze sukces, 96–00 zawsze porażka. */
+export function testResult(target, roll) {
+  let sl = Math.floor(target / 10) - Math.floor(roll / 10);
+  let success = roll <= target;
+  if (roll <= 5) { success = true; sl = Math.max(sl, 0); }
+  if (roll >= 96) { success = false; sl = Math.min(sl, 0); }
+  return { sl, success };
+}
+
+/** Losowe podejście rywala (k3). */
+export function rivalApproachFor(d3) {
+  return RIVAL_APPROACHES[clamp(Math.round(d3), 1, 3) - 1];
+}
+
+/**
+ * Wymiana w szybkim pojedynku: test przeciwstawny, wyższe PS trafia.
+ * Remis PS to zwarcie bez trafienia. Przewaga ≥ 4 PS to podwójne trafienie.
+ * Trafiony szampierz traci 1 + przewaga Żywotności (stosuje to warstwa gry).
+ * Atut rywala dodaje mu +1 PS (zużywa się sam). Wygrana o 3+ PS przesuwa Tłum o 1.
+ * @returns {{duel: object, exchange: object, finished: ("win"|"loss"|null)}}
+ */
+export function resolveExchange(duel, { champApproach, rivalApproach, champ, rival }) {
+  const d = clone(duel);
+  let rivalSL = Number(rival.sl) || 0;
+  let rivalEdge = false;
+  if (activeRivalEdges(d) - d.rivalEdgesUsed > 0) {
+    rivalSL += 1;
+    d.rivalEdgesUsed += 1;
+    rivalEdge = true;
+  }
+  const champSL = Number(champ.sl) || 0;
+  const diff = champSL - rivalSL;
+  const winner = diff > 0 ? "champion" : (diff < 0 ? "rival" : "none");
+  const margin = Math.abs(diff);
+  const needed = hitsNeeded(d);
+  let hits = 0;
+  let wounds = 0;
+  if (winner === "champion") {
+    hits = Math.min(margin >= DOUBLE_HIT_MARGIN ? 2 : 1, needed - d.champScore);
+    d.champScore += hits;
+    if (margin >= 3) d.crowd = clamp(d.crowd + 1, CROWD_MIN, CROWD_MAX);
+  } else if (winner === "rival") {
+    hits = Math.min(margin >= DOUBLE_HIT_MARGIN ? 2 : 1, needed - d.rivalScore);
+    d.rivalScore += hits;
+    wounds = 1 + margin;
+    if (margin >= 3) d.crowd = clamp(d.crowd - 1, CROWD_MIN, CROWD_MAX);
+  }
+  if (champApproach === "dirty") {
+    d.dirty += 1;
+    d.crowd = clamp(d.crowd - 1, CROWD_MIN, CROWD_MAX);
+  }
+  const exchange = { n: d.exchanges.length + 1, champApproach, rivalApproach, champSL, rivalSL, winner, margin, hits, wounds, rivalEdge };
+  d.exchanges.push(exchange);
+  let finished = null;
+  if (d.champScore >= needed) finished = "win";
+  else if (d.rivalScore >= needed) finished = "loss";
+  if (finished) {
+    d.result = finished;
+    d.stage = "aftermath";
+  }
+  return { duel: d, exchange, finished };
+}
+
+/** Szampierz się poddaje: koniec pojedynku porażką. */
+export function yieldDuel(duel) {
+  const d = clone(duel);
+  d.result = "loss";
+  d.stage = "aftermath";
   return d;
 }
 

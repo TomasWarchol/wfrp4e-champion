@@ -35,6 +35,9 @@
       {{#if header.peopleFace}}
       <span class="lg-face-chip is-people" data-tooltip="{{localize 'CHAMPION.Name.PeopleFace'}}"><i class="fa-solid fa-users"></i> <i class="{{header.peopleFaceIcon}}"></i> {{header.peopleFaceLabel}}</span>
       {{/if}}
+      {{#if header.incognito}}
+      <span class="lg-face-chip is-hood" data-tooltip="{{localize 'CHAMPION.Hood.Hint'}}"><i class="fa-solid fa-user-secret"></i> {{localize "CHAMPION.Hood.On"}}</span>
+      {{/if}}
     </div>
   </div>
 
@@ -52,6 +55,10 @@
 
   <div class="lg-hero-actions">
     {{#if env.canEdit}}
+    <div class="lg-gm-row">
+      <button type="button" class="lg-btn lg-btn--ghost" data-action="openHud" data-tooltip="{{localize 'CHAMPION.Hud.OpenHint'}}"><i class="fa-solid fa-window-restore"></i> {{localize "CHAMPION.Hud.Open"}}</button>
+      <button type="button" class="lg-btn lg-btn--ghost lg-btn--icon {{#if header.incognito}}is-active{{/if}}" data-action="toggleHood" data-tooltip="{{localize 'CHAMPION.Hood.Hint'}}"><i class="fa-solid fa-user-secret"></i></button>
+    </div>
     <button type="button" class="lg-btn lg-btn--gold {{#unless header.canCallName}}is-spent{{/unless}}" data-action="callName" {{#unless header.canCallName}}disabled{{/unless}} data-tooltip="{{header.callNameHint}}">
       <i class="fa-solid fa-sun"></i> {{#if header.nameCalled}}{{localize "CHAMPION.Name.Called"}}{{else}}{{localize "CHAMPION.Name.Call"}}{{/if}}
     </button>
@@ -59,6 +66,7 @@
     {{#if env.isGM}}
     <div class="lg-gm-row">
       <button type="button" class="lg-btn lg-btn--ghost" data-action="rollEcho" data-tooltip="{{localize 'CHAMPION.Echo.Hint'}}"><i class="fa-solid fa-tower-broadcast"></i> {{localize "CHAMPION.Echo.Button"}}</button>
+      <button type="button" class="lg-btn lg-btn--ghost lg-btn--icon" data-action="recognize" data-tooltip="{{localize 'CHAMPION.Recognize.Hint'}}"><i class="fa-solid fa-eye"></i></button>
       <button type="button" class="lg-btn lg-btn--ghost lg-btn--icon" data-action="newSession" data-tooltip="{{localize 'CHAMPION.Session.Hint'}}"><i class="fa-solid fa-hourglass-start"></i></button>
       <button type="button" class="lg-btn lg-btn--ghost lg-btn--icon lg-btn--danger" data-action="inherit" data-tooltip="{{localize 'CHAMPION.Inherit.Hint'}}"><i class="fa-solid fa-dove"></i></button>
     </div>

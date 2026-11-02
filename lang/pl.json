@@ -11,7 +11,7 @@
     "HowTo": "Jak to działa przy stole",
     "Tabs": {
       "legend": "Legenda",
-      "petitions": "Prośby",
+      "deeds": "Czyny",
       "arena": "Arena",
       "rivals": "Rywale",
       "chronicle": "Kronika"
@@ -124,7 +124,8 @@
         "darkRumor": "Czarna plotka",
         "impostor": "Samozwaniec",
         "offer": "Oferta",
-        "notice": "Ktoś patrzy"
+        "notice": "Ktoś patrzy",
+        "rivalMove": "Ruch rywala"
       },
       "Sub": {
         "petition": "Ktoś przyszedł po pomoc",
@@ -133,7 +134,8 @@
         "darkRumor": "Wrogowie mają własną wersję",
         "impostor": "Ktoś nosi twoje imię",
         "offer": "Uprzejma propozycja (tylko dla MG)",
-        "notice": "Sława ściąga uwagę (tylko dla MG)"
+        "notice": "Sława ściąga uwagę (tylko dla MG)",
+        "rivalMove": "Rywal nie czeka na pojedynek"
       },
       "RivalReturns": "{name} wraca. {grudge}.",
       "NewChallenger": "{name}, {title}, chce się zmierzyć z szampierzem.",
@@ -144,7 +146,18 @@
       "ImpostorPetitioner": "Poszkodowani przez samozwańca",
       "ImpostorReward": "Imię szampierza wolne od cudzych win",
       "ImpostorFoot": "Na tablicy próśb pojawiła się sprawa samozwańca (stawka: poważna).",
-      "SecretFoot": "Widzi to tylko MG. Wprowadź to w fikcji, kiedy zechcesz."
+      "SecretFoot": "Widzi to tylko MG. Wprowadź to w fikcji, kiedy zechcesz.",
+      "Move": {
+        "slander": "oszczerstwo",
+        "thugs": "zbiry",
+        "bribe": "przekupstwo",
+        "insult": "publiczna zniewaga"
+      },
+      "MoveFoot": {
+        "thugs": "Gotowe spotkanie dla MG na tę sesję.",
+        "insult": "Brak odpowiedzi też będzie opowieścią."
+      },
+      "SlanderBody": "{name} rozpuszcza plotkę: „{title}”."
     },
     "Skill": {
       "Charm": "Charyzma",
@@ -154,7 +167,9 @@
       "Gossip": "Plotkowanie",
       "Gamble": "Hazard",
       "Perception": "Percepcja",
-      "Heal": "Leczenie"
+      "Heal": "Leczenie",
+      "Melee": "Walka Wręcz",
+      "Cool": "Opanowanie"
     },
     "Legend": {
       "RipplesTitle": "Kręgi Sławy",
@@ -169,7 +184,6 @@
       "Invoke": "Przywołaj",
       "Refute": "Zdementuj",
       "RefuteHint": "Test Plotkowania z karą −10 za punkt Wagi. Sukces: kłamstwo przestaje krążyć.",
-      "TellTavern": "Opowiedz w karczmie (wersja innego gracza)",
       "Empty": "Jeszcze nikt nie opowiada o tym szampierzu. Pierwszy czyn, pierwsza prośba albo pierwszy pojedynek to zmienią.",
       "Faded": "Przygasłe opowieści",
       "HowTo": "<p><b>Opowieść</b> to nazwany czyn, który krąży wśród ludzi. Ma <b>oblicze</b> (za kogo ludzie mają szampierza), <b>krąg</b> (kto ją opowiada) i <b>Wagę</b>: 1 Plotka (okolica), 2 Opowieść (prowincja), 3 Legenda (całe Imperium).</p><p><b>Sława</b> to suma Wagi. Progi 3 / 7 / 12 / 18 dają Poziomy I–IV. Poziom mówi, jak łatwo obcy rozpoznaje szampierza (k10 ≤ 2 × Poziom) i jak często sława coś ściąga (Echo: k10 ≤ Poziom + 1).</p><p><b>Przywołanie:</b> raz na sesję każdą opowieść można przywołać w teście społecznym wobec kogoś, kto mógł ją słyszeć. Premia +1 PS za punkt Wagi. Jasne opowieści wspierają Charyzmę, Przywództwo i Targowanie, ciemne Zastraszanie.</p><p><b>Imię:</b> gracz ogłasza, kim chce być. Lud nazywa go po obliczu, które ma największą Wagę. Wezwanie Imienia raz na sesję daje 1 Determinację, a przyjęte Imię (oblicze ludu = deklarowane, Waga ≥ 3) także 1 Szczęście.</p>"
@@ -206,11 +220,12 @@
       },
       "HowTo": "<p>Ludzie przychodzą do szampierza z prośbami. Gracz wybiera, którym obieca pomoc (najwyżej <b>3 obietnice</b> naraz).</p><ul><li><b>Spełniona:</b> powstaje opowieść o Wadze równej stawce, w kręgu proszącego.</li><li><b>Zawiedziona:</b> powstaje opowieść „nie dotrzymał słowa” o obliczu Szelmy i tej samej Wadze.</li><li><b>Odmowa:</b> w drobnej sprawie bez kosztu. W poważnej albo w sprawie życia i śmierci najmocniejsza jasna opowieść w tym kręgu traci 1 Wagę.</li></ul><p>Prośby to gotowe zaczepki przygód dla całej drużyny.</p>",
       "FulfilledTitle": "Słowo dane: {who}",
-      "BrokenTitle": "Nie dotrzymał słowa: {who}"
+      "BrokenTitle": "Nie dotrzymał słowa: {who}",
+      "EndeavourHint": "Załatw w tle (przedsięwzięcie między przygodami): jeden test, sukces daje opowieść, porażka złą sławę."
     },
     "Arena": {
       "NoDuelTitle": "Rzuć rękawicę",
-      "NoDuelText": "Pojedynek to scena w czterech aktach: wyzwanie, sekundanci, walka przed tłumem i rozstrzygnięcie. Przeciągnij tu aktora albo wybierz rywala.",
+      "NoDuelText": "Formalny pojedynek rozstrzyga się w kilku rzutach. W zwykłej walce szampierz może wyzwać przywódcę wrogów. Przeciągnij tu aktora albo wybierz rywala.",
       "NewDuel": "Nowy pojedynek",
       "UnknownRival": "Nieznany rywal",
       "Stakes": "Stawka",
@@ -220,10 +235,7 @@
       "RivalEdges": "Atuty rywala",
       "RivalEdgesHint": "MG ustala, ile brudnych przewag ma rywal (trucizna, przekupiony sędzia, własny zwiad). Każdy Atut rywala to +1 PS do jednego jego testu.",
       "ThrowGauntlet": "Ogłoś wyzwanie",
-      "DropSecond": "Przeciągnij postać",
       "Roll": "Rzuć",
-      "ClearSecond": "Zwolnij sekundanta",
-      "CallSeconds": "Wezwij sekundantów na czacie",
       "PlayToCrowd": "Gra pod publikę",
       "PlayToCrowdHint": "Akcja w walce: test Charyzmy. Sukces: Tłum +1 (PS ≥ 3: +2). Porażka o 3+ PS: Tłum −1.",
       "Edges": "Atuty szampierza",
@@ -256,52 +268,20 @@
       },
       "Stage": {
         "challenge": "Wyzwanie",
-        "prep": "Sekundanci",
+        "prep": "Przygotowania",
         "fight": "Walka",
         "aftermath": "Rozstrzygnięcie"
       },
       "StageHelp": {
         "challenge": "Ustalcie warunki, miejsce i stawkę. MG decyduje, ile Atutów ma rywal. Ogłoś wyzwanie na czacie.",
-        "prep": "Każdy gracz może zostać sekundantem i wykonać jeden test. Sukcesy dają Atuty, kurs zakładu, przychylność tłumu i opatrunek.",
-        "fight": "Walczcie zwykłymi zasadami WFRP. Tłum reaguje na przebieg walki, a przy ±2 daje jednej stronie Przewagę co rundę.",
+        "prep": "Szampierz wybiera najwyżej dwa przygotowania i rzuca własną postacią. Na resztę nie ma czasu.",
+        "fight": "Szybki pojedynek: wybierz podejście i wymieniaj ciosy. Kilka rzutów i po wszystkim. Albo przełącz na pełną walkę w trackerze.",
         "aftermath": "Kto wygrał i co stało się z pokonanym? Z tego narodzi się opowieść."
       },
       "Next": {
-        "prep": "Do sekundantów",
+        "prep": "Do przygotowań",
         "fight": "Do walki",
         "aftermath": "Rozstrzygnięcie"
-      },
-      "Role": {
-        "scout": {
-          "Name": "Zwiadowca",
-          "Effect": "Wypytuje o rywala. Sukces: Atut „Słabość rywala” (PS ≥ 3: dwa).",
-          "Success": "Znalazł słabości rywala (Atutów: {edges}).",
-          "Failure": "Nic nie znalazł."
-        },
-        "herald": {
-          "Name": "Herold",
-          "Effect": "Podgrzewa tłum. Sukces: Tłum zaczyna od +1 (PS ≥ 3: +2).",
-          "Success": "Tłum jest po stronie szampierza ({crowd}).",
-          "Failure": "Tłum pozostaje obojętny albo wrogi ({crowd})."
-        },
-        "bookie": {
-          "Name": "Bukmacher",
-          "Effect": "Obstawia walkę. Sukces: kurs 2:1 (PS ≥ 3: 3:1). Porażka: 1:1.",
-          "Success": "Kurs {odds}:1.",
-          "Failure": "Kurs tylko {odds}:1."
-        },
-        "armsman": {
-          "Name": "Giermek",
-          "Effect": "Sprawdza broń i sędziów. Sukces: unieważnia jeden Atut rywala (PS ≥ 3: dwa).",
-          "Success": "Unieważnione Atuty rywala: {negated}.",
-          "Failure": "Nie wykrył podstępu."
-        },
-        "surgeon": {
-          "Name": "Cyrulik",
-          "Effect": "Szykuje opatrunki. Sukces: po walce szampierz odzyskuje 1 + PS Żywotności.",
-          "Success": "Po walce: +{heal} Żywotności.",
-          "Failure": "Nie zdążył się przygotować."
-        }
       },
       "Mood": {
         "-3": "Tłum gwiżdże i rzuca błotem",
@@ -317,7 +297,7 @@
         "rival": "Rywal: +1 Przewagi co rundę",
         "none": "Tłum nie daje jeszcze nikomu Przewagi"
       },
-      "HowTo": "<p><b>1. Wyzwanie:</b> warunki (do pierwszej krwi / do poddania / na śmierć), widownia (1–3) i stawka. MG ustala Atuty rywala.</p><p><b>2. Sekundanci:</b> pięć ról (Zwiadowca, Herold, Bukmacher, Giermek, Cyrulik). Każdą obsadza inny gracz albo BN i wykonuje jeden test. Dzięki temu cała drużyna gra w scenie szampierza.</p><p><b>3. Walka:</b> zwykłe zasady walki WFRP. Atut szampierza to +2 PS do jednego testu przeciw rywalowi. Tłum od −3 do +3: przy ±2 strona, którą popiera, dostaje +1 Przewagi na początku każdej rundy. Gra pod publikę to test Charyzmy w miejsce akcji.</p><p><b>4. Rozstrzygnięcie:</b> zwycięstwo rodzi opowieść o Wadze = widownia (+1 przy Tłumie ≥ 2, −1 przy ≤ −2). Oblicze zależy od tego, co szampierz zrobi z pokonanym: oszczędzi (Honorowy), upokorzy (Buntownik wobec możnych, Okrutnik wobec słabszych) albo zabije (Pogromca w walce na śmierć, Okrutnik wbrew warunkom). Brudne zagranie zmienia oblicze w Szelmę. Porażka przygasza legendę, chyba że tłum był za szampierzem.</p>",
+      "HowTo": "<p><b>Szybki pojedynek</b> to kilka rzutów, nie pół sesji. Każda wymiana to test Walki Wręcz szampierza (w oknie WFRP) przeciw rzutowi rywala. Kto ma więcej PS, trafia; remis to zwarcie. Przewaga 4+ PS to podwójne trafienie. Trafień do zwycięstwa: do pierwszej krwi 1, do poddania się 2, na śmierć 3. Trafiony szampierz traci 1 + przewaga Żywotności.</p><p><b>Podejście:</b> natarcie bije fintę, finta bije gardę, garda bije natarcie (+20 do testu). Rywal wybiera losowo. Brudny chwyt zawsze daje +20, ale Tłum spada, a zwycięstwo da oblicze Szelmy.</p><p><b>Tłum</b> od −3 do +3: przy ±2 popierana strona ma +10. Wygrana o 3+ PS przesuwa Tłum.</p><p><b>Przygotowania:</b> najwyżej dwa z pięciu (zwiad, tłum, zakład, broń i sędziowie, cyrulik), każde to jeden test szampierza.</p><p><b>Wyzwanie przywódcy</b> (w dowolnej walce): Zastraszanie albo Przywództwo przeciw Opanowaniu przywódcy. Wygrana: przyjmuje (szybki pojedynek od razu) albo odmawia (szampierz +1 Przewagi, czyn do ogłoszenia).</p><p><b>Rozstrzygnięcie</b> rodzi opowieść, jak wcześniej: Waga z widowni i Tłumu, oblicze z losu pokonanego.</p>",
       "TaleTitle": "Pojedynek z {rival}",
       "Outcome": {
         "win": "Zwycięstwo",
@@ -328,6 +308,74 @@
         "spared": "Oszczędzony",
         "humiliated": "Upokorzony",
         "killed": "Zabity"
+      },
+      "HitsHint": "Trafienia: tyle trzeba, by wygrać (do pierwszej krwi 1, do poddania się 2, na śmierć 3).",
+      "HitsToWin": "Trafień do zwycięstwa",
+      "PrepsDone": "Przygotowania:",
+      "UndoPrep": "Cofnij przygotowanie",
+      "ModeQuick": "Szybki pojedynek",
+      "ModeFull": "Pełna walka",
+      "CrowdQuick": "Przy ±2 strona, którą popiera tłum, ma +10 do testów",
+      "Exchange": "Wymiana",
+      "ApproachRule": "Natarcie bije fintę, finta bije gardę, garda bije natarcie (+20). Brudny chwyt zawsze daje +20, ale tłum gwiżdże.",
+      "UseEdgeToggle": "Użyj Atutu (+2 PS)",
+      "ExchangeGo": "Wymiana!",
+      "Yield": "Poddaj się",
+      "ExchangeTitle": "Wymiana {n}",
+      "ExchangeWon": "Trafienie ×{hits}",
+      "ExchangeLost": "Trafiony ×{hits}, −{wounds} Żyw.",
+      "ExchangeClash": "Zwarcie",
+      "Battlefield": "Pole bitwy",
+      "LeaderStakes": "Wodzowie walczą przed swoimi ludźmi",
+      "Prep": {
+        "scout": {
+          "Name": "Zwiad",
+          "Effect": "Wypytaj o rywala. Sukces: Atut „Słabość rywala” (PS ≥ 3: dwa).",
+          "Success": "Znasz słabości rywala (Atutów: {edges}).",
+          "Failure": "Nic nie wiesz o rywalu."
+        },
+        "crowd": {
+          "Name": "Tłum",
+          "Effect": "Podgrzej publiczność. Sukces: Tłum startuje od +1 (PS ≥ 3: +2).",
+          "Success": "Tłum jest po twojej stronie ({crowd}).",
+          "Failure": "Tłum pozostaje obojętny albo wrogi ({crowd})."
+        },
+        "bet": {
+          "Name": "Zakład",
+          "Effect": "Postaw na siebie. Sukces: kurs 2:1 (PS ≥ 3: 3:1). Porażka: 1:1.",
+          "Success": "Kurs {odds}:1.",
+          "Failure": "Kurs tylko {odds}:1."
+        },
+        "arms": {
+          "Name": "Broń i sędziowie",
+          "Effect": "Sprawdź broń rywala i sędziów. Sukces: unieważniasz Atut rywala (PS ≥ 3: dwa).",
+          "Success": "Unieważnione Atuty rywala: {negated}.",
+          "Failure": "Nie wykryłeś podstępu."
+        },
+        "surgeon": {
+          "Name": "Cyrulik",
+          "Effect": "Wynajmij dobrego cyrulika (Targowanie). Sukces: po walce odzyskujesz 1 + PS Żywotności.",
+          "Success": "Po walce: +{heal} Żywotności.",
+          "Failure": "Cyrulik nie przyszedł."
+        }
+      },
+      "Approach": {
+        "attack": {
+          "Name": "Natarcie",
+          "Hint": "Bije fintę. Przegrywa z gardą."
+        },
+        "guard": {
+          "Name": "Garda",
+          "Hint": "Bije natarcie. Przegrywa z fintą."
+        },
+        "feint": {
+          "Name": "Finta",
+          "Hint": "Bije gardę. Przegrywa z natarciem."
+        },
+        "dirty": {
+          "Name": "Brudny chwyt",
+          "Hint": "Zawsze +20, ale Tłum −1, a zwycięstwo da oblicze Szelmy."
+        }
       }
     },
     "Rivals": {
@@ -358,7 +406,6 @@
       "Empty": "Kronika jest pusta. Każda opowieść, pojedynek i obietnica zapisze się tu sama.",
       "TaleBorn": "Narodziła się opowieść: „{title}” ({face}).",
       "Rumor": "Po karczmach krąży kłamstwo: „{title}”.",
-      "Tavern": "„{title}” w wersji z karczmy, opowiada {by}.",
       "NameDeclared": "Ogłosił swoje Imię: {name} ({face}).",
       "Invoked": "Przywołał opowieść „{title}” wobec: {who}.",
       "Refuted": "Zdementował plotkę „{title}”.",
@@ -379,15 +426,16 @@
       "EchoImpostor": "Echo Sławy: ktoś podszywa się pod szampierza.",
       "Fallen": "{name} poległ. Legendę niesie {heir}.",
       "Inherited": "Dziedzictwo po {fallen}. Legendę niesie {heir}.",
-      "JournalName": "Kronika: {name}"
+      "JournalName": "Kronika: {name}",
+      "InvokedTest": "Przywołał opowieść „{title}” w teście.",
+      "SecretDeed": "Czyn bez świadków: {text}",
+      "LeaderAccepted": "Wyzwał przywódcę wrogów: {name} przyjął pojedynek.",
+      "RivalMove": "{name} działa: {move}."
     },
     "Chat": {
       "TaleKicker": "Narodziła się opowieść",
-      "TaleFoot": "Kto opowie tę historię w karczmie?",
-      "TellTavern": "Opowiedz w karczmie",
       "RumorKicker": "Po karczmach krąży plotka",
       "RumorFoot": "To kłamstwo. Szampierz może je zdementować testem Plotkowania.",
-      "TavernKicker": "W karczmie opowiadają",
       "NameKicker": "Wezwanie Imienia",
       "NameDrift": "Lud widzi w nim oblicze: {face}",
       "NameFoot": "Raz na sesję, gdy szampierz działa tak, jak go widzą ludzie.",
@@ -407,11 +455,7 @@
       "Dimmed": "Przygasa opowieść: {title}",
       "ChallengeKicker": "Rękawica rzucona",
       "ChallengeTitle": "{champion} wyzywa: {rival}",
-      "ChallengeFoot": "Drużyna może stanąć jako sekundanci.",
-      "SecondsKicker": "Sekundanci, do dzieła",
-      "SecondsTitle": "Kto stanie za {champion}?",
-      "SecondsFoot": "Kliknij rolę, żeby zgłosić swoją postać i od razu wykonać test.",
-      "SecondKicker": "Sekundant: {champion}",
+      "ChallengeFoot": "Przygotowania i walka w Arenie szampierza.",
       "EdgeKicker": "Atut użyty",
       "EdgeBody": "+2 PS do jednego testu przeciw: {rival}.",
       "CrowdShift": "Tłum {delta} (teraz {crowd}).",
@@ -433,7 +477,45 @@
       "InheritTales": "Odziedziczone opowieści: {n}",
       "InheritPromises": "Obietnice zmarłego do spełnienia: {n}",
       "InheritRivals": "Rywale, którzy nie zapomnieli: {n}",
-      "InheritFoot": "Każda opowieść traci 1 Wagę. Plotki zostają tylko w kronice."
+      "InheritFoot": "Każda opowieść traci 1 Wagę. Plotki zostają tylko w kronice.",
+      "DeedPromptKicker": "Po walce",
+      "DeedPromptTitle": "Czy {name} dokonał czegoś godnego opowieści?",
+      "DeedPromptFoot": "Jeśli tak: jedna linijka teraz, Waga po scenie.",
+      "DeedPromptButton": "Zapisz czyn",
+      "RecognizeKicker": "Rozpoznanie",
+      "RecognizeHooded": "Nikt go nie rozpoznaje",
+      "RecognizeHoodedBody": "{name} jest w kapturze.",
+      "RecognizeRoll": "Rozpoznanie · k10 = {roll} (próg {target})",
+      "Recognized": "Rozpoznany!",
+      "NotRecognized": "Nie rozpoznany",
+      "RecognizedBody": "„To przecież {name}!” Sława otwiera drzwi, ale ktoś mógł to zapamiętać.",
+      "NotRecognizedBody": "Dla tych ludzi to tylko kolejny obcy z mieczem.",
+      "PrepKicker": "Przygotowania do pojedynku",
+      "ExchangeKicker": "Wymiana {n} · {champ} : {rival} (do {needed})",
+      "ExchangeChamp": "{name}: {approach}, {sl} PS",
+      "ExchangeRival": "{name}: {approach}, {sl} PS (k100 = {roll} na {target})",
+      "RivalEdgeUsed": "Rywal użył Atutu (+1 PS)",
+      "ChampWounded": "Szampierz traci {n} Żywotności",
+      "ExchangeWin": "{name} trafia!",
+      "ExchangeWinDouble": "{name} trafia potężnie (×2)!",
+      "ExchangeLoss": "{name} trafia szampierza",
+      "ExchangeLossDouble": "{name} trafia szampierza potężnie (×2)",
+      "ExchangeClash": "Zwarcie! Ostrza się krzyżują, nikt nie trafia",
+      "DuelOver_win": "Pojedynek wygrany. Czas zdecydować o losie pokonanego.",
+      "DuelOver_loss": "Pojedynek przegrany.",
+      "LeaderKicker": "Wyzwanie przywódcy",
+      "LeaderWon": "{name} nie może zignorować wyzwania!",
+      "LeaderLost": "{name} zbywa wyzwanie wzruszeniem ramion",
+      "LeaderChamp": "{name}: {skill}, {sl} PS",
+      "LeaderCool": "{name}: Opanowanie, {sl} PS (k100 = {roll} na {target})",
+      "LeaderChoice": "MG decyduje: przywódca przyjmuje wyzwanie albo odmawia na oczach swoich ludzi.",
+      "LeaderIgnored": "Walka toczy się dalej.",
+      "LeaderAccept": "Przyjmuje",
+      "LeaderRefuse": "Odmawia",
+      "LeaderRefusedTitle": "{name} odmawia!",
+      "LeaderRefusedBody": "{name} dostaje +1 Przewagi, a czyn czeka na ogłoszenie. Ludzie przywódcy widzieli, jak się cofnął.",
+      "LeaderAcceptedTitle": "{name} przyjmuje wyzwanie!",
+      "LeaderAcceptedBody": "Pojedynek w środku bitwy: szybkie wymiany w panelu szampierza."
     },
     "Dialog": {
       "NameTitle": "Imię szampierza",
@@ -472,10 +554,6 @@
       "InvokeWho": "Wobec kogo",
       "InvokeWhoPlaceholder": "Np. strażnik bramy, kupiec z gildii",
       "Invoke": "Przywołaj",
-      "TavernTitle": "Opowieść z karczmy",
-      "TavernHint": "Jak w karczmie opowiadają „{title}”? Przesada, przekręcenia i plotki mile widziane.",
-      "TavernPlaceholder": "„A mówię wam, ten ogr miał trzy głowy…”",
-      "Tell": "Opowiedz",
       "NewPetition": "Nowa prośba",
       "EditPetition": "Edycja prośby",
       "Petitioner": "Kto prosi",
@@ -520,7 +598,33 @@
       "Heir": "Dziedzic",
       "Inherit": "Przekaż legendę",
       "InheritOverwrite": "{name} ma już własną legendę. Zastąpić ją dziedzictwem?",
-      "NoteText": "Wpis"
+      "NoteText": "Wpis",
+      "DeedTitle": "Zapisz czyn",
+      "DeedSave": "Zapisz",
+      "DeedText": "Co zrobił szampierz",
+      "DeedPlaceholder": "Np. „Zatrzymał ogra na moście”",
+      "DeedHint": "Jedna linijka. Wagę i krąg ustalicie po scenie.",
+      "WitnessTitle": "Kto to widział?",
+      "Witnesses": "Świadkowie",
+      "WitnessHint": "Nikt: tylko kronika. Garstka: Plotka. Tłum: Opowieść. Wielkie wydarzenie: Legenda.",
+      "WitnessCircle": "Kim byli świadkowie (krąg)",
+      "EndeavourTitle": "Załatw w tle",
+      "EndeavourHint": "Sprawa {who} to drobnostka. Szampierz załatwia ją między przygodami jednym testem.",
+      "EndeavourSkill": "Test",
+      "RivalSkill": "Walka Wręcz rywala",
+      "RivalSkillHint": "Do szybkiego pojedynku. Z aktora rywala czytana automatycznie.",
+      "YieldConfirm": "Poddać się? Pojedynek kończy się porażką.",
+      "LeaderTitle": "Wyzwanie przywódcy",
+      "LeaderRoll": "Wyzwij",
+      "LeaderHint": "Szampierz w miejsce akcji wyzywa przywódcę wrogów. Jego test przeciw Opanowaniu przywódcy.",
+      "LeaderTargeted": "cel wskazany na mapie",
+      "LeaderNameOption": "— inny przywódca —",
+      "LeaderName": "albo kto",
+      "LeaderNamePlaceholder": "Np. herszt bandy",
+      "LeaderCool": "Opanowanie przywódcy",
+      "LeaderMelee": "Jego Walka Wręcz",
+      "LeaderSkill": "Test szampierza",
+      "LeaderDefault": "Przywódca wrogów"
     },
     "Notify": {
       "SelectToken": "Zaznacz żeton szampierza albo przypisz postać do gracza.",
@@ -529,23 +633,67 @@
       "NameAlreadyCalled": "Imię zostało już wezwane w tej sesji (albo lud jeszcze o nim nie mówi).",
       "AlreadyInvoked": "Ta opowieść została już przywołana w tej sesji.",
       "NewSession": "Sesja {n}: przywołania opowieści i Wezwanie Imienia odnowione.",
-      "RelayFailed": "Nie udało się zapisać zmiany (MG musi być w grze, a postać musi należeć do ciebie).",
       "DuelActive": "Szampierz ma już trwający pojedynek.",
       "NeedRival": "Wybierz rywala albo wpisz imię nowego.",
-      "NoDuel": "Nie ma trwającego pojedynku.",
-      "NotPrep": "Sekundantów zgłasza się w etapie Przygotowania.",
-      "NeedCharacter": "Przypisz sobie postać albo zaznacz jej żeton.",
-      "NotYourSecond": "Tę rolę pełni {name}. Rzuca jej właściciel.",
-      "SecondDone": "Ten sekundant już wykonał test.",
-      "SecondAsked": "{name} rzuca na czacie (przycisk dla właściciela postaci).",
-      "ChampionCannotSecond": "Szampierz nie może być własnym sekundantem.",
       "ActorMissing": "Nie znaleziono postaci.",
-      "NoHeir": "Brak innych postaci graczy, które mogłyby przejąć legendę."
+      "NoHeir": "Brak innych postaci graczy, które mogłyby przejąć legendę.",
+      "Hooded": "Jesteś w kapturze: opowieści milczą.",
+      "DeedSaved": "Czyn zapisany. Ogłosicie go po scenie.",
+      "SecretDeed": "Czyn bez świadków trafił tylko do kroniki.",
+      "HoodOn": "Kaptur na głowie: nikt cię nie rozpozna.",
+      "HoodOff": "Kaptur zdjęty: znów jesteś sobą.",
+      "PrepLimit": "Najwyżej {max} przygotowania przed pojedynkiem.",
+      "PickApproach": "Wybierz podejście.",
+      "NoPendingChallenge": "Nie ma oczekującego wyzwania.",
+      "OwnerOnly": "Tylko gracz szampierza albo MG."
     },
     "Settings": {
       "CrowdAdvantageName": "Tłum daje Przewagę",
       "CrowdAdvantageHint": "W pojedynku połączonym z walką: przy Tłumie ±2 strona, którą popiera tłum, dostaje +1 Przewagi na początku każdej rundy."
     },
-    "HubDesc": "Legenda szampierza: opowieści i sława, Imię nadane przez lud, prośby, pojedynki przed tłumem z drużyną jako sekundantami, rywale i dziedzictwo."
+    "HubDesc": "Legenda szampierza: opowieści i sława, Imię nadane przez lud, prośby, pojedynki przed tłumem z drużyną jako sekundantami, rywale i dziedzictwo.",
+    "Effect": {
+      "Name": "Legenda szampierza",
+      "Invoke": "Przywołaj: {title} (+{bonus} PS)"
+    },
+    "Hud": {
+      "Title": "Panel szampierza",
+      "Open": "Panel sesji",
+      "OpenHint": "Mały panel na czas gry: opowieści do przywołania, czyny, wyzwanie i pojedynek.",
+      "OpenBook": "Otwórz księgę legendy",
+      "Ready": "Na podorędziu",
+      "NoReady": "Wszystkie opowieści już przywołane w tej sesji albo jeszcze żadnej nie ma.",
+      "DialogHint": "Przywołanie działa też w oknie testu: włącz przełącznik „Przywołaj” przy Charyzmie albo Zastraszaniu."
+    },
+    "Hood": {
+      "On": "W kapturze",
+      "Hint": "Kaptur: nikt cię nie rozpoznaje, ale opowieści milczą (nie można ich przywołać).",
+      "Silent": "Jesteś w kapturze. Nikt cię nie rozpozna, ale twoje opowieści milczą."
+    },
+    "Recognize": {
+      "Hint": "Czy obcy go rozpoznaje? k10 ≤ 2 × Poziom Sławy (w kapturze nikt). Wynik widzi tylko MG.",
+      "Button": "Rozpoznanie"
+    },
+    "Leader": {
+      "Button": "Wyzwij przywódcę",
+      "Short": "Wyzwij",
+      "Hint": "W dowolnej walce: akcja. Zastraszanie albo Przywództwo przeciw Opanowaniu przywódcy wrogów."
+    },
+    "Deeds": {
+      "Title": "Czyny do ogłoszenia",
+      "Record": "Zapisz czyn",
+      "Promote": "Kto widział?",
+      "PromoteHint": "Ogłoś czyn: liczba świadków decyduje o Wadze opowieści.",
+      "Dismiss": "Odrzuć",
+      "Empty": "Brak czynów do ogłoszenia. W trakcie gry wystarczy jedno kliknięcie „Zapisz czyn”, a po walce moduł sam o to zapyta.",
+      "LeaderRefused": "{name} nie przyjął wyzwania szampierza",
+      "HowTo": "<p><b>Czyny:</b> w trakcie gry zapisuj jedną linijkę, a decyzje podejmuj po scenie. Po każdej walce z udziałem szampierza moduł zapyta: „Coś godnego opowieści?”.</p><p><b>Kto widział?</b> Nikt: czyn zostaje tylko w kronice. Garstka: Plotka. Tłum albo ważni świadkowie: Opowieść. Wielkie wydarzenie: Legenda. Krąg to ci, którzy patrzyli.</p>"
+    },
+    "Witness": {
+      "none": "Nikt",
+      "few": "Garstka",
+      "crowd": "Tłum",
+      "great": "Wielkie wydarzenie"
+    }
   }
 }

@@ -2,7 +2,6 @@
 
 export const MODULE_ID = "wfrp4e-champion";
 export const FLAG_KEY = "legend";
-export const QUERY_MUTATE = `${MODULE_ID}.mutate`;
 export const TEMPLATE_ROOT = `modules/${MODULE_ID}/templates`;
 
 /** Tłumaczy klucz z przestrzeni CHAMPION (z podstawieniami, gdy podano dane). */
@@ -17,3 +16,8 @@ export function contentLang() {
 }
 
 export const esc = value => Handlebars.escapeExpression(value ?? "");
+
+/** Bieżący numer sesji (MG zwiększa go przyciskiem „Nowa sesja”). */
+export function sessionId() {
+  return game.settings.get(MODULE_ID, "session");
+}

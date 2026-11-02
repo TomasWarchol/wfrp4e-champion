@@ -6,6 +6,7 @@
       <div class="lg-fighter-portrait"><img src="{{duel.champion.img}}" alt=""/></div>
       <div class="lg-fighter-name">{{duel.champion.name}}</div>
       {{#if duel.champion.epithet}}<div class="lg-fighter-title">{{duel.champion.epithet}}</div>{{/if}}
+      <div class="lg-pips" data-tooltip="{{localize 'CHAMPION.Arena.HitsHint'}}">{{#each duel.champPips}}<span class="lg-pip {{#if this}}is-on{{/if}}"></span>{{/each}}</div>
     </div>
 
     <div class="lg-vs">
@@ -21,7 +22,7 @@
       <div class="lg-fighter-portrait"><img src="{{duel.rival.img}}" alt=""/></div>
       <div class="lg-fighter-name">{{duel.rival.name}}</div>
       {{#if duel.rival.title}}<div class="lg-fighter-title">{{duel.rival.title}}</div>{{/if}}
-      {{#if duel.rival.flames}}<div class="lg-flames">{{#each duel.rival.flames}}<i class="fa-solid fa-fire {{#if this}}is-on{{/if}}"></i>{{/each}}</div>{{/if}}
+      <div class="lg-pips lg-pips--rival" data-tooltip="{{localize 'CHAMPION.Arena.HitsHint'}}">{{#each duel.rivalPips}}<span class="lg-pip {{#if this}}is-on{{/if}}"></span>{{/each}}</div>
     </div>
   </div>
 
@@ -44,6 +45,8 @@
         <div class="lg-kv"><span>{{localize "CHAMPION.Arena.WeightIfWon"}}</span><b>{{duel.weightPreview}}</b></div>
       </div>
       <div class="lg-panel lg-panel--paper">
+        <div class="lg-kv"><span>{{localize "CHAMPION.Dialog.RivalSkill"}}</span><b>{{duel.rivalSkill}}</b></div>
+        <div class="lg-kv"><span>{{localize "CHAMPION.Arena.HitsToWin"}}</span><b>{{duel.needed}}</b></div>
         <div class="lg-kv">
           <span data-tooltip="{{localize 'CHAMPION.Arena.RivalEdgesHint'}}">{{localize "CHAMPION.Arena.RivalEdges"}}</span>
           <span class="lg-stepper-input">
@@ -61,40 +64,33 @@
   </div>
   {{/if}}
 
-  {{!-- PRZYGOTOWANIE --}}
+  {{!-- PRZYGOTOWANIA --}}
   {{#if duel.isPrep}}
   <div class="lg-stage-panel">
+    <div class="lg-prep-count">{{localize "CHAMPION.Arena.PrepsDone"}} <b>{{duel.prepsDone}} / {{duel.prepsMax}}</b></div>
     <div class="lg-seconds">
-      {{#each duel.seconds}}
-      <div class="lg-second {{#if assigned}}is-assigned{{/if}} {{#if result}}{{#if result.success}}is-success{{else}}is-failure{{/if}}{{/if}}" data-drop="second" data-role="{{role}}">
+      {{#each duel.preps}}
+      <div class="lg-second {{#if result}}{{#if result.success}}is-success{{else}}is-failure{{/if}}{{/if}}">
         <div class="lg-second-role"><i class="{{icon}}"></i> {{label}}</div>
-        <div class="lg-second-who">
-          {{#if assigned}}
-          <img src="{{img}}" alt=""/><span>{{name}}</span>
-          {{else}}
-          <span class="lg-drop-hint"><i class="fa-solid fa-user-plus"></i> {{localize "CHAMPION.Arena.DropSecond"}}</span>
-          {{/if}}
-        </div>
         <div class="lg-second-skill">{{skillLabel}}</div>
         <p class="lg-second-effect">{{effect}}</p>
-        {{#if result}}
-        <div class="lg-second-result"><b>{{slLabel}} {{localize "CHAMPION.SL"}}</b> {{resultText}}</div>
-        {{/if}}
+        {{#if result}}<div class="lg-second-result"><b>{{slLabel}} {{localize "CHAMPION.SL"}}</b> {{resultText}}</div>{{/if}}
         <div class="lg-second-actions">
-          {{#if canRoll}}<button type="button" class="lg-btn lg-btn--gold lg-btn--sm" data-action="rollSecond" data-role="{{role}}"><i class="fa-solid fa-dice-d20"></i> {{localize "CHAMPION.Arena.Roll"}}</button>{{/if}}
-          {{#if assigned}}{{#if canClear}}<button type="button" class="lg-icon-btn" data-action="clearSecond" data-role="{{role}}" data-tooltip="{{localize 'CHAMPION.Arena.ClearSecond'}}"><i class="fa-solid fa-xmark"></i></button>{{/if}}{{/if}}
+          {{#if canDo}}<button type="button" class="lg-btn lg-btn--gold lg-btn--sm" data-action="doPrep" data-prep="{{id}}"><i class="fa-solid fa-dice-d20"></i> {{localize "CHAMPION.Arena.Roll"}}</button>{{/if}}
+          {{#if canUndo}}<button type="button" class="lg-icon-btn" data-action="undoPrep" data-prep="{{id}}" data-tooltip="{{localize 'CHAMPION.Arena.UndoPrep'}}"><i class="fa-solid fa-rotate-left"></i></button>{{/if}}
         </div>
       </div>
       {{/each}}
-    </div>
-    <div class="lg-row-actions">
-      <button type="button" class="lg-btn lg-btn--ghost-dark" data-action="callSeconds"><i class="fa-solid fa-bullhorn"></i> {{localize "CHAMPION.Arena.CallSeconds"}}</button>
     </div>
   </div>
   {{/if}}
 
   {{!-- WALKA --}}
   {{#if duel.isFight}}
+  <div class="lg-mode-switch">
+    <button type="button" class="lg-mode {{#if duel.isQuick}}active{{/if}}" data-action="duelMode" data-mode="quick"><i class="fa-solid fa-dice"></i> {{localize "CHAMPION.Arena.ModeQuick"}}</button>
+    <button type="button" class="lg-mode {{#unless duel.isQuick}}active{{/unless}}" data-action="duelMode" data-mode="full"><i class="fa-solid fa-chess-board"></i> {{localize "CHAMPION.Arena.ModeFull"}}</button>
+  </div>
   <div class="lg-stage-panel lg-fight">
     <div class="lg-crowd">
       <div class="lg-crowd-silhouettes lg-crowd-mood-{{duel.crowd}}" aria-hidden="true">
@@ -102,15 +98,40 @@
       </div>
       {{{duel.crowdGauge}}}
       <div class="lg-crowd-mood">{{duel.crowdMood}}</div>
-      <div class="lg-crowd-favour is-{{duel.crowdFavourClass}}">{{duel.crowdFavour}}</div>
+      <div class="lg-crowd-favour is-{{duel.crowdFavourClass}}">{{#if duel.isQuick}}{{localize "CHAMPION.Arena.CrowdQuick"}}{{else}}{{duel.crowdFavour}}{{/if}}</div>
+      {{#unless duel.isQuick}}
       <div class="lg-crowd-buttons">
         <button type="button" class="lg-btn lg-btn--ghost-dark lg-btn--sm" data-action="crowd" data-delta="-1"><i class="fa-solid fa-thumbs-down"></i> −1</button>
         <button type="button" class="lg-btn lg-btn--gold lg-btn--sm" data-action="playToCrowd" data-tooltip="{{localize 'CHAMPION.Arena.PlayToCrowdHint'}}"><i class="fa-solid fa-masks-theater"></i> {{localize "CHAMPION.Arena.PlayToCrowd"}}</button>
         <button type="button" class="lg-btn lg-btn--ghost-dark lg-btn--sm" data-action="crowd" data-delta="1"><i class="fa-solid fa-thumbs-up"></i> +1</button>
       </div>
+      {{/unless}}
     </div>
 
     <div class="lg-fight-side">
+      {{#if duel.isQuick}}
+      <div class="lg-panel lg-panel--paper lg-exchange-panel">
+        <div class="lg-panel-title lg-panel-title--ink"><i class="fa-solid fa-khanda"></i> {{localize "CHAMPION.Arena.Exchange"}}</div>
+        <div class="lg-approaches" data-approach-group>
+          {{#each duel.approaches}}
+          <label class="lg-approach {{#if dark}}is-dark{{/if}}" data-tooltip="{{hint}}">
+            <input type="radio" name="lg-approach" value="{{id}}" {{#if @first}}checked{{/if}}/>
+            <span><i class="{{icon}}"></i>{{label}}</span>
+          </label>
+          {{/each}}
+        </div>
+        <p class="lg-approach-rule">{{localize "CHAMPION.Arena.ApproachRule"}}</p>
+        {{#if duel.freeEdges}}
+        <label class="lg-check lg-edge-toggle"><input type="checkbox" name="lg-use-edge"/> <span class="lg-edge-chip"></span> {{localize "CHAMPION.Arena.UseEdgeToggle"}} ({{duel.freeEdges}})</label>
+        {{/if}}
+        <div class="lg-row-actions lg-row-actions--tight">
+          <button type="button" class="lg-btn lg-btn--hero" data-action="exchange"><i class="fa-solid fa-khanda"></i> {{localize "CHAMPION.Arena.ExchangeGo"}}</button>
+        </div>
+        <div class="lg-row-actions lg-row-actions--tight">
+          <button type="button" class="lg-btn lg-btn--ghost-dark lg-btn--sm" data-action="yieldDuel"><i class="fa-solid fa-flag"></i> {{localize "CHAMPION.Arena.Yield"}}</button>
+        </div>
+      </div>
+      {{else}}
       <div class="lg-panel lg-panel--paper">
         <div class="lg-panel-title lg-panel-title--ink"><i class="fa-solid fa-coins"></i> {{localize "CHAMPION.Arena.Edges"}}</div>
         {{#if duel.hasEdges}}
@@ -127,7 +148,6 @@
           <span>{{localize "CHAMPION.Arena.RivalEdges"}}</span>
           <span>{{#each duel.rivalEdgeChips}}<span class="lg-edge-chip lg-edge-chip--rival {{#if negated}}is-negated{{/if}}"></span>{{else}}<b>0</b>{{/each}}</span>
         </div>
-        {{#if duel.oddsLabel}}<div class="lg-kv"><span>{{localize "CHAMPION.Arena.Odds"}}</span><b>{{duel.oddsLabel}}</b></div>{{/if}}
       </div>
       <div class="lg-row-actions lg-row-actions--stack">
         <button type="button" class="lg-btn lg-btn--blood" data-action="dirtyTrick" data-tooltip="{{localize 'CHAMPION.Arena.DirtyHint'}}"><i class="fa-solid fa-hand-sparkles"></i> {{localize "CHAMPION.Arena.Dirty"}}{{#if duel.dirty}} ×{{duel.dirty}}{{/if}}</button>
@@ -137,13 +157,29 @@
         </button>
         {{/if}}
       </div>
+      {{/if}}
     </div>
   </div>
+
+  {{#if duel.isQuick}}{{#if duel.exchanges.length}}
+  <ol class="lg-exchange-log">
+    {{#each duel.exchanges}}
+    <li class="is-{{winner}}">
+      <span class="lg-x-n">{{n}}</span>
+      <span class="lg-x-side"><i class="{{champIcon}}"></i> {{champApproachLabel}} <b>{{champSLLabel}}</b></span>
+      <span class="lg-x-vs">vs</span>
+      <span class="lg-x-side"><i class="{{rivalIcon}}"></i> {{rivalApproachLabel}} <b>{{rivalSLLabel}}</b></span>
+      <span class="lg-x-out">{{outcomeLabel}}</span>
+    </li>
+    {{/each}}
+  </ol>
+  {{/if}}{{/if}}
   {{/if}}
 
   {{!-- ROZSTRZYGNIĘCIE --}}
   {{#if duel.isAftermath}}
   <div class="lg-stage-panel lg-aftermath">
+    {{#if duel.resultLabel}}<div class="lg-result-banner is-{{duel.result}}">{{duel.resultLabel}}</div>{{/if}}
     <div class="lg-aftermath-grid">
       <div class="lg-kv"><span>{{localize "CHAMPION.Arena.Crowd"}}</span><b>{{duel.crowdMood}}</b></div>
       <div class="lg-kv"><span>{{localize "CHAMPION.Arena.WeightIfWon"}}</span><b>{{duel.weightPreview}}</b></div>
@@ -166,7 +202,12 @@
     <div class="lg-gauntlet-icon"><i class="fa-solid fa-hand-back-fist"></i></div>
     <h2>{{localize "CHAMPION.Arena.NoDuelTitle"}}</h2>
     <p>{{localize "CHAMPION.Arena.NoDuelText"}}</p>
-    {{#if arena.canStart}}<button type="button" class="lg-btn lg-btn--hero" data-action="newDuel"><i class="fa-solid fa-khanda"></i> {{localize "CHAMPION.Arena.NewDuel"}}</button>{{/if}}
+    {{#if arena.canStart}}
+    <div class="lg-row-actions">
+      <button type="button" class="lg-btn lg-btn--hero" data-action="newDuel"><i class="fa-solid fa-khanda"></i> {{localize "CHAMPION.Arena.NewDuel"}}</button>
+      <button type="button" class="lg-btn lg-btn--blood" data-action="challengeLeader" data-tooltip="{{localize 'CHAMPION.Leader.Hint'}}"><i class="fa-solid fa-hand-back-fist"></i> {{localize "CHAMPION.Leader.Button"}}</button>
+    </div>
+    {{/if}}
   </div>
   {{#if arena.rivals.length}}
   <div class="lg-quick-rivals">

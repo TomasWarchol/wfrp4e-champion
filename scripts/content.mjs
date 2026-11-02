@@ -83,6 +83,21 @@ const PL = {
     "Ulotki z podobizną szampierza pojawiły się w mieście. Nikt nie wie, kto je drukuje.",
     "Ranny posłaniec przynosi list bez podpisu: „Wiemy, skąd pochodzisz”."
   ],
+  rivalMoves: {
+    thugs: [
+      "{rival} wynajął zbirów. Czekają w ciemnej uliczce, którą szampierz zwykle wraca na kwaterę.",
+      "Trzech osiłków w barwach cechu zaczepia szampierza w karczmie. Ktoś im zapłacił. Wiadomo kto: {rival}.",
+      "Na gościńcu stoi zasadzka. Przywódca bandy chwali się, że {rival} płaci za każdy palec szampierza."
+    ],
+    insult: [
+      "{rival} publicznie nazywa szampierza tchórzem, który chowa się za chłopskimi spódnicami. Ludzie czekają na odpowiedź.",
+      "Na rynku wisi karykatura szampierza z podpisem. Wszyscy wiedzą, kto ją zamówił: {rival}.",
+      "{rival} wznosi w karczmie toast „za szampierza, który bije tylko słabszych”. Śmiech niesie się po ulicy."
+    ],
+    bribe: [
+      "{rival} przekupił sędziego najbliższych szranków. W następnym pojedynku z nim ma dodatkowy Atut."
+    ]
+  },
   ballads: [
     "Wędrowny grajek ułożył o tym pieśń i śpiewa ją w każdej karczmie.",
     "Dzieci bawią się na ulicy w tę historię.",
@@ -170,6 +185,21 @@ const EN = {
     "Broadsheets with the champion's likeness have appeared in town. Nobody knows who prints them.",
     "A wounded messenger brings an unsigned letter: \"We know where you come from.\""
   ],
+  rivalMoves: {
+    thugs: [
+      "{rival} has hired thugs. They wait in the dark alley the champion usually takes back to his lodgings.",
+      "Three bruisers in guild colours pick a fight with the champion at the inn. Someone paid them. Everyone knows who: {rival}.",
+      "An ambush waits on the road. The gang leader boasts that {rival} pays for every finger of the champion's."
+    ],
+    insult: [
+      "{rival} publicly calls the champion a coward hiding behind peasant skirts. People wait for an answer.",
+      "A caricature of the champion hangs in the market with a caption. Everyone knows who ordered it: {rival}.",
+      "{rival} raises a toast in the tavern \"to the champion who only beats the weak\". The laughter carries down the street."
+    ],
+    bribe: [
+      "{rival} has bribed the judge of the next lists. In the next duel with him he has an extra edge."
+    ]
+  },
   ballads: [
     "A wandering minstrel made a song of it and sings it in every tavern.",
     "Children play the story in the street.",

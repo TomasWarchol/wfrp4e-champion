@@ -4,10 +4,12 @@
  */
 
 import { MODULE_ID } from "./constants.mjs";
-import { SECOND_ROLES } from "./rules.mjs";
+import { PREPS } from "./rules.mjs";
 
 /** Cecha zapasowa dla umiejętności, gdy postać jej nie ma (test cechy zamiast umiejętności). */
 const SKILL_CHARACTERISTIC = {
+  Melee: "ws",
+  Cool: "wp",
   Charm: "fel",
   Leadership: "fel",
   Haggle: "fel",
@@ -17,10 +19,10 @@ const SKILL_CHARACTERISTIC = {
   Perception: "i",
   Heal: "int"
 };
-for (const cfg of Object.values(SECOND_ROLES)) SKILL_CHARACTERISTIC[cfg.skill] ??= cfg.characteristic;
+for (const cfg of Object.values(PREPS)) SKILL_CHARACTERISTIC[cfg.skill] ??= cfg.characteristic;
 
 /** Nazwy, pod którymi umiejętność może być na karcie: przetłumaczona przez system i angielska. */
-function skillNames(key) {
+export function skillNames(key) {
   const names = new Set([key]);
   for (const i18nKey of [`NAME.${key}`, `CHAMPION.Skill.${key}`]) {
     const localized = game.i18n.localize(i18nKey);
@@ -123,4 +125,56 @@ export function statusRank(actor) {
   const tier = String(status?.tier ?? "").toLowerCase();
   const tierRank = { b: 0, s: 1, g: 2 }[tier] ?? 0;
   return tierRank * 10 + (Number(status?.standing) || 0);
+}
+
+/** Wartość umiejętności (albo cechy zapasowej) – do testów rzucanych przez moduł za BN-a. */
+export function skillTarget(actor, key) {
+  const skills = actor?.itemTypes?.skill ?? [];
+  const names = skillNames(key).map(n => n.toLowerCase());
+  const matching = skills.filter(s => names.some(n => s.name.toLowerCase() === n || s.name.toLowerCase().startsWith(`${n} (`)));
+  const best = Math.max(0, ...matching.map(s => Number(s.system?.total?.value) || 0));
+  if (best) return best;
+  const char = SKILL_CHARACTERISTIC[key] ?? "ws";
+  return Number(actor?.system?.characteristics?.[char]?.value) || 0;
+}
+
+/** Najlepsza umiejętność Walki Wręcz postaci (np. „Walka Wręcz (Podstawowa)”) albo null. */
+export function bestMeleeSkill(actor) {
+  const skills = actor?.itemTypes?.skill ?? [];
+  const names = skillNames("Melee").map(n => n.toLowerCase());
+  return skills
+    .filter(s => names.some(n => s.name.toLowerCase() === n || s.name.toLowerCase().startsWith(`${n} (`)))
+    .sort((a, b) => (Number(b.system?.total?.value) || 0) - (Number(a.system?.total?.value) || 0))[0] ?? null;
+}
+
+/** Test Walki Wręcz szampierza w oknie WFRP (najlepsza specjalizacja, inaczej WW). */
+export async function rollMelee(actor, { title = "", modifier = 0, slBonus = 0 } = {}) {
+  const skill = bestMeleeSkill(actor);
+  const fields = { modifier: Number(modifier) || 0 };
+  if (slBonus) fields.slBonus = Number(slBonus) || 0;
+  const options = { appendTitle: title ? ` – ${title}` : "", skipTargets: true, fields };
+  try {
+    const test = skill ? await actor.setupSkill(skill.name, options) : await actor.setupCharacteristic("ws", options);
+    if (!test) return null;
+    await test.roll();
+    return { sl: Number(test.result?.SL) || 0, success: !!test.succeeded, roll: Number(test.result?.roll) || 0, label: skill?.name ?? "WS" };
+  } catch (err) {
+    console.error(`${MODULE_ID} | Test Walki Wręcz nie powiódł się:`, err);
+    ui.notifications.error(err.message);
+    return null;
+  }
+}
+
+/** Aktor do zmian w walce: aktor żetonu z bieżącej walki (gdy jest), inaczej sam aktor. */
+export function combatActor(actor) {
+  return game.combat?.combatants?.find(c => c.actorId === actor.id)?.actor ?? actor;
+}
+
+export async function modifyWounds(actor, delta) {
+  const wounds = actor?.system?.status?.wounds;
+  if (!wounds) return 0;
+  const value = Number(wounds.value) || 0;
+  const next = Math.max(0, Math.min(Number(wounds.max) || value, value + delta));
+  if (next !== value) await actor.update({ "system.status.wounds.value": next });
+  return next - value;
 }

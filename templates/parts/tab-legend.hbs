@@ -59,7 +59,6 @@
           <button type="button" class="lg-btn lg-btn--gold lg-btn--sm" data-action="invokeTale" data-tale-id="{{id}}" {{#unless canInvoke}}disabled{{/unless}} data-tooltip="{{skillsLabel}}"><i class="fa-solid fa-bullhorn"></i> {{localize "CHAMPION.Legend.Invoke"}} +{{bonus}} {{localize "CHAMPION.SL"}}</button>
         {{/if}}
         <span class="lg-spacer"></span>
-        <button type="button" class="lg-icon-btn" data-action="tellTavern" data-tale-id="{{id}}" data-tooltip="{{localize 'CHAMPION.Legend.TellTavern'}}"><i class="fa-solid fa-beer-mug-empty"></i></button>
         {{#if ../env.canEdit}}
         <button type="button" class="lg-icon-btn" data-action="editTale" data-tale-id="{{id}}" data-tooltip="{{localize 'CHAMPION.Edit'}}"><i class="fa-solid fa-pen"></i></button>
         <button type="button" class="lg-icon-btn" data-action="deleteTale" data-tale-id="{{id}}" data-tooltip="{{localize 'CHAMPION.Delete'}}"><i class="fa-solid fa-trash"></i></button>

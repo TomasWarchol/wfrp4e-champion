@@ -1,15 +1,16 @@
 # Changelog
 
 ## 2.0.0
-New system: **Champion's Legend**. The champion builds a legend instead of moving sliders.
-- **Tales and Fame:** named deeds with a face (Protector, Slayer, Rebel, Honourable, Brute, Rogue), a circle (Commons, Nobility, Temples, Underworld, Soldiery) and a Weight (Rumour, Tale, Legend). Fame tiers I–IV set recognition and the Echo of Fame. Tales are invoked once per session for +1 SL per Weight (the bonus goes straight into the WFRP test dialog).
-- **The Name:** the player declares the Name he wants; the people name him after his strongest face. Calling the Name restores Resolve, and an accepted Name also Fortune.
-- **Petitions:** a board of pinned requests, at most three promises, kept and broken promises become tales, declining serious matters dims the legend.
-- **Arena:** a duel in four acts. The party plays as seconds (Scout, Herald, Bookie, Squire, Surgeon) with their own WFRP tests, rolled from chat. The crowd meter grants Advantage each round when linked to a combat. The tale's face follows what the champion does with the loser.
-- **Rivals** with grudges and records, returning as challengers. **Echo of Fame** (GM): petitions, challengers, ballads, dark rumours (lies that can be refuted), impostors, offers and enemy attention.
-- **Inheritance:** when the champion falls, the legend passes to an heir with tales, promises and grudges.
-- **Chronicle** written automatically, exportable to a journal; any player can add a tavern version of a tale.
-- New look: tooled leather and gold, parchment pages, wax seals, a circles-of-fame map, a faces radar, a crowd gauge and illustrated chat cards. Bundled OFL fonts with Polish characters.
+New system: **Champion's Legend**. A single-player add-on to the session: one click during play, decisions after the scene, duels in a few rolls. Nothing requires the other players.
+- **Tales and Fame:** named deeds with a face, a circle and a Weight; Fame tiers I–IV set recognition and the Echo of Fame.
+- **Invoking in the WFRP test dialog:** each invocable tale is a toggle in the dialog's modifiers (system dialog scripts), shown only for matching skills; +1 SL per Weight, once per session.
+- **Session panel:** a small window opened from the token HUD with tales at hand, Record a deed, Challenge the leader, Call the Name, the hood, promises and the running duel.
+- **Deeds and witnesses:** record a deed in one line; after every fight the module asks; "Who saw it?" sets the Weight (nobody → chronicle only).
+- **Challenge the leader** in any fight: refused → +1 Advantage and a deed; accepted → quick duel at once.
+- **Quick duel:** exchanges of the champion's Melee test against the rival's roll, approaches (attack / guard / feint / dirty trick), crowd, edges, hits by terms; 2–5 rolls per duel. Full combat in the tracker remains an option.
+- **Preparations:** the champion picks two of five (scouting, crowd, wager, weapons and judges, surgeon) and rolls himself.
+- **The Name**, **petitions** (small ones settled off-screen as endeavours), **rivals** with grudges and **rival moves** in the Echo of Fame, **hood** and **recognition**, **inheritance**, **chronicle** exportable to a journal.
+- New look: tooled leather and gold, parchment, wax seals, circles-of-fame map, faces radar, crowd gauge and illustrated chat cards. Bundled OFL fonts with Polish characters.
 - Removed: stances, the gambit catalogue, courts and the Mandate/Folk Standing sliders. Old data is left untouched in the actor flags.
 
 ## 1.3.0

@@ -7,13 +7,18 @@
 import * as R from "./rules.mjs";
 import { ripplesSVG, facesRadarSVG, laurelSVG, tierRingSVG, crowdGaugeSVG } from "./viz.mjs";
 
-const TAB_IDS = ["legend", "petitions", "arena", "rivals", "chronicle"];
+const TAB_IDS = ["legend", "deeds", "arena", "rivals", "chronicle"];
 const TAB_ICON = {
   legend: "fa-solid fa-book-open",
-  petitions: "fa-solid fa-hands-praying",
+  deeds: "fa-solid fa-feather",
   arena: "fa-solid fa-khanda",
   rivals: "fa-solid fa-chess-knight",
   chronicle: "fa-solid fa-feather-pointed"
+};
+const DEED_ICON = {
+  manual: "fa-solid fa-feather",
+  combat: "fa-solid fa-khanda",
+  challenge: "fa-solid fa-hand-back-fist"
 };
 const STAGE_ICON = {
   challenge: "fa-solid fa-hand-back-fist",
@@ -94,7 +99,8 @@ export function buildViewModel(state, env) {
     laurel: laurelSVG(tier.tier),
     homeland: state.homeland,
     fallen: state.fallen,
-    heirOf: state.heirOf
+    heirOf: state.heirOf,
+    incognito: state.incognito
   };
 
   /* ---------- Zakładki ---------- */
@@ -104,7 +110,7 @@ export function buildViewModel(state, env) {
     icon: TAB_ICON[id],
     label: t(`Tabs.${id}`),
     active: env.activeTab === id,
-    badge: id === "petitions" && openPetitions ? openPetitions : (id === "arena" && state.duel ? "!" : null)
+    badge: id === "deeds" && (openPetitions + state.deeds.length) ? openPetitions + state.deeds.length : (id === "arena" && state.duel ? "!" : null)
   }));
 
   /* ---------- Legenda ---------- */
@@ -119,7 +125,7 @@ export function buildViewModel(state, env) {
     weightLabel: weightLabel(tale.weight),
     reachLabel: tale.weight >= 1 ? t(`WeightReach.${tale.weight}`) : "",
     displayTitle: tale.title || t("Legend.Untitled"),
-    canInvoke: env.canEdit && R.canInvoke(tale, env.sessionId) && !state.fallen,
+    canInvoke: env.canEdit && R.canInvoke(tale, env.sessionId, state.incognito) && !state.fallen,
     invoked: tale.invokedSession === env.sessionId && tale.invokedSession !== null,
     bonus: R.invokeBonus(tale),
     refuteMod: R.refuteModifier(tale),
@@ -179,6 +185,7 @@ export function buildViewModel(state, env) {
       deadlineLabel,
       urgency,
       tilt: tilt(p.id),
+      canEndeavour: env.canEdit && R.canEndeavour(p),
       resolvedLabel: p.resolved ? env.formatDate(p.resolved) : ""
     };
   };
@@ -193,6 +200,12 @@ export function buildViewModel(state, env) {
     max: R.MAX_PROMISES
   };
   petitions.isEmpty = !petitions.open.length && !petitions.accepted.length;
+
+  /* ---------- Czyny ---------- */
+  const deeds = {
+    list: [...state.deeds].reverse().map(dd => ({ ...dd, dateLabel: dd.ts ? env.formatDate(dd.ts) : "", sourceIcon: DEED_ICON[dd.source] ?? DEED_ICON.manual })),
+    count: state.deeds.length
+  };
 
   /* ---------- Rywale ---------- */
   const rivalView = r => ({
@@ -216,34 +229,44 @@ export function buildViewModel(state, env) {
     const rival = state.rivals.find(r => r.id === d.rivalId);
     const stageIndex = R.DUEL_STAGES.indexOf(d.stage);
     const favour = R.crowdFavours(d.crowd);
-    const seconds = R.SECOND_ROLE_IDS.map(role => {
-      const s = d.seconds[role];
-      const cfg = R.SECOND_ROLES[role];
-      let resultText = "";
-      if (s.result) resultText = t(`Arena.Role.${role}.${s.result.success ? "Success" : "Failure"}`, {
-        sl: s.result.sl >= 0 ? `+${s.result.sl}` : s.result.sl,
-        edges: d.edges.filter(e => e.kind === "weakness").length,
-        crowd: d.crowd,
-        odds: d.odds,
-        negated: d.negatedEdges,
-        heal: d.surgeonHeal
-      });
+    const doneCount = R.prepsDone(d);
+    const preps = R.PREP_IDS.map(id => {
+      const r = d.preps[id];
+      const cfg = R.PREPS[id];
       return {
-        role,
+        id,
         icon: cfg.icon,
-        label: t(`Arena.Role.${role}.Name`),
-        effect: t(`Arena.Role.${role}.Effect`),
+        label: t(`Arena.Prep.${id}.Name`),
+        effect: t(`Arena.Prep.${id}.Effect`),
         skillLabel: t(`Skill.${cfg.skill}`),
-        assigned: !!s.name,
-        name: s.name,
-        img: s.img || "icons/svg/mystery-man.svg",
-        result: s.result,
-        slLabel: s.result ? (s.result.sl >= 0 ? `+${s.result.sl}` : `${s.result.sl}`) : "",
-        resultText,
-        canRoll: !!s.name && !s.result && d.stage === "prep",
-        canClear: env.canEdit && d.stage === "prep"
+        result: r,
+        slLabel: r ? (r.sl >= 0 ? `+${r.sl}` : `${r.sl}`) : "",
+        resultText: r ? t(`Arena.Prep.${id}.${r.success ? "Success" : "Failure"}`, {
+          edges: d.edges.filter(e => e.kind === "weakness" && !e.used).length, crowd: d.crowd, odds: d.odds, negated: d.negatedEdges, heal: d.surgeonHeal
+        }) : "",
+        canDo: env.canEdit && R.canPrep(d, id),
+        canUndo: env.canEdit && !!r
       };
     });
+    const needed = R.hitsNeeded(d);
+    const pips = (score) => Array.from({ length: needed }, (_, i) => i < score);
+    const approaches = R.APPROACHES.map(id => ({
+      id,
+      icon: R.APPROACH_ICON[id],
+      label: t(`Arena.Approach.${id}.Name`),
+      hint: t(`Arena.Approach.${id}.Hint`),
+      dark: id === "dirty"
+    }));
+    const exchanges = [...d.exchanges].reverse().map(x => ({
+      ...x,
+      champApproachLabel: t(`Arena.Approach.${x.champApproach}.Name`),
+      rivalApproachLabel: t(`Arena.Approach.${x.rivalApproach}.Name`),
+      champIcon: R.APPROACH_ICON[x.champApproach],
+      rivalIcon: R.APPROACH_ICON[x.rivalApproach],
+      champSLLabel: x.champSL > 0 ? `+${x.champSL}` : `${x.champSL}`,
+      rivalSLLabel: x.rivalSL > 0 ? `+${x.rivalSL}` : `${x.rivalSL}`,
+      outcomeLabel: x.winner === "champion" ? t("Arena.ExchangeWon", { hits: x.hits }) : (x.winner === "rival" ? t("Arena.ExchangeLost", { hits: x.hits, wounds: x.wounds }) : t("Arena.ExchangeClash"))
+    }));
     const rivalEdgeChips = Array.from({ length: d.rivalEdges }, (_, i) => ({ negated: i < d.negatedEdges }));
     arena = {
       ...arena,
@@ -267,7 +290,17 @@ export function buildViewModel(state, env) {
         canBack: stageIndex > 0 && d.stage !== "aftermath",
         canNext: stageIndex < R.DUEL_STAGES.length - 1,
         nextLabel: stageIndex < R.DUEL_STAGES.length - 1 ? t(`Arena.Next.${R.DUEL_STAGES[stageIndex + 1]}`) : "",
-        seconds,
+        preps,
+        prepsDone: doneCount,
+        prepsMax: R.MAX_PREPS,
+        isQuick: d.mode === "quick",
+        needed,
+        champPips: pips(d.champScore),
+        rivalPips: pips(d.rivalScore),
+        approaches,
+        exchanges,
+        freeEdges: d.edges.filter(e => !e.used).length,
+        resultLabel: d.result ? t(`Arena.Outcome.${d.result === "win" ? "win" : "loss"}`) : "",
         edges: d.edges.map(e => ({ ...e, label: t(`Arena.Edge.${e.kind}`) })),
         hasEdges: d.edges.length > 0,
         rivalEdgeChips,
@@ -296,11 +329,35 @@ export function buildViewModel(state, env) {
     tabs,
     legend,
     petitions,
+    deeds,
     arena,
     rivals,
     chronicle,
     fallen: state.fallen,
     faces: R.FACES.map(face => ({ id: face, label: faceLabel(face), icon: R.FACE_ICON[face], tone: R.FACE_TONE[face] })),
     circles: R.CIRCLES.map(c => ({ id: c, label: circleLabel(c), icon: R.CIRCLE_ICON[c] }))
+  };
+}
+
+/**
+ * Model małego panelu sesji (HUD): Imię, Sława, opowieści na podorędziu, szybkie akcje i pojedynek.
+ */
+export function buildHudModel(state, env) {
+  const vm = buildViewModel(state, { ...env, activeTab: "legend" });
+  const ready = vm.legend.tales.filter(tl => tl.canInvoke).slice(0, 4);
+  const nearest = vm.petitions.accepted
+    .filter(p => p.deadline !== null)
+    .sort((a, b) => a.deadline - b.deadline)[0] ?? null;
+  return {
+    env: vm.env,
+    header: vm.header,
+    ready,
+    readyCount: vm.legend.tales.filter(tl => tl.canInvoke).length,
+    promises: vm.petitions.promises,
+    promiseSlots: vm.petitions.promiseSlots,
+    nearest,
+    deedCount: vm.deeds.count,
+    duel: vm.arena.duel,
+    fallen: vm.fallen
   };
 }

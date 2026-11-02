@@ -9,7 +9,7 @@ import { content, pick } from "./content.mjs";
 import * as Store from "./store.mjs";
 import { postCard } from "./chat.mjs";
 import * as D from "./dialogs.mjs";
-import { rollSkill, modifyAdvantage, healWounds, restoreResolveAndFortune, statusRank } from "./wfrp.mjs";
+import { rollSkill, rollMelee, skillTarget, combatActor, modifyAdvantage, modifyWounds, healWounds, restoreResolveAndFortune, statusRank } from "./wfrp.mjs";
 import { time } from "../../wfrp4e-companion-lib/scripts/companion-lib.mjs";
 
 const C = () => content(contentLang());
@@ -141,8 +141,7 @@ async function announceTale(actor, tale) {
     sealsLabel: `${t(`Weight.${tale.weight}`)} · ${t(`WeightReach.${tale.weight}`)}`,
     body: tale.text,
     lines: tale.trophy ? [{ icon: "fa-solid fa-trophy", text: tale.trophy }] : [],
-    footnote: tale.lie ? t("Chat.RumorFoot") : t("Chat.TaleFoot"),
-    buttons: tale.lie ? [] : [{ action: "tellTavern", label: t("Chat.TellTavern"), icon: "fa-solid fa-beer-mug-empty", data: { actorUuid: actor.uuid, taleId: tale.id } }]
+    footnote: tale.lie ? t("Chat.RumorFoot") : "",
   }, { actor });
 }
 
@@ -176,6 +175,7 @@ export async function invokeTale(actor, taleId) {
   const state = Store.getState(actor);
   const tale = state.tales.find(x => x.id === taleId);
   const session = Store.sessionId();
+  if (state.incognito) return ui.notifications.warn(t("Notify.Hooded"));
   if (!tale || !R.canInvoke(tale, session)) return ui.notifications.warn(t("Notify.AlreadyInvoked"));
   const bonus = R.invokeBonus(tale);
   const skills = R.invokeSkills(tale);
@@ -232,31 +232,141 @@ export async function refuteTale(actor, taleId) {
   }, { actor });
 }
 
-/** Wersja z karczmy: opowiada ją dowolny gracz (przez MG, gdy nie jest właścicielem). */
-export async function tellTavern(actor, taleId) {
-  const tale = Store.getState(actor).tales.find(x => x.id === taleId);
-  if (!tale) return;
+/**
+ * Przywołanie z okna testu WFRP (przełącznik efektu „Legenda szampierza”): oznacza opowieść
+ * jako przywołaną w tej sesji i ogłasza to na czacie. Woła to skrypt efektu po wysłaniu testu.
+ */
+export async function markInvoked(actorUuid, taleId) {
+  const actor = actorUuid ? fromUuidSync(actorUuid) : null;
+  if (!actor?.isOwner) return;
+  const state = Store.getState(actor);
+  const tale = state.tales.find(x => x.id === taleId);
+  const session = Store.sessionId();
+  if (!tale || !R.canInvoke(tale, session, state.incognito)) return;
+  await Store.update(actor, s => {
+    const tl = s.tales.find(x => x.id === taleId);
+    if (tl) tl.invokedSession = session;
+    return Store.chronicle(s, "invoke", t("Chronicle.InvokedTest", { title: tale.title || t("Legend.Untitled") }), "fa-solid fa-bullhorn");
+  });
+  await postCard({
+    kind: "invoke",
+    theme: R.taleTone(tale) === "dark" ? "blood" : "gold",
+    icon: "fa-solid fa-bullhorn",
+    kicker: t("Chat.InvokeKicker"),
+    title: t("Chat.InvokeTitle", { title: tale.title || t("Legend.Untitled") }),
+    seals: seals(tale.weight),
+    sealsLabel: `+${R.invokeBonus(tale)} ${t("SL")}`
+  }, { actor });
+}
+
+/* ==================================================================== */
+/*  Czyny: zapis w trakcie gry, ogłoszenie po scenie                    */
+/* ==================================================================== */
+
+/** Szybki zapis czynu: jedna linijka, decyzje później. */
+export async function recordDeed(actor, preset = "") {
   const data = await D.formDialog({
-    title: t("Dialog.TavernTitle"),
-    icon: "fa-solid fa-beer-mug-empty",
-    okLabel: t("Dialog.Tell"),
-    okIcon: "fa-solid fa-beer-mug-empty",
-    html: [
-      `<p class="lg-hint">${t("Dialog.TavernHint", { title: tale.title || t("Legend.Untitled") })}</p>`,
-      D.field(t("Dialog.Tavern"), D.area("text", "", t("Dialog.TavernPlaceholder")))
-    ].join("")
+    title: t("Dialog.DeedTitle"),
+    icon: "fa-solid fa-feather",
+    okLabel: t("Dialog.DeedSave"),
+    okIcon: "fa-solid fa-feather",
+    width: 460,
+    html: D.field(t("Dialog.DeedText"), D.text("text", preset, t("Dialog.DeedPlaceholder")), t("Dialog.DeedHint"))
   });
   if (!data?.text?.trim()) return;
-  const ok = await Store.relay(actor, "tavern", { taleId, text: data.text });
-  if (!ok) return ui.notifications.warn(t("Notify.RelayFailed"));
-  await postCard({
-    kind: "tavern",
-    icon: "fa-solid fa-beer-mug-empty",
-    kicker: t("Chat.TavernKicker"),
-    title: tale.title || t("Legend.Untitled"),
-    quote: data.text.trim(),
-    quoteBy: game.user.character?.name ?? game.user.name
+  await Store.update(actor, s => R.addDeed(s, { text: data.text.trim(), source: "manual" }, Store.worldNow()).state);
+  ui.notifications.info(t("Notify.DeedSaved"));
+}
+
+/** Czyn zapisany automatycznie (bez okna), np. odmowa przyjęcia wyzwania. */
+export async function autoDeed(actor, text, source) {
+  await Store.update(actor, s => R.addDeed(s, { text, source }, Store.worldNow()).state);
+}
+
+/** Ogłoszenie czynu: „Kto to widział?” decyduje o Wadze; bez świadków zostaje tylko kronika. */
+export async function promoteDeed(actor, deedId) {
+  const deed = Store.getState(actor).deeds.find(d => d.id === deedId);
+  if (!deed) return;
+  const data = await D.formDialog({
+    title: t("Dialog.WitnessTitle"),
+    icon: "fa-solid fa-eye",
+    okLabel: t("Dialog.Proclaim"),
+    okIcon: "fa-solid fa-scroll",
+    width: 640,
+    html: [
+      `<p class="lg-hint">„${foundry.utils?.escapeHTML ? foundry.utils.escapeHTML(deed.text) : Handlebars.escapeExpression(deed.text)}”</p>`,
+      D.field(t("Dialog.Witnesses"), D.choices("witness", R.WITNESSES.map(w => ({ value: w, label: t(`Witness.${w}`), icon: ["fa-solid fa-eye-slash", "fa-solid fa-user-group", "fa-solid fa-people-group", "fa-solid fa-landmark-dome"][R.WITNESSES.indexOf(w)] })), "few", { columns: 4 }), t("Dialog.WitnessHint")),
+      D.field(t("Dialog.WitnessCircle"), D.circleChoices("commons")),
+      D.field(t("Dialog.Face"), D.faceChoices("protector")),
+      D.field(t("Dialog.TaleTitle"), D.text("title", deed.text.slice(0, 60), t("Dialog.TaleTitlePlaceholder")))
+    ].join("")
   });
+  if (!data) return;
+  const weight = R.witnessWeight(data.witness ?? "few");
+  await Store.update(actor, s => R.removeDeed(s, deedId));
+  if (weight < 1) {
+    await Store.update(actor, s => Store.chronicle(s, "deed", t("Chronicle.SecretDeed", { text: deed.text }), "fa-solid fa-eye-slash"));
+    return ui.notifications.info(t("Notify.SecretDeed"));
+  }
+  await commitTale(actor, { title: (data.title ?? "").trim() || deed.text, text: deed.text, face: data.face ?? "protector", circle: data.circle ?? "commons", weight, source: deed.source });
+}
+
+export async function dismissDeed(actor, deedId) {
+  await Store.update(actor, s => R.removeDeed(s, deedId));
+}
+
+/** Koniec walki z udziałem szampierza: szept do gracza i MG „Coś godnego opowieści?”. */
+export async function combatEndPrompt(combat) {
+  for (const c of combat.combatants ?? []) {
+    const actor = c.actor?.isToken ? game.actors.get(c.actorId) : c.actor;
+    if (!actor?.getFlag?.(MODULE_ID, "legend") || actor.getFlag(MODULE_ID, "legend")?.fallen) continue;
+    const owners = game.users.filter(u => u.isGM || actor.testUserPermission?.(u, "OWNER")).map(u => u.id);
+    const content = await foundry.applications.handlebars.renderTemplate(`modules/${MODULE_ID}/templates/chat/card.hbs`, {
+      kind: "deedPrompt",
+      theme: "gold",
+      icon: "fa-solid fa-feather",
+      kicker: t("Chat.DeedPromptKicker"),
+      title: t("Chat.DeedPromptTitle", { name: actor.name }),
+      footnote: t("Chat.DeedPromptFoot"),
+      buttons: [{ action: "recordDeed", label: t("Chat.DeedPromptButton"), icon: "fa-solid fa-feather", style: "gold", dataAttrs: `data-actor-uuid="${actor.uuid}"` }]
+    });
+    await ChatMessage.create({ content, whisper: owners, speaker: ChatMessage.getSpeaker({ actor }), flags: { [MODULE_ID]: { kind: "deedPrompt" } } });
+  }
+}
+
+/* ==================================================================== */
+/*  Rozpoznanie i kaptur                                                */
+/* ==================================================================== */
+
+/** MG: czy obcy rozpoznaje szampierza? k10 ≤ 2 × Poziom (w kapturze nikt). */
+export async function recognize(actor) {
+  if (!game.user.isGM) return;
+  const state = Store.getState(actor);
+  const tier = R.tierOf(R.fame(state));
+  const target = R.recognitionTarget(tier);
+  if (state.incognito) {
+    return postCard({ kind: "recognize", theme: "ink", icon: "fa-solid fa-user-secret", kicker: t("Chat.RecognizeKicker"), title: t("Chat.RecognizeHooded"), body: t("Chat.RecognizeHoodedBody", { name: actor.name }) }, { actor, gmOnly: true });
+  }
+  const roll = await new Roll("1d10").evaluate();
+  const known = roll.total <= target;
+  await postCard({
+    kind: "recognize",
+    theme: known ? "gold" : "ink",
+    icon: known ? "fa-solid fa-eye" : "fa-solid fa-eye-slash",
+    kicker: t("Chat.RecognizeRoll", { roll: roll.total, target }),
+    title: known ? t("Chat.Recognized") : t("Chat.NotRecognized"),
+    body: known ? t("Chat.RecognizedBody", { name: state.name.declared || actor.name }) : t("Chat.NotRecognizedBody")
+  }, { actor, gmOnly: true, rolls: [roll] });
+}
+
+export async function toggleHood(actor) {
+  let hooded = false;
+  await Store.update(actor, s => {
+    s.incognito = !s.incognito;
+    hooded = s.incognito;
+    return s;
+  });
+  ui.notifications.info(t(hooded ? "Notify.HoodOn" : "Notify.HoodOff"));
 }
 
 /* ==================================================================== */
@@ -314,6 +424,39 @@ export async function deletePetition(actor, petitionId) {
   const ok = await D.confirm({ title: t("Dialog.DeleteTitle"), text: t("Dialog.DeletePetition") });
   if (!ok) return;
   await Store.update(actor, s => { s.petitions = s.petitions.filter(x => x.id !== petitionId); return s; });
+}
+
+/**
+ * Drobna prośba załatwiona w tle (przedsięwzięcie między przygodami): jeden test,
+ * sukces = opowieść (Waga 1), porażka = „nie dotrzymał słowa”.
+ */
+export async function endeavourPetition(actor, petitionId) {
+  const p = Store.getState(actor).petitions.find(x => x.id === petitionId);
+  if (!p || !R.canEndeavour(p)) return;
+  const skills = ["Charm", "Intimidate", "Gossip", "Leadership", "Melee", "Perception", "Haggle"];
+  const data = await D.formDialog({
+    title: t("Dialog.EndeavourTitle"),
+    icon: "fa-solid fa-hourglass-half",
+    okLabel: t("Arena.Roll"),
+    okIcon: "fa-solid fa-dice-d20",
+    html: [
+      `<p class="lg-hint">${t("Dialog.EndeavourHint", { who: p.petitioner })}</p>`,
+      D.field(t("Dialog.EndeavourSkill"), D.choices("skill", skills.map(k => ({ value: k, label: t(`Skill.${k}`) })), "Charm", { columns: 4 }))
+    ].join("")
+  });
+  if (!data?.skill) return;
+  const result = data.skill === "Melee" ? await rollMelee(actor, { title: p.petitioner }) : await rollSkill(actor, data.skill, { title: p.petitioner });
+  if (!result) return;
+  await Store.update(actor, s => {
+    const pp = s.petitions.find(x => x.id === petitionId);
+    if (!pp) return null;
+    pp.status = result.success ? "fulfilled" : "failed";
+    pp.resolved = Store.worldNow();
+    return Store.chronicle(s, result.success ? "petition" : "failed", t(result.success ? "Chronicle.PetitionFulfilled" : "Chronicle.Petition_fail", { who: p.petitioner }), result.success ? "fa-solid fa-check" : "fa-solid fa-heart-crack");
+  });
+  await commitTale(actor, result.success
+    ? { title: t("Petitions.FulfilledTitle", { who: p.petitioner }), text: p.request, face: "protector", circle: p.circle, weight: 1, source: "petition" }
+    : { title: t("Petitions.BrokenTitle", { who: p.petitioner }), text: p.request, face: "rogue", circle: p.circle, weight: 1, source: "brokenPromise" });
 }
 
 /** accept | fulfill | fail | decline */
@@ -471,7 +614,7 @@ function duelForm(state, duel) {
     D.field(t("Dialog.Audience"), D.choices("audience", R.AUDIENCE.map(a => ({ value: a, label: t(`Arena.Audience.${a}`), icon: ["fa-solid fa-user-group", "fa-solid fa-people-group", "fa-solid fa-landmark-dome"][a - 1] })), duel.audience), t("Dialog.AudienceHint")),
     D.field(t("Arena.Venue"), D.text("venue", duel.venue, t("Dialog.VenuePlaceholder"))),
     D.field(t("Arena.Stakes"), D.text("stakes", duel.stakes, t("Dialog.StakesPlaceholder"))),
-    `<div class="lg-field-row">${D.field(t("Arena.Wager"), D.text("wager", duel.wager, t("Dialog.WagerPlaceholder")))}${game.user.isGM ? D.field(t("Arena.RivalEdges"), D.number("rivalEdges", duel.rivalEdges, { min: 0, max: R.MAX_RIVAL_EDGES })) : ""}</div>`
+    `<div class="lg-field-row">${D.field(t("Arena.Wager"), D.text("wager", duel.wager, t("Dialog.WagerPlaceholder")))}${D.field(t("Dialog.RivalSkill"), D.number("rivalSkill", duel.rivalSkill, { min: 1, max: 150 }), t("Dialog.RivalSkillHint"))}${game.user.isGM ? D.field(t("Arena.RivalEdges"), D.number("rivalEdges", duel.rivalEdges, { min: 0, max: R.MAX_RIVAL_EDGES })) : ""}</div>`
   ].join("");
 }
 
@@ -479,7 +622,9 @@ function duelForm(state, duel) {
 export async function setupDuel(actor, { rivalId = "", edit = false } = {}) {
   const state = Store.getState(actor);
   if (!edit && state.duel) return ui.notifications.warn(t("Notify.DuelActive"));
-  const base = edit && state.duel ? state.duel : R.normalizeDuel({ rivalId, terms: "firstBlood", audience: 2 });
+  const preRival = state.rivals.find(r => r.id === rivalId);
+  const rivalActor = preRival?.actorUuid ? fromUuidSync(preRival.actorUuid) : null;
+  const base = edit && state.duel ? state.duel : R.normalizeDuel({ rivalId, terms: "firstBlood", audience: 2, rivalSkill: rivalActor ? skillTarget(rivalActor, "Melee") : 45 });
   const data = await D.formDialog({ title: edit ? t("Dialog.EditDuel") : t("Dialog.NewDuel"), icon: "fa-solid fa-hand-back-fist", html: duelForm(state, base), okLabel: edit ? t("Save") : t("Dialog.Challenge"), okIcon: "fa-solid fa-hand-back-fist", width: 640 });
   if (!data) return;
 
@@ -501,6 +646,7 @@ export async function setupDuel(actor, { rivalId = "", edit = false } = {}) {
     venue: data.venue.trim(),
     stakes: data.stakes.trim(),
     wager: data.wager.trim(),
+    rivalSkill: Number(data.rivalSkill) || base.rivalSkill,
     rivalEdges: game.user.isGM ? (Number(data.rivalEdges) || 0) : base.rivalEdges
   };
   await Store.update(actor, s => {
@@ -572,86 +718,207 @@ export async function shiftRivalEdges(actor, delta) {
   });
 }
 
-/** Przypisanie sekundanta (z przeciągnięcia albo zgłoszenia na czacie). */
-export async function assignSecond(champion, role, secondActor) {
-  if (!secondActor) return;
-  if (secondActor.id === champion.id) return ui.notifications.warn(t("Notify.ChampionCannotSecond"));
-  const ok = await Store.relay(champion, "assignSecond", { role, actorUuid: secondActor.uuid });
-  if (!ok) ui.notifications.warn(t("Notify.RelayFailed"));
-}
-
-export async function clearSecond(actor, role) {
+/** Przygotowanie (najwyżej dwa): test szampierza i skutek. */
+export async function doPrep(actor, id) {
+  const d = Store.getState(actor).duel;
+  if (!d) return;
+  if (!R.canPrep(d, id)) return ui.notifications.warn(t("Notify.PrepLimit", { max: R.MAX_PREPS }));
+  const cfg = R.PREPS[id];
+  const result = await rollSkill(actor, cfg.skill, { title: t(`Arena.Prep.${id}.Name`) });
+  if (!result) return;
+  let duel = null;
   await Store.update(actor, s => {
     if (!s.duel) return null;
-    s.duel = R.resetSecond(s.duel, role);
+    s.duel = R.applyPrep(s.duel, id, result);
+    duel = s.duel;
+    return s;
+  });
+  await postCard({
+    kind: "prep",
+    theme: result.success ? "gold" : "ink",
+    icon: cfg.icon,
+    kicker: t("Chat.PrepKicker"),
+    title: t(`Arena.Prep.${id}.Name`),
+    body: t(`Arena.Prep.${id}.${result.success ? "Success" : "Failure"}`, { edges: duel.edges.filter(e => e.kind === "weakness" && !e.used).length, crowd: duel.crowd, odds: duel.odds, negated: duel.negatedEdges, heal: duel.surgeonHeal })
+  }, { actor });
+}
+
+export async function undoPrep(actor, id) {
+  await Store.update(actor, s => {
+    if (!s.duel) return null;
+    s.duel = R.resetPrep(s.duel, id);
+    return s;
+  });
+}
+
+export async function setDuelMode(actor, mode) {
+  await Store.update(actor, s => {
+    if (!s.duel) return null;
+    s.duel.mode = mode === "full" ? "full" : "quick";
     return s;
   });
 }
 
 /**
- * Test sekundanta. Rzuca właściciel postaci sekundanta; inni dostają kartę z przyciskiem na czacie.
+ * Wymiana w szybkim pojedynku: szampierz rzuca Walkę Wręcz w oknie WFRP (z premiami podejścia,
+ * tłumu i Atutu), moduł rzuca za rywala. Trafienie w szampierza zdejmuje Żywotność.
  */
-export async function rollSecond(champion, role) {
-  const state = Store.getState(champion);
-  const slot = state.duel?.seconds?.[role];
-  if (!slot?.actorUuid) return;
-  if (slot.result) return ui.notifications.info(t("Notify.SecondDone"));
-  const second = await fromUuid(slot.actorUuid);
-  if (!second) return ui.notifications.warn(t("Notify.ActorMissing"));
-  if (!second.isOwner) {
-    await callSeconds(champion, [role]);
-    return ui.notifications.info(t("Notify.SecondAsked", { name: second.name }));
-  }
-  const cfg = R.SECOND_ROLES[role];
-  const result = await rollSkill(second, cfg.skill, { title: t(`Arena.Role.${role}.Name`) });
-  if (!result) return;
-  const ok = await Store.relay(champion, "secondResult", { role, result: { sl: result.sl, success: result.success, roll: result.roll } });
-  if (!ok) return ui.notifications.warn(t("Notify.RelayFailed"));
-  const duel = Store.getState(champion).duel;
+export async function exchange(actor, approach, { useEdge = false } = {}) {
+  const state = Store.getState(actor);
+  const d = state.duel;
+  if (!d || d.stage !== "fight") return;
+  if (!R.APPROACHES.includes(approach)) return ui.notifications.warn(t("Notify.PickApproach"));
+  const rival = state.rivals.find(r => r.id === d.rivalId);
+  const edge = useEdge ? d.edges.find(e => !e.used) : null;
+
+  const d3 = await new Roll("1d3").evaluate();
+  const rivalApproach = R.rivalApproachFor(d3.total);
+  const champMod = R.approachBonus(approach, rivalApproach) + R.crowdBonus("champion", d.crowd);
+  const champ = await rollMelee(actor, { title: t("Arena.ExchangeTitle", { n: d.exchanges.length + 1 }), modifier: champMod, slBonus: edge ? 2 : 0 });
+  if (!champ) return;
+
+  const rivalTarget = d.rivalSkill + R.approachBonus(rivalApproach, approach) + R.crowdBonus("rival", d.crowd);
+  const rivalRoll = await new Roll("1d100").evaluate();
+  const rivalRes = R.testResult(rivalTarget, rivalRoll.total);
+
+  let res = null;
+  await Store.update(actor, s => {
+    if (!s.duel) return null;
+    if (edge) { const e = s.duel.edges.find(x => x.id === edge.id); if (e) e.used = true; }
+    res = R.resolveExchange(s.duel, { champApproach: approach, rivalApproach, champ, rival: rivalRes });
+    s.duel = res.duel;
+    return s;
+  });
+  if (!res) return;
+  const x = res.exchange;
+  const wounded = x.wounds ? await modifyWounds(combatActor(actor), -x.wounds) : 0;
+
+  const rivalName = rival?.name ?? "?";
+  const lines = [
+    { icon: R.APPROACH_ICON[approach], text: t("Chat.ExchangeChamp", { name: actor.name, approach: t(`Arena.Approach.${approach}.Name`), sl: fmtSL(x.champSL) }) },
+    { icon: R.APPROACH_ICON[rivalApproach], text: t("Chat.ExchangeRival", { name: rivalName, approach: t(`Arena.Approach.${rivalApproach}.Name`), sl: fmtSL(x.rivalSL), roll: rivalRoll.total, target: rivalTarget }) }
+  ];
+  if (x.rivalEdge) lines.push({ icon: "fa-solid fa-coins", text: t("Chat.RivalEdgeUsed") });
+  if (wounded) lines.push({ icon: "fa-solid fa-droplet", text: t("Chat.ChampWounded", { n: -wounded }) });
+  const title = x.winner === "champion" ? t(x.hits > 1 ? "Chat.ExchangeWinDouble" : "Chat.ExchangeWin", { name: actor.name })
+    : x.winner === "rival" ? t(x.hits > 1 ? "Chat.ExchangeLossDouble" : "Chat.ExchangeLoss", { name: rivalName })
+      : t("Chat.ExchangeClash");
   await postCard({
-    kind: "second",
-    theme: result.success ? "gold" : "ink",
-    icon: cfg.icon,
-    kicker: t("Chat.SecondKicker", { champion: champion.name }),
-    title: `${t(`Arena.Role.${role}.Name`)}: ${second.name}`,
-    body: t(`Arena.Role.${role}.${result.success ? "Success" : "Failure"}`, {
-      sl: result.sl, edges: duel?.edges.filter(e => e.kind === "weakness").length ?? 0, crowd: duel?.crowd ?? 0, odds: duel?.odds ?? 0, negated: duel?.negatedEdges ?? 0, heal: duel?.surgeonHeal ?? 0
-    })
-  }, { actor: second });
+    kind: "exchange",
+    theme: x.winner === "champion" ? "gold" : (x.winner === "rival" ? "blood" : "ink"),
+    versus: { left: actor.img, right: rival?.img || "icons/svg/mystery-man.svg" },
+    kicker: t("Chat.ExchangeKicker", { n: x.n, champ: res.duel.champScore, rival: res.duel.rivalScore, needed: R.hitsNeeded(res.duel) }),
+    title,
+    lines,
+    footnote: res.finished ? t(`Chat.DuelOver_${res.finished}`) : (approach === "dirty" ? t("Chat.DirtyBody") : "")
+  }, { actor, rolls: [rivalRoll] });
 }
 
-/** Karta na czacie: gracze zgłaszają się na sekundantów i rzucają swoimi postaciami. */
-export async function callSeconds(actor, roles = R.SECOND_ROLE_IDS) {
-  const d = Store.getState(actor).duel;
-  if (!d) return;
-  await postCard({
-    kind: "seconds",
-    icon: "fa-solid fa-people-group",
-    kicker: t("Chat.SecondsKicker"),
-    title: t("Chat.SecondsTitle", { champion: actor.name }),
-    lines: roles.map(role => ({ icon: R.SECOND_ROLES[role].icon, text: `${t(`Arena.Role.${role}.Name`)}${d.seconds[role].name ? ` (${d.seconds[role].name})` : ""}: ${t(`Arena.Role.${role}.Effect`)}` })),
-    footnote: t("Chat.SecondsFoot"),
-    buttons: roles.map(role => ({ action: "second", label: t(`Arena.Role.${role}.Name`), icon: R.SECOND_ROLES[role].icon, data: { actorUuid: actor.uuid, role } }))
-  }, { actor });
+export async function yieldDuel(actor) {
+  const ok = await D.confirm({ title: t("Arena.Yield"), text: t("Dialog.YieldConfirm") });
+  if (!ok) return;
+  await Store.update(actor, s => {
+    if (!s.duel) return null;
+    s.duel = R.yieldDuel(s.duel);
+    return s;
+  });
 }
 
-/** Przycisk roli na czacie: zgłoś swoją postać (jeśli rola wolna) i rzuć. */
-export async function chatSecond(champion, role) {
-  let state = Store.getState(champion);
-  if (!state.duel) return ui.notifications.warn(t("Notify.NoDuel"));
-  const slot = state.duel.seconds[role];
-  if (slot.result) return ui.notifications.info(t("Notify.SecondDone"));
-  if (!slot.actorUuid) {
-    if (state.duel.stage !== "prep") return ui.notifications.warn(t("Notify.NotPrep"));
-    const mine = game.user.character ?? canvas.tokens?.controlled?.[0]?.actor;
-    if (!mine) return ui.notifications.warn(t("Notify.NeedCharacter"));
-    await assignSecond(champion, role, mine);
-    state = Store.getState(champion);
-    if (!state.duel?.seconds?.[role]?.actorUuid) return;
+function fmtSL(sl) {
+  return sl > 0 ? `+${sl}` : `${sl}`;
+}
+
+/* ---------- Wyzwanie przywódcy w zwykłej walce ---------- */
+
+/**
+ * Akcja w dowolnej walce: Zastraszanie albo Przywództwo szampierza przeciw Opanowaniu przywódcy wrogów.
+ * Wygrana: przywódca przyjmuje (szybki pojedynek) albo odmawia (szampierz +1 Przewagi, czyn do ogłoszenia).
+ */
+export async function challengeLeader(actor) {
+  const state = Store.getState(actor);
+  if (state.duel) return ui.notifications.warn(t("Notify.DuelActive"));
+  const target = [...(game.user.targets ?? [])][0]?.actor ?? null;
+  const rivals = state.rivals.filter(r => r.status !== "dead");
+  const data = await D.formDialog({
+    title: t("Dialog.LeaderTitle"),
+    icon: "fa-solid fa-hand-back-fist",
+    okLabel: t("Dialog.LeaderRoll"),
+    okIcon: "fa-solid fa-dice-d20",
+    width: 560,
+    html: [
+      `<p class="lg-hint">${t("Dialog.LeaderHint")}</p>`,
+      target
+        ? `<p class="lg-hint"><b>${Handlebars.escapeExpression(target.name)}</b> (${t("Dialog.LeaderTargeted")})</p>`
+        : `<div class="lg-field-row">${D.field(t("Dialog.Rival"), D.select("rivalId", [{ value: "", label: t("Dialog.LeaderNameOption") }, ...rivals.map(r => ({ value: r.id, label: r.name }))], ""))}${D.field(t("Dialog.LeaderName"), D.text("name", "", t("Dialog.LeaderNamePlaceholder")))}</div>`,
+      `<div class="lg-field-row">${D.field(t("Dialog.LeaderCool"), D.number("cool", target ? skillTarget(target, "Cool") : 35, { min: 1, max: 150 }))}${D.field(t("Dialog.LeaderMelee"), D.number("melee", target ? skillTarget(target, "Melee") : 45, { min: 1, max: 150 }))}</div>`,
+      D.field(t("Dialog.LeaderSkill"), D.choices("skill", ["Intimidate", "Leadership"].map(k => ({ value: k, label: t(`Skill.${k}`) })), "Intimidate", { columns: 2 }))
+    ].join("")
+  });
+  if (!data) return;
+
+  let leader;
+  if (target) leader = { name: target.name, img: target.img, actorUuid: target.uuid };
+  else if (data.rivalId) {
+    const r = rivals.find(x => x.id === data.rivalId);
+    leader = { name: r?.name ?? "?", img: r?.img ?? "", actorUuid: r?.actorUuid ?? "" };
+  } else leader = { name: data.name?.trim() || t("Dialog.LeaderDefault"), img: "", actorUuid: "" };
+
+  const champ = await rollSkill(actor, data.skill ?? "Intimidate", { title: t("Dialog.LeaderTitle") });
+  if (!champ) return;
+  const coolTarget = Number(data.cool) || 35;
+  const leaderRoll = await new Roll("1d100").evaluate();
+  const leaderRes = R.testResult(coolTarget, leaderRoll.total);
+  const won = champ.sl > leaderRes.sl || (champ.sl === leaderRes.sl && champ.success && !leaderRes.success);
+
+  if (won) {
+    await Store.update(actor, s => {
+      s.pendingChallenge = { ...leader, skill: Number(data.melee) || 45 };
+      return s;
+    });
   }
-  const second = await fromUuid(state.duel.seconds[role].actorUuid);
-  if (!second?.isOwner) return ui.notifications.warn(t("Notify.NotYourSecond", { name: second?.name ?? "?" }));
-  return rollSecond(champion, role);
+  await postCard({
+    kind: "leader",
+    theme: won ? "blood" : "ink",
+    versus: { left: actor.img, right: leader.img || "icons/svg/mystery-man.svg" },
+    kicker: t("Chat.LeaderKicker"),
+    title: t(won ? "Chat.LeaderWon" : "Chat.LeaderLost", { name: leader.name }),
+    lines: [
+      { icon: "fa-solid fa-hand-back-fist", text: t("Chat.LeaderChamp", { name: actor.name, skill: t(`Skill.${data.skill ?? "Intimidate"}`), sl: fmtSL(champ.sl) }) },
+      { icon: "fa-solid fa-shield-halved", text: t("Chat.LeaderCool", { name: leader.name, sl: fmtSL(leaderRes.sl), roll: leaderRoll.total, target: coolTarget }) }
+    ],
+    footnote: won ? t("Chat.LeaderChoice") : t("Chat.LeaderIgnored"),
+    buttons: won ? [
+      { action: "leaderAccept", label: t("Chat.LeaderAccept"), icon: "fa-solid fa-khanda", style: "blood", data: { actorUuid: actor.uuid } },
+      { action: "leaderRefuse", label: t("Chat.LeaderRefuse"), icon: "fa-solid fa-person-running", style: "ghost-dark", data: { actorUuid: actor.uuid } }
+    ] : []
+  }, { actor, rolls: [leaderRoll] });
+}
+
+/** Odpowiedź przywódcy (klika MG albo gracz szampierza po decyzji MG). */
+export async function answerChallenge(actor, accept) {
+  const state = Store.getState(actor);
+  const leader = state.pendingChallenge;
+  if (!leader) return ui.notifications.warn(t("Notify.NoPendingChallenge"));
+  if (!accept) {
+    await Store.update(actor, s => { s.pendingChallenge = null; return s; });
+    await modifyAdvantage(combatActor(actor), 1);
+    await autoDeed(actor, t("Deeds.LeaderRefused", { name: leader.name }), "challenge");
+    return postCard({ kind: "leaderRefused", icon: "fa-solid fa-person-running", kicker: t("Chat.LeaderKicker"), title: t("Chat.LeaderRefusedTitle", { name: leader.name }), body: t("Chat.LeaderRefusedBody", { name: actor.name }) }, { actor });
+  }
+  // Przyjęcie: rywal (istniejący albo nowy) i szybki pojedynek od razu w etapie walki
+  let rivalId = state.rivals.find(r => (leader.actorUuid && r.actorUuid === leader.actorUuid) || r.name === leader.name)?.id;
+  await Store.update(actor, s => {
+    if (!rivalId) {
+      const res = R.addRival(s, { name: leader.name, img: leader.img, actorUuid: leader.actorUuid });
+      s = res.state;
+      rivalId = res.rival.id;
+    }
+    s = R.startDuel(s, { rivalId, terms: "yield", audience: 2, venue: t("Arena.Battlefield"), stakes: t("Arena.LeaderStakes"), rivalSkill: leader.skill, stage: "fight" }, Store.worldNow());
+    s.pendingChallenge = null;
+    return Store.chronicle(s, "duel", t("Chronicle.LeaderAccepted", { name: leader.name }), "fa-solid fa-khanda");
+  });
+  await postCard({ kind: "leaderAccepted", theme: "blood", versus: { left: actor.img, right: leader.img || "icons/svg/mystery-man.svg" }, kicker: t("Chat.LeaderKicker"), title: t("Chat.LeaderAcceptedTitle", { name: leader.name }), body: t("Chat.LeaderAcceptedBody") }, { actor });
+  game.champion?.openHud?.(actor);
 }
 
 export async function useEdge(actor, edgeId) {
@@ -771,7 +1038,7 @@ export async function resolveDuel(actor) {
     okIcon: "fa-solid fa-scroll",
     width: 660,
     html: [
-      D.field(t("Dialog.Outcome"), D.choices("outcome", ["win", "loss", "draw"].map(o => ({ value: o, label: t(`Arena.Outcome.${o}`), icon: { win: "fa-solid fa-crown", loss: "fa-solid fa-skull-crossbones", draw: "fa-solid fa-handshake-simple" }[o], dark: o === "loss" })), "win")),
+      D.field(t("Dialog.Outcome"), D.choices("outcome", ["win", "loss", "draw"].map(o => ({ value: o, label: t(`Arena.Outcome.${o}`), icon: { win: "fa-solid fa-crown", loss: "fa-solid fa-skull-crossbones", draw: "fa-solid fa-handshake-simple" }[o], dark: o === "loss" })), d.result || "win")),
       D.field(t("Dialog.Fate"), D.choices("fate", ["spared", "humiliated", "killed"].map(f => ({ value: f, label: t(`Arena.Fate.${f}`), icon: { spared: "fa-solid fa-hand-holding-heart", humiliated: "fa-solid fa-person-falling", killed: "fa-solid fa-skull" }[f], dark: f !== "spared" })), "spared"), t("Dialog.FateHint")),
       `<p class="lg-hint">${t("Dialog.FaceAuto", { face: faceLabel(suggested) })}</p>`,
       D.field(t("Dialog.TaleTitle"), D.text("title", t("Arena.TaleTitle", { rival: rival?.name ?? "?" }))),
@@ -881,6 +1148,33 @@ export async function rollEcho(actor) {
       }
       await Store.update(actor, s => Store.chronicle(s, "echo", t("Chronicle.EchoChallenger", { name: rival.name }), R.ECHO_ICON.challenger));
       return postCard({ ...base, theme: "blood", body, quote: rival.notes || "", footnote: t("Echo.ChallengerFoot") }, { actor, rolls });
+    }
+    case "rivalMove": {
+      const mover = R.movingRival(state);
+      if (!mover) {
+        // Brak rywala z urazą: pojawia się nowy pretendent
+        const tpl = pick(c.challengers);
+        await Store.update(actor, s => Store.chronicle(R.addRival(s, { name: tpl.name, title: tpl.title, notes: tpl.notes }).state, "echo", t("Chronicle.EchoChallenger", { name: tpl.name }), R.ECHO_ICON.challenger));
+        return postCard({ ...base, title: t("Echo.Type.challenger"), subtitle: t("Echo.Sub.challenger"), icon: R.ECHO_ICON.challenger, theme: "blood", body: t("Echo.NewChallenger", { name: tpl.name, title: tpl.title }), quote: tpl.notes }, { actor, rolls });
+      }
+      const move = pick(R.RIVAL_MOVES);
+      const fill = text => text.replaceAll("{rival}", mover.name);
+      if (move === "slander") {
+        const rumor = pick(c.darkRumors);
+        await commitTale(actor, { title: rumor.title, text: rumor.text, face: rumor.face, circle: pick(R.CIRCLES), weight: 1, lie: true, source: "rumor" }, { announce: false });
+        await Store.update(actor, s => Store.chronicle(s, "echo", t("Chronicle.RivalMove", { name: mover.name, move: t(`Echo.Move.${move}`) }), R.ECHO_ICON.rivalMove));
+        return postCard({ ...base, theme: "blood", subtitle: t(`Echo.Move.${move}`), body: t("Echo.SlanderBody", { name: mover.name, title: rumor.title }), quote: rumor.text, footnote: t("Echo.RumorFoot") }, { actor, rolls });
+      }
+      if (move === "bribe") {
+        await Store.update(actor, s => {
+          const r = s.rivals.find(x => x.id === mover.id);
+          if (r) r.bribe = R.clamp(r.bribe + 1, 0, R.MAX_RIVAL_EDGES);
+          return Store.chronicle(s, "echo", t("Chronicle.RivalMove", { name: mover.name, move: t(`Echo.Move.${move}`) }), R.ECHO_ICON.rivalMove);
+        });
+        return postCard({ ...base, theme: "ink", subtitle: t(`Echo.Move.${move}`), body: fill(pick(c.rivalMoves.bribe)), footnote: t("Echo.SecretFoot") }, { actor, rolls, gmOnly: true });
+      }
+      await Store.update(actor, s => Store.chronicle(s, "echo", t("Chronicle.RivalMove", { name: mover.name, move: t(`Echo.Move.${move}`) }), R.ECHO_ICON.rivalMove));
+      return postCard({ ...base, theme: "blood", subtitle: t(`Echo.Move.${move}`), body: fill(pick(c.rivalMoves[move])), footnote: t(`Echo.MoveFoot.${move}`) }, { actor, rolls });
     }
     case "ballad": {
       const tale = R.balladTarget(state);
