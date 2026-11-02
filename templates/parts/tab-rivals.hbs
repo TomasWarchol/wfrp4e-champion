@@ -1,0 +1,43 @@
+<div class="lg-rivals">
+  <div class="lg-section-head">
+    <h2><i class="fa-solid fa-chess-knight"></i> {{localize "CHAMPION.Rivals.Title"}}</h2>
+    {{#if env.canEdit}}<button type="button" class="lg-btn lg-btn--gold" data-action="addRival"><i class="fa-solid fa-plus"></i> {{localize "CHAMPION.Rivals.Add"}}</button>{{/if}}
+  </div>
+
+  <div class="lg-rival-grid" data-drop="rival">
+    {{#each rivals.list}}
+    <article class="lg-poster is-{{status}}">
+      <div class="lg-poster-head">{{statusLabel}}</div>
+      <div class="lg-poster-img"><img src="{{img}}" alt=""/></div>
+      <h3 class="lg-poster-name">{{name}}</h3>
+      {{#if title}}<div class="lg-poster-title">{{title}}</div>{{/if}}
+      <div class="lg-poster-grudge" data-tooltip="{{grudgeLabel}}">
+        {{#if ../env.canEdit}}<button type="button" class="lg-icon-btn" data-action="grudge" data-rival-id="{{id}}" data-delta="-1"><i class="fa-solid fa-minus"></i></button>{{/if}}
+        <span class="lg-flames">{{#each flames}}<i class="fa-solid fa-fire {{#if this}}is-on{{/if}}"></i>{{/each}}</span>
+        {{#if ../env.canEdit}}<button type="button" class="lg-icon-btn" data-action="grudge" data-rival-id="{{id}}" data-delta="1"><i class="fa-solid fa-plus"></i></button>{{/if}}
+      </div>
+      <div class="lg-poster-record" data-tooltip="{{localize 'CHAMPION.Rivals.RecordHint'}}"><i class="fa-solid fa-khanda"></i> {{recordLabel}}</div>
+      {{#if notes}}<p class="lg-poster-notes">{{notes}}</p>{{/if}}
+      {{#if inherited}}<div class="lg-poster-inherited"><i class="fa-solid fa-dove"></i> {{localize "CHAMPION.Rivals.Inherited"}}</div>{{/if}}
+      <footer class="lg-poster-actions">
+        {{#if canChallenge}}{{#if ../env.canEdit}}<button type="button" class="lg-btn lg-btn--blood lg-btn--sm" data-action="challengeRival" data-rival-id="{{id}}"><i class="fa-solid fa-hand-back-fist"></i> {{localize "CHAMPION.Rivals.Challenge"}}</button>{{/if}}{{/if}}
+        <span class="lg-spacer"></span>
+        {{#if ../env.canEdit}}
+        <button type="button" class="lg-icon-btn" data-action="editRival" data-rival-id="{{id}}"><i class="fa-solid fa-pen"></i></button>
+        <button type="button" class="lg-icon-btn" data-action="deleteRival" data-rival-id="{{id}}"><i class="fa-solid fa-trash"></i></button>
+        {{/if}}
+      </footer>
+    </article>
+    {{else}}
+    <div class="lg-empty">
+      <i class="fa-solid fa-chess-knight"></i>
+      <p>{{localize "CHAMPION.Rivals.Empty"}}</p>
+    </div>
+    {{/each}}
+  </div>
+
+  <details class="lg-howto">
+    <summary><i class="fa-solid fa-circle-question"></i> {{localize "CHAMPION.HowTo"}}</summary>
+    <div class="lg-howto-body">{{{localize "CHAMPION.Rivals.HowTo"}}}</div>
+  </details>
+</div>

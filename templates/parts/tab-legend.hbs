@@ -1,0 +1,96 @@
+<div class="lg-legend">
+  <div class="lg-legend-maps">
+    <figure class="lg-panel lg-panel--dark lg-map">
+      <figcaption class="lg-panel-title"><i class="fa-solid fa-bullseye"></i> {{localize "CHAMPION.Legend.RipplesTitle"}}</figcaption>
+      {{{legend.ripples}}}
+      <ul class="lg-circle-list">
+        {{#each legend.circles}}
+        <li data-tooltip="{{localize 'CHAMPION.Legend.CircleTooltip'}}">
+          <i class="{{icon}}"></i>
+          <span class="lg-circle-name">{{label}}</span>
+          <span class="lg-circle-bar">
+            <span class="lg-bar-bright" style="flex:{{bright}}"></span><span class="lg-bar-dark" style="flex:{{dark}}"></span><span class="lg-bar-rest" style="flex:{{rest}}"></span>
+          </span>
+          <b>{{total}}</b>
+        </li>
+        {{/each}}
+      </ul>
+    </figure>
+
+    <figure class="lg-panel lg-panel--dark lg-map">
+      <figcaption class="lg-panel-title"><i class="fa-solid fa-masks-theater"></i> {{localize "CHAMPION.Legend.RadarTitle"}}</figcaption>
+      {{{legend.radar}}}
+      <div class="lg-radar-legend">
+        <span><b class="lg-key-star">★</b> {{localize "CHAMPION.Name.DeclaredFace"}}</span>
+        <span><b class="lg-key-glow"></b> {{localize "CHAMPION.Name.PeopleFace"}}</span>
+      </div>
+      <p class="lg-map-note">{{header.nameStateLabel}}</p>
+    </figure>
+  </div>
+
+  <div class="lg-section-head">
+    <h2><i class="fa-solid fa-scroll"></i> {{localize "CHAMPION.Legend.Tales"}} <small>{{legend.taleCount}}</small></h2>
+    {{#if env.canEdit}}<button type="button" class="lg-btn lg-btn--gold" data-action="addTale"><i class="fa-solid fa-feather"></i> {{localize "CHAMPION.Legend.AddTale"}}</button>{{/if}}
+  </div>
+
+  {{#if legend.hasTales}}
+  <div class="lg-tales">
+    {{#each legend.tales}}
+    <article class="lg-tale lg-tone-{{tone}} {{#if invoked}}is-invoked{{/if}} {{#if lie}}is-lie{{/if}}" data-tale-id="{{id}}">
+      <div class="lg-tale-band">
+        <span class="lg-tale-face"><i class="{{faceIcon}}"></i> {{faceLabel}}</span>
+        <span class="lg-tale-circle"><i class="{{circleIcon}}"></i> {{circleLabel}}</span>
+      </div>
+      <h3 class="lg-tale-title">{{displayTitle}}</h3>
+      <div class="lg-tale-weight" data-tooltip="{{reachLabel}}">
+        {{#each seals}}<span class="lg-seal {{#if this}}is-on{{/if}}"></span>{{/each}}
+        <em>{{weightLabel}}</em>
+      </div>
+      {{#if text}}<p class="lg-tale-text">{{text}}</p>{{/if}}
+      {{#if tavern}}<blockquote class="lg-tale-tavern">„{{tavern}}”{{#if tavernBy}}<cite>— {{tavernBy}}</cite>{{/if}}</blockquote>{{/if}}
+      {{#if trophy}}<div class="lg-tale-trophy"><i class="fa-solid fa-trophy"></i> {{trophy}}</div>{{/if}}
+      {{#if lie}}<div class="lg-stamp lg-stamp--lie">{{localize "CHAMPION.Legend.Lie"}}</div>{{/if}}
+      {{#if invoked}}<div class="lg-stamp">{{localize "CHAMPION.Legend.Invoked"}}</div>{{/if}}
+      {{#if inherited}}<div class="lg-tale-inherited" data-tooltip="{{localize 'CHAMPION.Legend.Inherited'}}"><i class="fa-solid fa-dove"></i></div>{{/if}}
+      <footer class="lg-tale-actions">
+        {{#if lie}}
+          {{#if ../env.canEdit}}<button type="button" class="lg-btn lg-btn--blood lg-btn--sm" data-action="refuteTale" data-tale-id="{{id}}" data-tooltip="{{localize 'CHAMPION.Legend.RefuteHint'}}"><i class="fa-solid fa-comment-slash"></i> {{localize "CHAMPION.Legend.Refute"}} ({{refuteMod}})</button>{{/if}}
+        {{else}}
+          <button type="button" class="lg-btn lg-btn--gold lg-btn--sm" data-action="invokeTale" data-tale-id="{{id}}" {{#unless canInvoke}}disabled{{/unless}} data-tooltip="{{skillsLabel}}"><i class="fa-solid fa-bullhorn"></i> {{localize "CHAMPION.Legend.Invoke"}} +{{bonus}} {{localize "CHAMPION.SL"}}</button>
+        {{/if}}
+        <span class="lg-spacer"></span>
+        <button type="button" class="lg-icon-btn" data-action="tellTavern" data-tale-id="{{id}}" data-tooltip="{{localize 'CHAMPION.Legend.TellTavern'}}"><i class="fa-solid fa-beer-mug-empty"></i></button>
+        {{#if ../env.canEdit}}
+        <button type="button" class="lg-icon-btn" data-action="editTale" data-tale-id="{{id}}" data-tooltip="{{localize 'CHAMPION.Edit'}}"><i class="fa-solid fa-pen"></i></button>
+        <button type="button" class="lg-icon-btn" data-action="deleteTale" data-tale-id="{{id}}" data-tooltip="{{localize 'CHAMPION.Delete'}}"><i class="fa-solid fa-trash"></i></button>
+        {{/if}}
+      </footer>
+    </article>
+    {{/each}}
+  </div>
+  {{else}}
+  <div class="lg-empty">
+    <i class="fa-solid fa-feather-pointed"></i>
+    <p>{{localize "CHAMPION.Legend.Empty"}}</p>
+  </div>
+  {{/if}}
+
+  {{#if legend.faded.length}}
+  <details class="lg-faded">
+    <summary><i class="fa-solid fa-wind"></i> {{localize "CHAMPION.Legend.Faded"}} ({{legend.faded.length}})</summary>
+    <ul>
+      {{#each legend.faded}}
+      <li>
+        <i class="{{faceIcon}}"></i> <span>{{displayTitle}}</span> <small>{{circleLabel}}</small>
+        {{#if ../env.canEdit}}<button type="button" class="lg-icon-btn" data-action="editTale" data-tale-id="{{id}}"><i class="fa-solid fa-pen"></i></button>{{/if}}
+      </li>
+      {{/each}}
+    </ul>
+  </details>
+  {{/if}}
+
+  <details class="lg-howto">
+    <summary><i class="fa-solid fa-circle-question"></i> {{localize "CHAMPION.HowTo"}}</summary>
+    <div class="lg-howto-body">{{{localize "CHAMPION.Legend.HowTo"}}}</div>
+  </details>
+</div>

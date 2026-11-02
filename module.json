@@ -1,8 +1,8 @@
 {
   "id": "wfrp4e-champion",
-  "title": "WFRP4e – Iron Mandate: Champion",
-  "description": "Judicial duels, war challenges, dirty fighting stances and courtly influence for a Champion character in Warhammer Fantasy Roleplay 4e. English and Polish.",
-  "version": "1.3.0",
+  "title": "WFRP4e – Iron Mandate: Champion's Legend",
+  "description": "A legend system for a Champion character in Warhammer Fantasy Roleplay 4e: tales and fame, the Name the people give him, petitions, duels before the crowd with the party as seconds, rivals who remember, and inheritance when he falls. English and Polish.",
+  "version": "2.0.0",
   "compatibility": {
     "minimum": "13",
     "verified": "14",
@@ -40,7 +40,8 @@
     "wfrp4e-champion.mjs"
   ],
   "styles": [
-    "styles/champion.css"
+    "styles/fonts.css",
+    "styles/legend.css"
   ],
   "languages": [
     {

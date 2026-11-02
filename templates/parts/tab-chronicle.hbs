@@ -1,0 +1,27 @@
+<div class="lg-chronicle">
+  <div class="lg-section-head">
+    <h2><i class="fa-solid fa-feather-pointed"></i> {{localize "CHAMPION.Chronicle.Title"}}</h2>
+    {{#if env.canEdit}}<button type="button" class="lg-btn lg-btn--ghost-dark" data-action="addNote"><i class="fa-solid fa-pen-nib"></i> {{localize "CHAMPION.Chronicle.AddNote"}}</button>{{/if}}
+    {{#if env.isGM}}<button type="button" class="lg-btn lg-btn--gold" data-action="exportChronicle"><i class="fa-solid fa-book"></i> {{localize "CHAMPION.Chronicle.Export"}}</button>{{/if}}
+  </div>
+
+  {{#if chronicle.isEmpty}}
+  <div class="lg-empty">
+    <i class="fa-solid fa-book-open"></i>
+    <p>{{localize "CHAMPION.Chronicle.Empty"}}</p>
+  </div>
+  {{else}}
+  <ol class="lg-timeline">
+    {{#each chronicle.entries}}
+    <li class="lg-entry lg-entry--{{kind}}">
+      <span class="lg-entry-icon"><i class="{{icon}}"></i></span>
+      <div class="lg-entry-body">
+        {{#if dateLabel}}<time>{{dateLabel}}</time>{{/if}}
+        <p>{{text}}</p>
+      </div>
+      {{#if ../env.canEdit}}<button type="button" class="lg-icon-btn lg-entry-del" data-action="deleteNote" data-entry-id="{{id}}"><i class="fa-solid fa-trash"></i></button>{{/if}}
+    </li>
+    {{/each}}
+  </ol>
+  {{/if}}
+</div>
