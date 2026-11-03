@@ -53,8 +53,41 @@ function seals(weight, max = R.MAX_WEIGHT) {
  * @param {string} env.activeTab
  * @param {boolean} [env.combatAvailable]
  */
+/** Teksty zależne od parametrów zasad (MG może je zmienić). */
+export function ruleVars() {
+  const P = R.params();
+  return {
+    t1: P.tier1, t2: P.tier2, t3: P.tier3, t4: P.tier4,
+    rec: P.recognitionPerTier, echo: P.echoBase, inv: P.invokePerWeight, refute: P.refutePerWeight, accept: P.nameAcceptWeight,
+    max: P.maxPromises, promises: P.maxPromises, dim: P.declineDimStake, endeavour: P.endeavourMaxStake,
+    preps: P.maxPreps, great: P.greatSL, fb: P.hitsFirstBlood, yield: P.hitsYield, death: P.hitsDeath,
+    double: P.doubleHitMargin, wb: P.woundsBase, bonus: P.approachBonus, sl: P.edgeSL, rsl: P.rivalEdgeSL,
+    at: P.crowdThreshold, crowdBonus: P.crowdTestBonus, shift: P.crowdShiftMargin
+  };
+}
+
+export function ruleLabels(t) {
+  const v = ruleVars();
+  return {
+    useEdgeToggle: t("Arena.UseEdgeToggle", v),
+    approachRule: t("Arena.ApproachRule", v),
+    crowdQuick: t("Arena.CrowdQuick", { ...v, bonus: v.crowdBonus }),
+    hitsHint: t("Arena.HitsHint", v),
+    playToCrowdHint: t("Arena.PlayToCrowdHint", v),
+    linkCombatHint: t("Arena.LinkCombatHint", v),
+    rivalEdgesHint: t("Arena.RivalEdgesHint", { ...v, sl: v.rsl }),
+    promisesHint: t("Petitions.PromisesHint", v),
+    tooMany: t("Petitions.TooMany", v),
+    howtoLegend: t("Legend.HowTo", v),
+    howtoPetitions: t("Petitions.HowTo", v),
+    howtoDeeds: t("Deeds.HowTo", v),
+    howtoArena: t("Arena.HowTo", v)
+  };
+}
+
 export function buildViewModel(state, env) {
   const t = env.t;
+  const vars = ruleVars();
   const faceLabel = face => t(`Face.${face}.Name`);
   const circleLabel = circle => t(`Circle.${circle}`);
   const weightLabel = w => (w >= 1 ? t(`Weight.${w}`) : t("Weight.0"));
@@ -195,9 +228,9 @@ export function buildViewModel(state, env) {
     accepted: state.petitions.filter(p => p.status === "accepted").map(petitionView),
     archive: state.petitions.filter(p => ["fulfilled", "failed", "declined"].includes(p.status)).map(petitionView).reverse(),
     promises,
-    promiseSlots: Array.from({ length: R.MAX_PROMISES }, (_, i) => i < promises),
+    promiseSlots: Array.from({ length: R.params().maxPromises }, (_, i) => i < promises),
     canAccept: R.canAccept(state),
-    max: R.MAX_PROMISES
+    max: R.params().maxPromises
   };
   petitions.isEmpty = !petitions.open.length && !petitions.accepted.length;
 
@@ -237,7 +270,7 @@ export function buildViewModel(state, env) {
         id,
         icon: cfg.icon,
         label: t(`Arena.Prep.${id}.Name`),
-        effect: t(`Arena.Prep.${id}.Effect`),
+        effect: t(`Arena.Prep.${id}.Effect`, vars),
         skillLabel: t(`Skill.${cfg.skill}`),
         result: r,
         slLabel: r ? (r.sl >= 0 ? `+${r.sl}` : `${r.sl}`) : "",
@@ -254,7 +287,7 @@ export function buildViewModel(state, env) {
       id,
       icon: R.APPROACH_ICON[id],
       label: t(`Arena.Approach.${id}.Name`),
-      hint: t(`Arena.Approach.${id}.Hint`),
+      hint: t(`Arena.Approach.${id}.Hint`, vars),
       dark: id === "dirty"
     }));
     const exchanges = [...d.exchanges].reverse().map(x => ({
@@ -282,17 +315,17 @@ export function buildViewModel(state, env) {
           label: t(`Arena.Stage.${id}`),
           state: i < stageIndex ? "done" : (i === stageIndex ? "current" : "todo")
         })),
-        stageHelp: t(`Arena.StageHelp.${d.stage}`),
+        stageHelp: t(`Arena.StageHelp.${d.stage}`, vars),
         isChallenge: d.stage === "challenge",
         isPrep: d.stage === "prep",
         isFight: d.stage === "fight",
         isAftermath: d.stage === "aftermath",
-        canBack: stageIndex > 0 && d.stage !== "aftermath",
+        canBack: stageIndex > 0 && (d.stage !== "aftermath" || env.isGM),
         canNext: stageIndex < R.DUEL_STAGES.length - 1,
         nextLabel: stageIndex < R.DUEL_STAGES.length - 1 ? t(`Arena.Next.${R.DUEL_STAGES[stageIndex + 1]}`) : "",
         preps,
         prepsDone: doneCount,
-        prepsMax: R.MAX_PREPS,
+        prepsMax: R.params().maxPreps,
         isQuick: d.mode === "quick",
         needed,
         champPips: pips(d.champScore),
@@ -301,7 +334,7 @@ export function buildViewModel(state, env) {
         exchanges,
         freeEdges: d.edges.filter(e => !e.used).length,
         resultLabel: d.result ? t(`Arena.Outcome.${d.result === "win" ? "win" : "loss"}`) : "",
-        edges: d.edges.map(e => ({ ...e, label: t(`Arena.Edge.${e.kind}`) })),
+        edges: d.edges.map(e => ({ ...e, label: t(`Arena.Edge.${e.kind}`, vars) })),
         hasEdges: d.edges.length > 0,
         rivalEdgeChips,
         activeRivalEdges: R.activeRivalEdges(d),
@@ -325,6 +358,7 @@ export function buildViewModel(state, env) {
 
   return {
     env: { isGM: env.isGM, canEdit: env.canEdit, activeTab: env.activeTab },
+    labels: ruleLabels(t),
     header,
     tabs,
     legend,
@@ -350,6 +384,7 @@ export function buildHudModel(state, env) {
     .sort((a, b) => a.deadline - b.deadline)[0] ?? null;
   return {
     env: vm.env,
+    labels: vm.labels,
     header: vm.header,
     ready,
     readyCount: vm.legend.tales.filter(tl => tl.canInvoke).length,

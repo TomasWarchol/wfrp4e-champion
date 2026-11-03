@@ -186,16 +186,16 @@
       "RefuteHint": "Gossip test at −10 per point of Weight. Success: the lie stops spreading.",
       "Empty": "Nobody tells stories about this champion yet. The first deed, petition or duel will change that.",
       "Faded": "Faded tales",
-      "HowTo": "<p>A <b>tale</b> is a named deed that spreads among people. It has a <b>face</b> (who people think the champion is), a <b>circle</b> (who tells it) and a <b>Weight</b>: 1 Rumour (locality), 2 Tale (province), 3 Legend (the whole Empire).</p><p><b>Fame</b> is the total Weight. Thresholds 3 / 7 / 12 / 18 give Tiers I–IV. The Tier says how easily a stranger recognises the champion (d10 ≤ 2 × Tier) and how often fame draws something in (Echo: d10 ≤ Tier + 1).</p><p><b>Invoking:</b> once per session each tale can be invoked in a social test against someone who could have heard it. Bonus +1 SL per point of Weight. Bright tales support Charm, Leadership and Haggle, dark ones Intimidate.</p><p><b>Name:</b> the player declares who he wants to be. The people name him after the face with the highest Weight. Calling the Name once per session gives 1 Resolve, and an accepted Name (people's face = declared, Weight ≥ 3) also 1 Fortune.</p>"
+      "HowTo": "<p>A <b>tale</b> is a named deed that spreads among people. It has a <b>face</b> (who people think the champion is), a <b>circle</b> (who tells it) and a <b>Weight</b>: 1 Rumour (locality), 2 Tale (province), 3 Legend (the whole Empire).</p><p><b>Fame</b> is the total Weight. Thresholds {t1} / {t2} / {t3} / {t4} give Tiers I–IV. The Tier says how easily a stranger recognises the champion (d10 ≤ {rec} × Tier) and how often fame draws something in (Echo: d10 ≤ Tier + {echo}).</p><p><b>Invoking:</b> once per session each tale can be invoked in a social test against someone who could have heard it: +{inv} SL per point of Weight. Bright tales support Charm, Leadership and Haggle, dark ones Intimidate.</p><p><b>Name:</b> the player declares who he wants to be. The people name him after the face with the highest Weight. Calling the Name once per session gives 1 Resolve, and an accepted Name (people's face = declared, Weight ≥ {accept}) also 1 Fortune.</p>"
     },
     "Petitions": {
       "Title": "Petitions",
       "Promises": "Promises",
-      "PromisesHint": "The champion can promise help in at most three matters at a time.",
+      "PromisesHint": "The champion can promise help in at most {max} matters at a time.",
       "Add": "New petition",
       "Empty": "Nobody has come with a petition yet. The Echo of Fame or the GM will change that. Drag an actor here to add a petitioner.",
       "Accept": "Promise",
-      "TooMany": "The champion already has three promises.",
+      "TooMany": "Promise limit ({max}) reached.",
       "Decline": "Decline",
       "DeclineHint": "Declining a serious or life-and-death matter dims the legend in the petitioner's circle.",
       "Fulfill": "Fulfilled",
@@ -220,7 +220,7 @@
       },
       "FulfilledTitle": "Word kept: {who}",
       "BrokenTitle": "He broke his word: {who}",
-      "HowTo": "<p>People come to the champion with petitions. The player chooses which to promise help with (at most <b>3 promises</b> at a time).</p><ul><li><b>Fulfilled:</b> a tale is born with Weight equal to the stake, in the petitioner's circle.</li><li><b>Failed:</b> a \"he broke his word\" tale is born with the Rogue face and the same Weight.</li><li><b>Declined:</b> no cost for a small matter. For a serious or life-and-death matter the strongest bright tale in that circle loses 1 Weight.</li></ul><p>Petitions are ready adventure hooks for the whole party.</p>",
+      "HowTo": "<p>People come to the champion with petitions. The player chooses which to promise help with (at most <b>{max}</b> at a time).</p><ul><li><b>Fulfilled:</b> a tale is born with Weight equal to the stake, in the petitioner's circle.</li><li><b>Failed:</b> a \"he broke his word\" tale is born with the Rogue face and the same Weight.</li><li><b>Declined:</b> from stake {dim} the strongest bright tale in that circle loses 1 Weight.</li><li><b>Off-screen:</b> matters up to stake {endeavour} can be settled with one test between adventures.</li></ul>",
       "EndeavourHint": "Settle it off-screen (an endeavour between adventures): one test, success gives a tale, failure bad fame."
     },
     "Arena": {
@@ -233,14 +233,14 @@
       "Wager": "Wager",
       "WeightIfWon": "Tale Weight if won",
       "RivalEdges": "Rival's edges",
-      "RivalEdgesHint": "The GM decides how many dirty advantages the rival has (poison, a bribed judge, his own scout). Each rival edge is +1 SL to one of his tests.",
+      "RivalEdgesHint": "The GM decides how many dirty advantages the rival has (poison, a bribed judge, his own scout). Each rival edge is +{sl} SL to one of his exchanges.",
       "ThrowGauntlet": "Announce the challenge",
       "Roll": "Roll",
       "PlayToCrowd": "Play to the crowd",
-      "PlayToCrowdHint": "An Action in combat: Charm test. Success: Crowd +1 (SL ≥ 3: +2). Failure by 3+ SL: Crowd −1.",
+      "PlayToCrowdHint": "An Action in combat: Charm test. Success: Crowd +1 (SL ≥ {great}: +2). Failure by {great}+ SL: Crowd −1.",
       "Edges": "Champion's edges",
       "Edge": {
-        "weakness": "Rival's weakness (+2 SL to one test against him)"
+        "weakness": "Rival's weakness (+{sl} SL to one test against him)"
       },
       "UseEdge": "Use",
       "NoEdges": "No edges. The scout can find some during preparations.",
@@ -249,7 +249,7 @@
       "DirtyHint": "Sand in the eyes, a low blow: Crowd −1, and the tale of a victory will have the Rogue face.",
       "LinkCombat": "Link to combat",
       "Linked": "Linked to combat",
-      "LinkCombatHint": "With Crowd ≥ +2 the champion gains +1 Advantage at the start of every round; at ≤ −2 the rival gains it.",
+      "LinkCombatHint": "With Crowd ≥ +{at} the champion gains +1 Advantage at the start of every round; at ≤ −{at} the rival gains it.",
       "Heal": "Surgeon heals",
       "Resolve": "Resolve the duel",
       "Cancel": "Call off",
@@ -275,7 +275,7 @@
       },
       "StageHelp": {
         "challenge": "Agree the terms, venue and stakes. The GM decides how many edges the rival has. Announce the challenge in chat.",
-        "prep": "The champion picks at most two preparations and rolls with his own character. There is no time for the rest.",
+        "prep": "The champion picks at most {preps} preparations and rolls with his own character. There is no time for the rest.",
         "fight": "Quick duel: pick an approach and trade blows. A few rolls and it's over. Or switch to full combat in the tracker.",
         "aftermath": "Who won, and what happened to the loser? That is where the tale is born."
       },
@@ -308,17 +308,17 @@
         "humiliated": "Humiliated",
         "killed": "Killed"
       },
-      "HowTo": "<p>A <b>quick duel</b> is a few rolls, not half a session. Each exchange is the champion's Melee test (in the WFRP dialog) against the rival's roll. More SL hits; a tie is a clash. A margin of 4+ SL is a double hit. Hits to win: first blood 1, until one yields 2, to the death 3. A hit champion loses 1 + margin Wounds.</p><p><b>Approach:</b> attack beats feint, feint beats guard, guard beats attack (+20 to the test). The rival picks at random. A dirty trick always gives +20, but the Crowd drops and a victory gets the Rogue face.</p><p><b>Crowd</b> from −3 to +3: at ±2 the supported side gets +10. Winning by 3+ SL moves the Crowd.</p><p><b>Preparations:</b> at most two of five (scouting, the crowd, wager, weapons and judges, surgeon), each one test by the champion.</p><p><b>Challenge the leader</b> (in any fight): Intimidate or Leadership against the leader's Cool. On a win he accepts (quick duel at once) or refuses (the champion gains +1 Advantage and a deed to proclaim).</p><p>The <b>aftermath</b> births a tale as before: Weight from audience and Crowd, face from the loser's fate.</p>",
-      "HitsHint": "Hits: this many win the duel (first blood 1, until one yields 2, to the death 3).",
+      "HowTo": "<p>A <b>quick duel</b> is a few rolls, not half a session. Each exchange is the champion's Melee test (in the WFRP dialog) against the rival's roll. More SL hits; a tie is a clash. A margin of {double}+ SL is a double hit. Hits to win: first blood {fb}, until one yields {yield}, to the death {death}. A hit champion loses {wb} + margin Wounds.</p><p><b>Approach:</b> attack beats feint, feint beats guard, guard beats attack (+{bonus} to the test). The rival picks at random. A dirty trick always gives +{bonus}, but the Crowd drops and a victory gets the Rogue face.</p><p><b>Crowd</b> from −3 to +3: at ±{at} the supported side gets +{crowdBonus}. Winning by {shift}+ SL moves the Crowd.</p><p><b>Preparations:</b> at most {preps} of five (scouting, the crowd, wager, weapons and judges, surgeon), each one test by the champion. A champion's edge is +{sl} SL, a rival's edge +{rsl} SL.</p><p><b>Challenge the leader</b> (in any fight): Intimidate or Leadership against the leader's Cool. On a win he accepts (quick duel at once) or refuses (the champion gains +1 Advantage and a deed to proclaim).</p><p>The <b>aftermath</b> births a tale: Weight from audience and Crowd, face from the loser's fate.</p>",
+      "HitsHint": "Hits: this many win the duel (first blood {fb}, until one yields {yield}, to the death {death}).",
       "HitsToWin": "Hits to win",
       "PrepsDone": "Preparations:",
       "UndoPrep": "Undo preparation",
       "ModeQuick": "Quick duel",
       "ModeFull": "Full combat",
-      "CrowdQuick": "At ±2 the side the crowd supports gets +10 to tests",
+      "CrowdQuick": "At ±{at} the side the crowd supports gets +{bonus} to tests",
       "Exchange": "Exchange",
-      "ApproachRule": "Attack beats feint, feint beats guard, guard beats attack (+20). A dirty trick always gives +20, but the crowd jeers.",
-      "UseEdgeToggle": "Use an edge (+2 SL)",
+      "ApproachRule": "Attack beats feint, feint beats guard, guard beats attack (+{bonus}). A dirty trick always gives +{bonus}, but the crowd jeers.",
+      "UseEdgeToggle": "Use an edge (+{sl} SL)",
       "ExchangeGo": "Exchange!",
       "Yield": "Yield",
       "ExchangeTitle": "Exchange {n}",
@@ -330,25 +330,25 @@
       "Prep": {
         "scout": {
           "Name": "Scouting",
-          "Effect": "Ask around about the rival. Success: edge \"Rival's weakness\" (SL ≥ 3: two).",
+          "Effect": "Ask around about the rival. Success: edge \"Rival's weakness\" (SL ≥ {great}: two).",
           "Success": "You know the rival's weaknesses (edges: {edges}).",
           "Failure": "You know nothing about the rival."
         },
         "crowd": {
           "Name": "The crowd",
-          "Effect": "Warm up the audience. Success: the Crowd starts at +1 (SL ≥ 3: +2).",
+          "Effect": "Warm up the audience. Success: the Crowd starts at +1 (SL ≥ {great}: +2).",
           "Success": "The crowd is on your side ({crowd}).",
           "Failure": "The crowd stays indifferent or hostile ({crowd})."
         },
         "bet": {
           "Name": "Wager",
-          "Effect": "Bet on yourself. Success: odds 2:1 (SL ≥ 3: 3:1). Failure: 1:1.",
+          "Effect": "Bet on yourself. Success: odds 2:1 (SL ≥ {great}: 3:1). Failure: 1:1.",
           "Success": "Odds {odds}:1.",
           "Failure": "Odds only {odds}:1."
         },
         "arms": {
           "Name": "Weapons and judges",
-          "Effect": "Check the rival's weapon and the judges. Success: cancel a rival edge (SL ≥ 3: two).",
+          "Effect": "Check the rival's weapon and the judges. Success: cancel a rival edge (SL ≥ {great}: two).",
           "Success": "Rival edges cancelled: {negated}.",
           "Failure": "You didn't spot the trick."
         },
@@ -374,7 +374,7 @@
         },
         "dirty": {
           "Name": "Dirty trick",
-          "Hint": "Always +20, but Crowd −1, and a victory gets the Rogue face."
+          "Hint": "Always +{bonus}, but Crowd −1, and a victory gets the Rogue face."
         }
       }
     },
@@ -457,7 +457,7 @@
       "ChallengeTitle": "{champion} challenges: {rival}",
       "ChallengeFoot": "Preparations and the fight in the champion's Arena.",
       "EdgeKicker": "Edge used",
-      "EdgeBody": "+2 SL to one test against: {rival}.",
+      "EdgeBody": "+{sl} SL to one test against: {rival}.",
       "CrowdShift": "Crowd {delta} (now {crowd}).",
       "DirtyTitle": "Sand in the eyes!",
       "DirtyBody": "The crowd jeers. If the champion wins, the tale will have the Rogue face.",
@@ -494,7 +494,7 @@
       "ExchangeKicker": "Exchange {n} · {champ} : {rival} (to {needed})",
       "ExchangeChamp": "{name}: {approach}, {sl} SL",
       "ExchangeRival": "{name}: {approach}, {sl} SL (d100 = {roll} vs {target})",
-      "RivalEdgeUsed": "The rival used an edge (+1 SL)",
+      "RivalEdgeUsed": "The rival used an edge (+{sl} SL)",
       "ChampWounded": "The champion loses {n} Wounds",
       "ExchangeWin": "{name} lands a hit!",
       "ExchangeWinDouble": "{name} lands a mighty hit (×2)!",
@@ -624,7 +624,42 @@
       "LeaderCool": "Leader's Cool",
       "LeaderMelee": "His Melee",
       "LeaderSkill": "Champion's test",
-      "LeaderDefault": "The enemy leader"
+      "LeaderDefault": "The enemy leader",
+      "GMOnly": "GM only",
+      "TaleInvoked": "Invoked this session",
+      "TaleInherited": "Inherited from a predecessor",
+      "PetitionStatus": "Status",
+      "PetitionStatusHint": "No side effects: creates no tale and dims nothing.",
+      "RivalImg": "Portrait (image path)",
+      "Wins": "Champion's wins",
+      "Losses": "Champion's losses",
+      "Draws": "Draws",
+      "Bribe": "Bribery (edges in the next duel)",
+      "DeedEdit": "Edit deed",
+      "NoteEdit": "Edit chronicle entry",
+      "LegendStateTitle": "Legend state: {name}",
+      "LegendStateButton": "Legend state (GM)",
+      "LegendStateHint": "Everything not changed in other windows: session, hood, Calling the Name, invocations, fallen, heir.",
+      "SessionNumber": "Session number",
+      "SessionNumberHint": "Shared by the whole world. Changing it refreshes invocations and Calling the Name.",
+      "HeirOf": "Heir (of whom)",
+      "NameCalledFlag": "Calling the Name used this session",
+      "ResetInvocations": "Refresh invocations of all tales",
+      "FallenFlag": "The champion has fallen",
+      "ClearChallenge": "Remove the pending challenge ({name})",
+      "DuelStateTitle": "Duel state (GM)",
+      "DuelStateButton": "Duel state",
+      "DuelStateHint": "Every number of the running duel: stage, mode, result, crowd, hits, edges, odds and surgeon.",
+      "DuelStage": "Stage",
+      "DuelMode": "Mode",
+      "DuelResult": "Result",
+      "ChampScore": "Champion's hits",
+      "RivalScore": "Rival's hits",
+      "FreeEdges": "Champion's free edges",
+      "NegatedEdges": "Rival edges cancelled",
+      "RivalEdgesUsed": "Rival edges used",
+      "DirtyCount": "Dirty tricks",
+      "ClearExchanges": "Clear the exchange log ({n})"
     },
     "Notify": {
       "SelectToken": "Select the champion's token or assign a character to the player.",
@@ -648,8 +683,12 @@
       "OwnerOnly": "Only the champion's player or the GM."
     },
     "Settings": {
-      "CrowdAdvantageName": "Crowd grants Advantage",
-      "CrowdAdvantageHint": "In a duel linked to a combat: at Crowd ±2 the side the crowd supports gains +1 Advantage at the start of every round."
+      "crowdAdvantageName": "Crowd grants Advantage (full combat)",
+      "crowdAdvantageHint": "In a duel played as full combat in the tracker: at the Crowd threshold the side the crowd supports gains +1 Advantage at the start of every round.",
+      "deedPromptName": "Ask about deeds after a fight",
+      "deedPromptHint": "After every fight with the champion, the player and the GM get a whisper: \"Anything worth a tale?\".",
+      "dialogTogglesName": "Invoke in the test dialog",
+      "dialogTogglesHint": "Tales show up as toggles in the WFRP test dialog (\"Champion's Legend\" effect). Off: invoking only from the panel."
     },
     "HubDesc": "The champion's legend: tales and fame, the Name the people give him, petitions, duels before the crowd with the party as seconds, rivals and inheritance.",
     "Effect": {
@@ -694,6 +733,131 @@
       "few": "A few",
       "crowd": "A crowd",
       "great": "A great event"
+    },
+    "Params": {
+      "Title": "Legend Rules",
+      "Open": "Set the rules",
+      "MenuHint": "Every rule number of the module: fame thresholds, promises, the duel, the crowd.",
+      "Intro": "Every rule number can be changed. Changes apply at once in all sheets, panels and test dialogs. Changed values are highlighted.",
+      "Default": "default",
+      "Reset": "Restore defaults",
+      "Saved": "Legend Rules saved.",
+      "ResetDone": "Default rules restored.",
+      "Group": {
+        "fame": "Fame, the Name and invoking",
+        "petitions": "Petitions",
+        "duel": "Duel",
+        "crowd": "Crowd",
+        "behaviour": "Module behaviour"
+      },
+      "tier1": {
+        "Name": "Tier I threshold",
+        "Hint": "Fame needed for Tier I."
+      },
+      "tier2": {
+        "Name": "Tier II threshold",
+        "Hint": "Fame needed for Tier II."
+      },
+      "tier3": {
+        "Name": "Tier III threshold",
+        "Hint": "Fame needed for Tier III."
+      },
+      "tier4": {
+        "Name": "Tier IV threshold",
+        "Hint": "Fame needed for Tier IV (Living legend)."
+      },
+      "recognitionPerTier": {
+        "Name": "Recognition per Tier",
+        "Hint": "A stranger recognises the champion on d10 ≤ this number × Tier."
+      },
+      "echoBase": {
+        "Name": "Echo of Fame: bonus",
+        "Hint": "The Echo draws something in on d10 ≤ Tier + this number."
+      },
+      "invokePerWeight": {
+        "Name": "SL per point of Weight",
+        "Hint": "Invoking bonus: Weight × this number."
+      },
+      "refutePerWeight": {
+        "Name": "Refuting penalty",
+        "Hint": "Gossip penalty when refuting: −(this number) per point of Weight."
+      },
+      "nameAcceptWeight": {
+        "Name": "Accepted Name weight",
+        "Hint": "The Name is accepted when the people's face = declared and has at least this much Weight."
+      },
+      "maxPromises": {
+        "Name": "Promise limit",
+        "Hint": "How many petitions the champion can promise at a time."
+      },
+      "declineDimStake": {
+        "Name": "Declining dims from stake",
+        "Hint": "Declining a matter of this stake or higher dims the legend (4 = never)."
+      },
+      "endeavourMaxStake": {
+        "Name": "Endeavour up to stake",
+        "Hint": "Petitions of this stake or lower can be settled off-screen with one test (0 = off)."
+      },
+      "maxPreps": {
+        "Name": "Number of preparations",
+        "Hint": "How many preparations the champion can make before a duel."
+      },
+      "greatSL": {
+        "Name": "Great success (SL)",
+        "Hint": "From this many SL a preparation has a double effect (e.g. two edges)."
+      },
+      "hitsFirstBlood": {
+        "Name": "Hits: first blood",
+        "Hint": "Hits to win a fight to first blood."
+      },
+      "hitsYield": {
+        "Name": "Hits: until one yields",
+        "Hint": "Hits to win a fight until one yields."
+      },
+      "hitsDeath": {
+        "Name": "Hits: to the death",
+        "Hint": "Hits to win a fight to the death."
+      },
+      "doubleHitMargin": {
+        "Name": "Double hit from",
+        "Hint": "SL margin in an exchange from which a hit counts double."
+      },
+      "woundsBase": {
+        "Name": "Wounds: base",
+        "Hint": "A hit champion loses (this number + SL margin) Wounds."
+      },
+      "approachBonus": {
+        "Name": "Approach bonus",
+        "Hint": "Test bonus when your approach beats the opponent's (and for a dirty trick)."
+      },
+      "edgeSL": {
+        "Name": "Champion's edge (SL)",
+        "Hint": "How many SL a champion's edge gives in one exchange or test."
+      },
+      "rivalEdgeSL": {
+        "Name": "Rival's edge (SL)",
+        "Hint": "How many SL the rival gets for each of his edges."
+      },
+      "defaultRivalSkill": {
+        "Name": "Default rival Melee",
+        "Hint": "Melee of a rival who is not an actor."
+      },
+      "defaultLeaderCool": {
+        "Name": "Default leader Cool",
+        "Hint": "Cool of the enemy leader when he isn't targeted on the map."
+      },
+      "crowdThreshold": {
+        "Name": "Crowd threshold",
+        "Hint": "From this Crowd value (±) the supported side gets a bonus."
+      },
+      "crowdTestBonus": {
+        "Name": "Crowd bonus",
+        "Hint": "Test bonus in a quick duel for the side the crowd supports."
+      },
+      "crowdShiftMargin": {
+        "Name": "Crowd reacts from (SL)",
+        "Hint": "Winning an exchange by this many SL or more moves the Crowd by 1."
+      }
     }
   }
 }

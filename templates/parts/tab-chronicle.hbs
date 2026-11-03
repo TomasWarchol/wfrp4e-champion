@@ -19,7 +19,12 @@
         {{#if dateLabel}}<time>{{dateLabel}}</time>{{/if}}
         <p>{{text}}</p>
       </div>
-      {{#if ../env.canEdit}}<button type="button" class="lg-icon-btn lg-entry-del" data-action="deleteNote" data-entry-id="{{id}}"><i class="fa-solid fa-trash"></i></button>{{/if}}
+      {{#if ../env.canEdit}}
+      <span class="lg-entry-tools">
+        <button type="button" class="lg-icon-btn" data-action="editNote" data-entry-id="{{id}}" data-tooltip="{{localize 'CHAMPION.Edit'}}"><i class="fa-solid fa-pen"></i></button>
+        <button type="button" class="lg-icon-btn" data-action="deleteNote" data-entry-id="{{id}}" data-tooltip="{{localize 'CHAMPION.Delete'}}"><i class="fa-solid fa-trash"></i></button>
+      </span>
+      {{/if}}
     </li>
     {{/each}}
   </ol>

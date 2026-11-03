@@ -113,6 +113,23 @@ During play the champion has a **small session panel** at hand (a button on his 
   - onto the gauntlet in the Arena starts a challenge at once.
 - **Challenge the leader:** target the leader on the map, and his Cool and Melee are read automatically.
 
+## For the GM: edit every parameter
+
+- **Legend Rules** (Settings → Module Settings → "Set the rules", the gears icon in the book, or `game.champion.openRules()`): every rule number with its range and default, in four groups:
+  - **Fame:** fame thresholds, recognition, Echo, SL per Weight, refuting penalty, accepted Name weight;
+  - **Petitions:** promise limit, the stake that dims on declining, endeavours;
+  - **Duel:** preparations, great success, hits by terms, double hit, wounds, approach bonus, edges, rival and leader defaults;
+  - **Crowd:** threshold, bonus, reaction.
+
+  Plus three behaviour toggles: crowd Advantage, the after-fight deed prompt and the test dialog toggles. Changes apply at once, and the "How it works" texts show the current numbers.
+- **Legend state** (sliders in the book header): session number, hood, Calling the Name, refreshing invocations, fallen, heir, pending challenge.
+- **Duel state** (Arena): stage (including going back from the aftermath), mode, result, crowd, both sides' hits, rival Melee, champion and rival edges (free, cancelled, used), odds, dirty tricks, surgeon, exchange log.
+- **The forms get "GM only" fields:**
+  - tale: invoked this session, inherited, lie, Weight 0–3;
+  - petition: any status, with no side effects;
+  - rival: win/loss/draw record, bribery, portrait.
+- **Deeds and chronicle entries** can be edited right in their lists.
+
 ## Installation
 
 In Foundry: **Add-on Modules → Install Module**, paste into *Manifest URL*:

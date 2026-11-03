@@ -89,7 +89,8 @@ function taleForm(tale, { isNew }) {
     D.field(t("Dialog.Weight"), D.weightChoices("weight", Math.max(1, tale.weight)), t("Dialog.WeightHint")),
     D.field(t("Dialog.Trophy"), D.text("trophy", tale.trophy, t("Dialog.TrophyPlaceholder"))),
     game.user.isGM ? D.checkbox("lie", tale.lie, t("Dialog.Lie")) : "",
-    !isNew ? D.field(t("Dialog.Tavern"), D.area("tavern", tale.tavern)) : ""
+    !isNew ? D.field(t("Dialog.Tavern"), D.area("tavern", tale.tavern)) : "",
+    !isNew && game.user.isGM ? `<fieldset class="lg-gm-fields"><legend><i class="fa-solid fa-crown"></i> ${t("Dialog.GMOnly")}</legend>${D.checkbox("invoked", tale.invokedSession === Store.sessionId() && tale.invokedSession !== null, t("Dialog.TaleInvoked"))}${D.checkbox("inherited", tale.inherited, t("Dialog.TaleInherited"))}</fieldset>` : ""
   ].join("");
 }
 
@@ -103,7 +104,9 @@ function readTale(data, base = {}) {
     weight: Number(data.weight) || base.weight || 1,
     trophy: (data.trophy ?? "").trim(),
     lie: game.user.isGM ? !!data.lie : !!base.lie,
-    tavern: data.tavern !== undefined ? data.tavern.trim() : (base.tavern ?? "")
+    tavern: data.tavern !== undefined ? data.tavern.trim() : (base.tavern ?? ""),
+    invokedSession: game.user.isGM && data.invoked !== undefined ? (data.invoked ? Store.sessionId() : null) : (base.invokedSession ?? null),
+    inherited: game.user.isGM && data.inherited !== undefined ? !!data.inherited : !!base.inherited
   };
 }
 
@@ -311,6 +314,18 @@ export async function promoteDeed(actor, deedId) {
   await commitTale(actor, { title: (data.title ?? "").trim() || deed.text, text: deed.text, face: data.face ?? "protector", circle: data.circle ?? "commons", weight, source: deed.source });
 }
 
+export async function editDeed(actor, deedId) {
+  const deed = Store.getState(actor).deeds.find(d => d.id === deedId);
+  if (!deed) return;
+  const data = await D.formDialog({ title: t("Dialog.DeedEdit"), icon: "fa-solid fa-pen", width: 460, html: D.field(t("Dialog.DeedText"), D.text("text", deed.text)) });
+  if (!data?.text?.trim()) return;
+  await Store.update(actor, s => {
+    const d = s.deeds.find(x => x.id === deedId);
+    if (d) d.text = data.text.trim();
+    return s;
+  });
+}
+
 export async function dismissDeed(actor, deedId) {
   await Store.update(actor, s => R.removeDeed(s, deedId));
 }
@@ -332,6 +347,94 @@ export async function combatEndPrompt(combat) {
     });
     await ChatMessage.create({ content, whisper: owners, speaker: ChatMessage.getSpeaker({ actor }), flags: { [MODULE_ID]: { kind: "deedPrompt" } } });
   }
+}
+
+/* ==================================================================== */
+/*  Edycja stanu przez MG                                               */
+/* ==================================================================== */
+
+/** MG: stan legendy (sesja, kaptur, Wezwanie Imienia, przywołania, poległy, dziedzic, oczekujące wyzwanie). */
+export async function editLegendState(actor) {
+  if (!game.user.isGM) return;
+  const state = Store.getState(actor);
+  const session = Store.sessionId();
+  const data = await D.formDialog({
+    title: t("Dialog.LegendStateTitle", { name: actor.name }),
+    icon: "fa-solid fa-sliders",
+    width: 560,
+    html: [
+      `<p class="lg-hint">${t("Dialog.LegendStateHint")}</p>`,
+      `<div class="lg-field-row">${D.field(t("Dialog.SessionNumber"), D.number("session", session, { min: 1 }), t("Dialog.SessionNumberHint"))}${D.field(t("Dialog.HeirOf"), D.text("heirOf", state.heirOf?.name ?? ""))}</div>`,
+      D.checkbox("incognito", state.incognito, t("Hood.Hint")),
+      D.checkbox("nameCalled", state.nameCalledSession === session && session !== null, t("Dialog.NameCalledFlag")),
+      D.checkbox("resetInvocations", false, t("Dialog.ResetInvocations")),
+      D.checkbox("fallen", state.fallen, t("Dialog.FallenFlag")),
+      state.pendingChallenge ? D.checkbox("clearChallenge", false, t("Dialog.ClearChallenge", { name: state.pendingChallenge.name })) : ""
+    ].join("")
+  });
+  if (!data) return;
+  const newSession = Math.max(1, Math.round(Number(data.session) || session));
+  await Store.update(actor, s => {
+    s.incognito = !!data.incognito;
+    s.nameCalledSession = data.nameCalled ? newSession : null;
+    if (data.resetInvocations) for (const tale of s.tales) tale.invokedSession = null;
+    s.fallen = !!data.fallen;
+    const heir = (data.heirOf ?? "").trim();
+    s.heirOf = heir ? { name: heir, uuid: s.heirOf?.uuid ?? "" } : null;
+    if (data.clearChallenge) s.pendingChallenge = null;
+    return s;
+  });
+  if (newSession !== session) await game.settings.set(MODULE_ID, "session", newSession);
+}
+
+/** MG: każda liczba trwającego pojedynku (etap, tryb, tłum, trafienia, Atuty, kurs, cyrulik, wynik). */
+export async function editDuelState(actor) {
+  if (!game.user.isGM) return;
+  const d = Store.getState(actor).duel;
+  if (!d) return;
+  const freeEdges = d.edges.filter(e => !e.used).length;
+  const num = (name, value, opts) => D.number(name, value, opts);
+  const data = await D.formDialog({
+    title: t("Dialog.DuelStateTitle"),
+    icon: "fa-solid fa-sliders",
+    width: 640,
+    html: [
+      `<p class="lg-hint">${t("Dialog.DuelStateHint")}</p>`,
+      `<div class="lg-field-row">${D.field(t("Dialog.DuelStage"), D.select("stage", R.DUEL_STAGES.map(st => ({ value: st, label: t(`Arena.Stage.${st}`) })), d.stage))}${D.field(t("Dialog.DuelMode"), D.select("mode", [{ value: "quick", label: t("Arena.ModeQuick") }, { value: "full", label: t("Arena.ModeFull") }], d.mode))}${D.field(t("Dialog.DuelResult"), D.select("result", [{ value: "", label: "—" }, { value: "win", label: t("Arena.Outcome.win") }, { value: "loss", label: t("Arena.Outcome.loss") }], d.result))}</div>`,
+      `<div class="lg-field-row">${D.field(t("Arena.Crowd"), num("crowd", d.crowd, { min: R.CROWD_MIN, max: R.CROWD_MAX }))}${D.field(t("Dialog.ChampScore"), num("champScore", d.champScore, { min: 0, max: 9 }))}${D.field(t("Dialog.RivalScore"), num("rivalScore", d.rivalScore, { min: 0, max: 9 }))}${D.field(t("Dialog.RivalSkill"), num("rivalSkill", d.rivalSkill, { min: 1, max: 150 }))}</div>`,
+      `<div class="lg-field-row">${D.field(t("Dialog.FreeEdges"), num("freeEdges", freeEdges, { min: 0, max: 6 }))}${D.field(t("Arena.RivalEdges"), num("rivalEdges", d.rivalEdges, { min: 0, max: R.MAX_RIVAL_EDGES }))}${D.field(t("Dialog.NegatedEdges"), num("negatedEdges", d.negatedEdges, { min: 0, max: R.MAX_RIVAL_EDGES }))}${D.field(t("Dialog.RivalEdgesUsed"), num("rivalEdgesUsed", d.rivalEdgesUsed, { min: 0, max: R.MAX_RIVAL_EDGES }))}</div>`,
+      `<div class="lg-field-row">${D.field(t("Arena.Odds"), num("odds", d.odds, { min: 0, max: 9 }))}${D.field(t("Dialog.DirtyCount"), num("dirty", d.dirty, { min: 0, max: 9 }))}${D.field(t("Arena.Heal"), num("surgeonHeal", d.surgeonHeal, { min: 0, max: 20 }))}</div>`,
+      D.checkbox("clearLog", false, t("Dialog.ClearExchanges", { n: d.exchanges.length }))
+    ].join("")
+  });
+  if (!data) return;
+  await Store.update(actor, s => {
+    if (!s.duel) return null;
+    const x = s.duel;
+    const n = (v, fallback) => (v === null || v === undefined || Number.isNaN(Number(v)) ? fallback : Number(v));
+    x.stage = R.DUEL_STAGES.includes(data.stage) ? data.stage : x.stage;
+    x.mode = data.mode === "full" ? "full" : "quick";
+    x.result = ["win", "loss"].includes(data.result) ? data.result : "";
+    x.crowd = R.clamp(n(data.crowd, x.crowd), R.CROWD_MIN, R.CROWD_MAX);
+    x.champScore = Math.max(0, n(data.champScore, x.champScore));
+    x.rivalScore = Math.max(0, n(data.rivalScore, x.rivalScore));
+    x.rivalSkill = R.clamp(n(data.rivalSkill, x.rivalSkill), 1, 150);
+    x.rivalEdges = R.clamp(n(data.rivalEdges, x.rivalEdges), 0, R.MAX_RIVAL_EDGES);
+    x.negatedEdges = R.clamp(n(data.negatedEdges, x.negatedEdges), 0, x.rivalEdges);
+    x.rivalEdgesUsed = R.clamp(n(data.rivalEdgesUsed, x.rivalEdgesUsed), 0, x.rivalEdges);
+    x.odds = Math.max(0, n(data.odds, x.odds));
+    x.dirty = Math.max(0, n(data.dirty, x.dirty));
+    x.surgeonHeal = Math.max(0, n(data.surgeonHeal, x.surgeonHeal));
+    // Wolne Atuty szampierza: dopisz albo zabierz nieużyte
+    const wanted = Math.max(0, n(data.freeEdges, 0));
+    const used = x.edges.filter(e => e.used);
+    const free = x.edges.filter(e => !e.used).slice(0, wanted);
+    while (free.length < wanted) free.push({ id: R.newId("edge"), kind: "weakness", used: false });
+    x.edges = [...used, ...free];
+    if (data.clearLog) x.exchanges = [];
+    s.duel = R.normalizeDuel(x);
+    return s;
+  });
 }
 
 /* ==================================================================== */
@@ -380,7 +483,8 @@ function petitionForm(p) {
     D.field(t("Dialog.Request"), D.area("request", p.request, t("Dialog.RequestPlaceholder"))),
     D.field(t("Dialog.Circle"), D.circleChoices(p.circle)),
     D.field(t("Dialog.Stake"), D.weightChoices("stake", p.stake, "Petitions.Stake"), t("Dialog.StakeHint")),
-    `<div class="lg-field-row">${D.field(t("Dialog.Deadline"), D.number("deadlineDays", days, { min: 0, placeholder: t("Petitions.NoDeadline") }))}${D.field(t("Dialog.Reward"), D.text("reward", p.reward))}</div>`
+    `<div class="lg-field-row">${D.field(t("Dialog.Deadline"), D.number("deadlineDays", days, { min: 0, placeholder: t("Petitions.NoDeadline") }))}${D.field(t("Dialog.Reward"), D.text("reward", p.reward))}</div>`,
+    game.user.isGM ? `<fieldset class="lg-gm-fields"><legend><i class="fa-solid fa-crown"></i> ${t("Dialog.GMOnly")}</legend>${D.field(t("Dialog.PetitionStatus"), D.select("status", R.PETITION_STATUS.map(st => ({ value: st, label: t(`Petitions.Status.${st}`) })), p.status), t("Dialog.PetitionStatusHint"))}</fieldset>` : ""
   ].join("");
 }
 
@@ -393,7 +497,8 @@ function readPetition(data, base) {
     circle: data.circle ?? base.circle,
     stake: Number(data.stake) || base.stake || 1,
     reward: data.reward.trim(),
-    deadline: days === null || days === undefined || days === "" ? null : time.addDays(Store.worldNow(), Number(days))
+    deadline: days === null || days === undefined || days === "" ? null : time.addDays(Store.worldNow(), Number(days)),
+    status: game.user.isGM && data.status ? data.status : base.status
   };
 }
 
@@ -492,7 +597,7 @@ export async function petitionAction(actor, petitionId, op) {
     return Store.chronicle(res.state, op === "fail" ? "failed" : "petition", t(`Chronicle.Petition_${op}`, { who: p.petitioner }), icon);
   });
   if (!effect) return;
-  if (effect.type === "tooMany") return ui.notifications.warn(t("Petitions.TooMany"));
+  if (effect.type === "tooMany") return ui.notifications.warn(t("Petitions.TooMany", { max: R.params().maxPromises }));
 
   if (op === "accept") {
     await postCard({
@@ -529,12 +634,26 @@ function rivalForm(r) {
     `<div class="lg-field-row">${D.field(t("Dialog.RivalName"), D.text("name", r.name))}${D.field(t("Dialog.RivalTitle"), D.text("title", r.title))}</div>`,
     `<div class="lg-field-row">${D.field(t("Dialog.Grudge"), D.select("grudge", [0, 1, 2, 3].map(g => ({ value: g, label: t(`Rivals.Grudge.${g}`) })), r.grudge))}${D.field(t("Dialog.RivalStatus"), D.select("status", R.RIVAL_STATUS.map(st => ({ value: st, label: t(`Rivals.Status.${st}`) })), r.status))}</div>`,
     D.checkbox("higherStatus", r.higherStatus, t("Dialog.HigherStatus")),
-    D.field(t("Dialog.Notes"), D.area("notes", r.notes))
+    D.field(t("Dialog.Notes"), D.area("notes", r.notes)),
+    D.field(t("Dialog.RivalImg"), D.text("img", r.img, "icons/svg/mystery-man.svg")),
+    game.user.isGM ? `<fieldset class="lg-gm-fields"><legend><i class="fa-solid fa-crown"></i> ${t("Dialog.GMOnly")}</legend><div class="lg-field-row">${D.field(t("Dialog.Wins"), D.number("wins", r.record.wins, { min: 0 }))}${D.field(t("Dialog.Losses"), D.number("losses", r.record.losses, { min: 0 }))}${D.field(t("Dialog.Draws"), D.number("draws", r.record.draws, { min: 0 }))}${D.field(t("Dialog.Bribe"), D.number("bribe", r.bribe, { min: 0, max: R.MAX_RIVAL_EDGES }))}</div></fieldset>` : ""
   ].join("");
 }
 
 function readRival(data, base) {
-  return { ...base, name: data.name.trim() || t("Arena.UnknownRival"), title: data.title.trim(), grudge: Number(data.grudge) || 0, status: data.status, higherStatus: !!data.higherStatus, notes: data.notes.trim() };
+  const gm = game.user.isGM && data.wins !== undefined;
+  return {
+    ...base,
+    name: data.name.trim() || t("Arena.UnknownRival"),
+    title: data.title.trim(),
+    grudge: Number(data.grudge) || 0,
+    status: data.status,
+    higherStatus: !!data.higherStatus,
+    notes: data.notes.trim(),
+    img: (data.img ?? base.img ?? "").trim(),
+    record: gm ? { wins: Number(data.wins) || 0, losses: Number(data.losses) || 0, draws: Number(data.draws) || 0 } : base.record,
+    bribe: gm ? Number(data.bribe) || 0 : base.bribe
+  };
 }
 
 export async function addRival(actor, preset = {}) {
@@ -624,7 +743,7 @@ export async function setupDuel(actor, { rivalId = "", edit = false } = {}) {
   if (!edit && state.duel) return ui.notifications.warn(t("Notify.DuelActive"));
   const preRival = state.rivals.find(r => r.id === rivalId);
   const rivalActor = preRival?.actorUuid ? fromUuidSync(preRival.actorUuid) : null;
-  const base = edit && state.duel ? state.duel : R.normalizeDuel({ rivalId, terms: "firstBlood", audience: 2, rivalSkill: rivalActor ? skillTarget(rivalActor, "Melee") : 45 });
+  const base = edit && state.duel ? state.duel : R.normalizeDuel({ rivalId, terms: "firstBlood", audience: 2, rivalSkill: rivalActor ? skillTarget(rivalActor, "Melee") : R.params().defaultRivalSkill });
   const data = await D.formDialog({ title: edit ? t("Dialog.EditDuel") : t("Dialog.NewDuel"), icon: "fa-solid fa-hand-back-fist", html: duelForm(state, base), okLabel: edit ? t("Save") : t("Dialog.Challenge"), okIcon: "fa-solid fa-hand-back-fist", width: 640 });
   if (!data) return;
 
@@ -722,7 +841,7 @@ export async function shiftRivalEdges(actor, delta) {
 export async function doPrep(actor, id) {
   const d = Store.getState(actor).duel;
   if (!d) return;
-  if (!R.canPrep(d, id)) return ui.notifications.warn(t("Notify.PrepLimit", { max: R.MAX_PREPS }));
+  if (!R.canPrep(d, id)) return ui.notifications.warn(t("Notify.PrepLimit", { max: R.params().maxPreps }));
   const cfg = R.PREPS[id];
   const result = await rollSkill(actor, cfg.skill, { title: t(`Arena.Prep.${id}.Name`) });
   if (!result) return;
@@ -774,7 +893,7 @@ export async function exchange(actor, approach, { useEdge = false } = {}) {
   const d3 = await new Roll("1d3").evaluate();
   const rivalApproach = R.rivalApproachFor(d3.total);
   const champMod = R.approachBonus(approach, rivalApproach) + R.crowdBonus("champion", d.crowd);
-  const champ = await rollMelee(actor, { title: t("Arena.ExchangeTitle", { n: d.exchanges.length + 1 }), modifier: champMod, slBonus: edge ? 2 : 0 });
+  const champ = await rollMelee(actor, { title: t("Arena.ExchangeTitle", { n: d.exchanges.length + 1 }), modifier: champMod, slBonus: edge ? R.params().edgeSL : 0 });
   if (!champ) return;
 
   const rivalTarget = d.rivalSkill + R.approachBonus(rivalApproach, approach) + R.crowdBonus("rival", d.crowd);
@@ -798,7 +917,7 @@ export async function exchange(actor, approach, { useEdge = false } = {}) {
     { icon: R.APPROACH_ICON[approach], text: t("Chat.ExchangeChamp", { name: actor.name, approach: t(`Arena.Approach.${approach}.Name`), sl: fmtSL(x.champSL) }) },
     { icon: R.APPROACH_ICON[rivalApproach], text: t("Chat.ExchangeRival", { name: rivalName, approach: t(`Arena.Approach.${rivalApproach}.Name`), sl: fmtSL(x.rivalSL), roll: rivalRoll.total, target: rivalTarget }) }
   ];
-  if (x.rivalEdge) lines.push({ icon: "fa-solid fa-coins", text: t("Chat.RivalEdgeUsed") });
+  if (x.rivalEdge) lines.push({ icon: "fa-solid fa-coins", text: t("Chat.RivalEdgeUsed", { sl: R.params().rivalEdgeSL }) });
   if (wounded) lines.push({ icon: "fa-solid fa-droplet", text: t("Chat.ChampWounded", { n: -wounded }) });
   const title = x.winner === "champion" ? t(x.hits > 1 ? "Chat.ExchangeWinDouble" : "Chat.ExchangeWin", { name: actor.name })
     : x.winner === "rival" ? t(x.hits > 1 ? "Chat.ExchangeLossDouble" : "Chat.ExchangeLoss", { name: rivalName })
@@ -850,7 +969,7 @@ export async function challengeLeader(actor) {
       target
         ? `<p class="lg-hint"><b>${Handlebars.escapeExpression(target.name)}</b> (${t("Dialog.LeaderTargeted")})</p>`
         : `<div class="lg-field-row">${D.field(t("Dialog.Rival"), D.select("rivalId", [{ value: "", label: t("Dialog.LeaderNameOption") }, ...rivals.map(r => ({ value: r.id, label: r.name }))], ""))}${D.field(t("Dialog.LeaderName"), D.text("name", "", t("Dialog.LeaderNamePlaceholder")))}</div>`,
-      `<div class="lg-field-row">${D.field(t("Dialog.LeaderCool"), D.number("cool", target ? skillTarget(target, "Cool") : 35, { min: 1, max: 150 }))}${D.field(t("Dialog.LeaderMelee"), D.number("melee", target ? skillTarget(target, "Melee") : 45, { min: 1, max: 150 }))}</div>`,
+      `<div class="lg-field-row">${D.field(t("Dialog.LeaderCool"), D.number("cool", target ? skillTarget(target, "Cool") : R.params().defaultLeaderCool, { min: 1, max: 150 }))}${D.field(t("Dialog.LeaderMelee"), D.number("melee", target ? skillTarget(target, "Melee") : R.params().defaultRivalSkill, { min: 1, max: 150 }))}</div>`,
       D.field(t("Dialog.LeaderSkill"), D.choices("skill", ["Intimidate", "Leadership"].map(k => ({ value: k, label: t(`Skill.${k}`) })), "Intimidate", { columns: 2 }))
     ].join("")
   });
@@ -865,14 +984,14 @@ export async function challengeLeader(actor) {
 
   const champ = await rollSkill(actor, data.skill ?? "Intimidate", { title: t("Dialog.LeaderTitle") });
   if (!champ) return;
-  const coolTarget = Number(data.cool) || 35;
+  const coolTarget = Number(data.cool) || R.params().defaultLeaderCool;
   const leaderRoll = await new Roll("1d100").evaluate();
   const leaderRes = R.testResult(coolTarget, leaderRoll.total);
   const won = champ.sl > leaderRes.sl || (champ.sl === leaderRes.sl && champ.success && !leaderRes.success);
 
   if (won) {
     await Store.update(actor, s => {
-      s.pendingChallenge = { ...leader, skill: Number(data.melee) || 45 };
+      s.pendingChallenge = { ...leader, skill: Number(data.melee) || R.params().defaultRivalSkill };
       return s;
     });
   }
@@ -936,7 +1055,7 @@ export async function useEdge(actor, edgeId) {
     icon: "fa-solid fa-coins",
     kicker: t("Chat.EdgeKicker"),
     title: t(`Arena.Edge.${edge.kind}`),
-    body: t("Chat.EdgeBody", { rival: rival?.name ?? "?" })
+    body: t("Chat.EdgeBody", { rival: rival?.name ?? "?", sl: R.params().edgeSL })
   }, { actor });
 }
 
@@ -1269,6 +1388,18 @@ export async function addNote(actor) {
   const data = await D.formDialog({ title: t("Chronicle.AddNote"), icon: "fa-solid fa-pen-nib", html: D.field(t("Dialog.NoteText"), D.area("text", "")) });
   if (!data?.text?.trim()) return;
   await Store.update(actor, s => Store.chronicle(s, "note", data.text.trim(), "fa-solid fa-pen-nib"));
+}
+
+export async function editNote(actor, entryId) {
+  const entry = Store.getState(actor).chronicle.find(e => e.id === entryId);
+  if (!entry) return;
+  const data = await D.formDialog({ title: t("Dialog.NoteEdit"), icon: "fa-solid fa-pen-nib", html: D.field(t("Dialog.NoteText"), D.area("text", entry.text)) });
+  if (!data?.text?.trim()) return;
+  await Store.update(actor, s => {
+    const e = s.chronicle.find(x => x.id === entryId);
+    if (e) e.text = data.text.trim();
+    return s;
+  });
 }
 
 export async function deleteNote(actor, entryId) {

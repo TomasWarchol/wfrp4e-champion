@@ -14,6 +14,7 @@
       </div>
       {{#if ../env.canEdit}}
       <button type="button" class="lg-btn lg-btn--gold lg-btn--sm" data-action="promoteDeed" data-deed-id="{{id}}" data-tooltip="{{localize 'CHAMPION.Deeds.PromoteHint'}}"><i class="fa-solid fa-eye"></i> {{localize "CHAMPION.Deeds.Promote"}}</button>
+      <button type="button" class="lg-icon-btn" data-action="editDeed" data-deed-id="{{id}}" data-tooltip="{{localize 'CHAMPION.Edit'}}"><i class="fa-solid fa-pen"></i></button>
       <button type="button" class="lg-icon-btn" data-action="dismissDeed" data-deed-id="{{id}}" data-tooltip="{{localize 'CHAMPION.Deeds.Dismiss'}}"><i class="fa-solid fa-xmark"></i></button>
       {{/if}}
     </li>
@@ -25,7 +26,7 @@
 
   <div class="lg-section-head lg-section-head--second">
     <h2><i class="fa-solid fa-hands-praying"></i> {{localize "CHAMPION.Petitions.Title"}}</h2>
-    <div class="lg-promises" data-tooltip="{{localize 'CHAMPION.Petitions.PromisesHint'}}">
+    <div class="lg-promises" data-tooltip="{{labels.promisesHint}}">
       <span>{{localize "CHAMPION.Petitions.Promises"}}</span>
       {{#each petitions.promiseSlots}}<span class="lg-wax {{#if this}}is-on{{/if}}"></span>{{/each}}
     </div>
@@ -61,7 +62,7 @@
       {{> "modules/wfrp4e-champion/templates/parts/petition-body.hbs" canEdit=../env.canEdit}}
       {{#if ../env.canEdit}}
       <footer class="lg-note-actions">
-        <button type="button" class="lg-btn lg-btn--gold lg-btn--sm" data-action="petition" data-op="accept" data-petition-id="{{id}}" {{#unless ../petitions.canAccept}}disabled data-tooltip="{{localize 'CHAMPION.Petitions.TooMany'}}"{{/unless}}><i class="fa-solid fa-handshake"></i> {{localize "CHAMPION.Petitions.Accept"}}</button>
+        <button type="button" class="lg-btn lg-btn--gold lg-btn--sm" data-action="petition" data-op="accept" data-petition-id="{{id}}" {{#unless ../petitions.canAccept}}disabled data-tooltip="{{../labels.tooMany}}"{{/unless}}><i class="fa-solid fa-handshake"></i> {{localize "CHAMPION.Petitions.Accept"}}</button>
         {{#if canEndeavour}}<button type="button" class="lg-btn lg-btn--ghost-dark lg-btn--sm" data-action="endeavour" data-petition-id="{{id}}" data-tooltip="{{localize 'CHAMPION.Petitions.EndeavourHint'}}"><i class="fa-solid fa-hourglass-half"></i></button>{{/if}}
         <button type="button" class="lg-btn lg-btn--ghost-dark lg-btn--sm" data-action="petition" data-op="decline" data-petition-id="{{id}}" data-tooltip="{{localize 'CHAMPION.Petitions.DeclineHint'}}"><i class="fa-solid fa-hand"></i> {{localize "CHAMPION.Petitions.Decline"}}</button>
       </footer>
@@ -89,6 +90,6 @@
 
   <details class="lg-howto">
     <summary><i class="fa-solid fa-circle-question"></i> {{localize "CHAMPION.HowTo"}}</summary>
-    <div class="lg-howto-body">{{{localize "CHAMPION.Deeds.HowTo"}}}{{{localize "CHAMPION.Petitions.HowTo"}}}</div>
+    <div class="lg-howto-body">{{{labels.howtoDeeds}}}{{{labels.howtoPetitions}}}</div>
   </details>
 </div>

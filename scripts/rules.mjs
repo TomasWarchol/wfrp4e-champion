@@ -44,18 +44,16 @@ export const CIRCLE_ICON = {
 };
 
 /** Progi Sławy (suma Wagi żywych opowieści) dla poziomów 0–4. */
-export const TIER_THRESHOLDS = [0, 3, 7, 12, 18];
-export const MAX_TIER = TIER_THRESHOLDS.length - 1;
+/** Poziomy Sławy 0–IV (progi są parametrami: tier1–tier4). */
+export const MAX_TIER = 4;
 
 /** Waga opowieści: 1 Plotka (okolica), 2 Opowieść (prowincja), 3 Legenda (całe Imperium). */
 export const MIN_WEIGHT = 1;
 export const MAX_WEIGHT = 3;
 
 /** Ile próśb szampierz może naraz obiecać spełnić. */
-export const MAX_PROMISES = 3;
 
 /** Imię jest „przyjęte”, gdy oblicze ludu zgadza się z deklarowanym i ma co najmniej tyle Wagi. */
-export const NAME_ACCEPT_WEIGHT = 3;
 
 export const PETITION_STATUS = ["open", "accepted", "fulfilled", "failed", "declined"];
 
@@ -69,7 +67,6 @@ export const AUDIENCE = [1, 2, 3]; // kameralny, tłum, widowisko
 export const CROWD_MIN = -3;
 export const CROWD_MAX = 3;
 /** Od tej wartości Tłumu jedna strona dostaje +1 Przewagi na początku każdej rundy. */
-export const CROWD_ADVANTAGE_AT = 2;
 export const MAX_RIVAL_EDGES = 3;
 
 /**
@@ -84,10 +81,8 @@ export const PREPS = {
   surgeon: { skill: "Haggle", characteristic: "fel", icon: "fa-solid fa-kit-medical" }
 };
 export const PREP_IDS = Object.keys(PREPS);
-export const MAX_PREPS = 2;
 
 /** Szybki pojedynek: tyle trafień kończy walkę zależnie od warunków. */
-export const HITS_NEEDED = { firstBlood: 1, yield: 2, death: 3 };
 /** Podejścia w wymianie. Natarcie bije fintę, finta bije gardę, garda bije natarcie. Brudny chwyt zawsze daje premię. */
 export const APPROACHES = ["attack", "guard", "feint", "dirty"];
 export const RIVAL_APPROACHES = ["attack", "guard", "feint"];
@@ -98,10 +93,7 @@ export const APPROACH_ICON = {
   dirty: "fa-solid fa-hand-sparkles"
 };
 const BEATS = { attack: "feint", feint: "guard", guard: "attack" };
-export const APPROACH_BONUS = 20;
-export const CROWD_TEST_BONUS = 10;
 /** Przewaga w wymianie od tej różnicy PS liczy się jako podwójne trafienie. */
-export const DOUBLE_HIT_MARGIN = 4;
 
 /** Kto widział czyn → Waga opowieści (0: brak świadków, zostaje tylko w kronice). */
 export const WITNESSES = ["none", "few", "crowd", "great"];
@@ -146,6 +138,79 @@ function clone(value) {
 
 function oneOf(value, allowed, fallback) {
   return allowed.includes(value) ? value : fallback;
+}
+
+/* -------------------------------------------- */
+/*  Parametry zasad (MG może je zmienić)        */
+/* -------------------------------------------- */
+
+/**
+ * Liczby zasad. MG zmienia je w ustawieniach świata („Zasady Legendy”); moduł wołając configure()
+ * podmienia bieżące wartości. Zakres każdego pola: [min, max].
+ */
+export const PARAM_SPEC = {
+  tier1: { default: 3, min: 1, max: 99, group: "fame" },
+  tier2: { default: 7, min: 2, max: 199, group: "fame" },
+  tier3: { default: 12, min: 3, max: 299, group: "fame" },
+  tier4: { default: 18, min: 4, max: 399, group: "fame" },
+  recognitionPerTier: { default: 2, min: 0, max: 5, group: "fame" },
+  echoBase: { default: 1, min: 0, max: 9, group: "fame" },
+  invokePerWeight: { default: 1, min: 0, max: 5, group: "fame" },
+  refutePerWeight: { default: 10, min: 0, max: 40, group: "fame" },
+  nameAcceptWeight: { default: 3, min: 1, max: 30, group: "fame" },
+  maxPromises: { default: 3, min: 1, max: 10, group: "petitions" },
+  declineDimStake: { default: 2, min: 1, max: 4, group: "petitions" },
+  endeavourMaxStake: { default: 1, min: 0, max: 3, group: "petitions" },
+  maxPreps: { default: 2, min: 0, max: 5, group: "duel" },
+  greatSL: { default: 3, min: 1, max: 9, group: "duel" },
+  hitsFirstBlood: { default: 1, min: 1, max: 9, group: "duel" },
+  hitsYield: { default: 2, min: 1, max: 9, group: "duel" },
+  hitsDeath: { default: 3, min: 1, max: 9, group: "duel" },
+  doubleHitMargin: { default: 4, min: 1, max: 20, group: "duel" },
+  woundsBase: { default: 1, min: 0, max: 10, group: "duel" },
+  approachBonus: { default: 20, min: 0, max: 60, group: "duel" },
+  edgeSL: { default: 2, min: 0, max: 6, group: "duel" },
+  rivalEdgeSL: { default: 1, min: 0, max: 6, group: "duel" },
+  defaultRivalSkill: { default: 45, min: 1, max: 150, group: "duel" },
+  defaultLeaderCool: { default: 35, min: 1, max: 150, group: "duel" },
+  crowdThreshold: { default: 2, min: 1, max: 3, group: "crowd" },
+  crowdTestBonus: { default: 10, min: 0, max: 40, group: "crowd" },
+  crowdShiftMargin: { default: 3, min: 1, max: 20, group: "crowd" }
+};
+export const PARAM_GROUPS = ["fame", "petitions", "duel", "crowd"];
+
+export function defaultParams() {
+  return Object.fromEntries(Object.entries(PARAM_SPEC).map(([k, v]) => [k, v.default]));
+}
+
+/** Wartości przycięte do zakresów; progi Sławy zawsze rosnące. */
+export function normalizeParams(raw = {}) {
+  const out = {};
+  for (const [key, spec] of Object.entries(PARAM_SPEC)) {
+    const value = Number(raw?.[key]);
+    out[key] = Number.isFinite(value) ? Math.round(clamp(value, spec.min, spec.max)) : spec.default;
+  }
+  for (const [lo, hi] of [["tier1", "tier2"], ["tier2", "tier3"], ["tier3", "tier4"]]) {
+    if (out[hi] <= out[lo]) out[hi] = out[lo] + 1;
+  }
+  return out;
+}
+
+let PARAMS = defaultParams();
+
+/** Bieżące parametry zasad. */
+export function params() {
+  return PARAMS;
+}
+
+/** Ustawia parametry (z ustawień świata). Zwraca znormalizowane. */
+export function configure(raw) {
+  PARAMS = normalizeParams(raw);
+  return PARAMS;
+}
+
+function tierThresholds() {
+  return [0, PARAMS.tier1, PARAMS.tier2, PARAMS.tier3, PARAMS.tier4];
 }
 
 /* -------------------------------------------- */
@@ -348,27 +413,29 @@ export function fame(state) {
 
 export function tierOf(fameValue) {
   let tier = 0;
-  for (let i = 0; i < TIER_THRESHOLDS.length; i++) if (fameValue >= TIER_THRESHOLDS[i]) tier = i;
+  const thresholds = tierThresholds();
+  for (let i = 0; i < thresholds.length; i++) if (fameValue >= thresholds[i]) tier = i;
   return tier;
 }
 
 /** Poziom, próg następnego poziomu i postęp 0–1 w obrębie bieżącego poziomu. */
 export function tierProgress(fameValue) {
   const tier = tierOf(fameValue);
-  const floor = TIER_THRESHOLDS[tier];
-  const next = TIER_THRESHOLDS[tier + 1] ?? null;
+  const thresholds = tierThresholds();
+  const floor = thresholds[tier];
+  const next = thresholds[tier + 1] ?? null;
   const progress = next === null ? 1 : (fameValue - floor) / (next - floor);
   return { tier, fame: fameValue, floor, next, progress: clamp(progress, 0, 1) };
 }
 
 /** Szansa na rozpoznanie przez obcego z kręgu, w którym krąży legenda: k10 ≤ 2 × Poziom. */
 export function recognitionTarget(tier) {
-  return tier * 2;
+  return tier * PARAMS.recognitionPerTier;
 }
 
 /** Echo Sławy: k10 ≤ Poziom + 1. */
 export function echoTarget(tier) {
-  return tier + 1;
+  return tier + PARAMS.echoBase;
 }
 
 export function echoTypeFor(d10) {
@@ -410,7 +477,7 @@ export function peopleFace(state) {
 export function nameStatus(state) {
   const totals = faceTotals(state);
   const people = peopleFace(state);
-  const accepted = !!people && people === state.name.face && totals[people] >= NAME_ACCEPT_WEIGHT;
+  const accepted = !!people && people === state.name.face && totals[people] >= PARAMS.nameAcceptWeight;
   return { declared: state.name.declared, declaredFace: state.name.face, peopleFace: people, accepted, totals };
 }
 
@@ -442,7 +509,7 @@ export function canInvoke(tale, sessionId, incognito = false) {
 
 /** Premia: +1 PS za każdy punkt Wagi. */
 export function invokeBonus(tale) {
-  return clamp(tale.weight, 0, MAX_WEIGHT);
+  return clamp(tale.weight, 0, MAX_WEIGHT) * PARAMS.invokePerWeight;
 }
 
 export function invokeSkills(tale) {
@@ -451,7 +518,7 @@ export function invokeSkills(tale) {
 
 /** Kłamstwo da się zdementować testem Plotkowania z karą −10 za punkt Wagi. */
 export function refuteModifier(tale) {
-  return -10 * clamp(tale.weight, 0, MAX_WEIGHT);
+  return -PARAMS.refutePerWeight * clamp(tale.weight, 0, MAX_WEIGHT);
 }
 
 /* -------------------------------------------- */
@@ -526,7 +593,7 @@ export function promisesCount(state) {
 }
 
 export function canAccept(state) {
-  return promisesCount(state) < MAX_PROMISES;
+  return promisesCount(state) < PARAMS.maxPromises;
 }
 
 export function addPetition(state, raw, ts = 0) {
@@ -573,7 +640,7 @@ export function resolvePetition(state, petitionId, action, { ts = 0, face = "pro
   if (action === "decline") {
     petition.status = "declined";
     petition.resolved = ts;
-    if (petition.stake >= 2) {
+    if (petition.stake >= PARAMS.declineDimStake) {
       const dimmed = dimLegend(next, petition.circle, 1);
       return { state: dimmed.state, effect: { type: "declined", petition: clone(petition), dimmed: dimmed.tale } };
     }
@@ -585,7 +652,7 @@ export function resolvePetition(state, petitionId, action, { ts = 0, face = "pro
 
 /** Drobną prośbę (stawka 1) można załatwić w tle jako przedsięwzięcie między przygodami. */
 export function canEndeavour(petition) {
-  return petition.stake === 1 && ["open", "accepted"].includes(petition.status);
+  return petition.stake <= PARAMS.endeavourMaxStake && ["open", "accepted"].includes(petition.status);
 }
 
 /** Dni do terminu (zaokrąglone w górę); null bez terminu. */
@@ -638,7 +705,7 @@ export function prepsDone(duel) {
 }
 
 export function canPrep(duel, id) {
-  return duel.stage === "prep" && !duel.preps[id] && prepsDone(duel) < MAX_PREPS;
+  return duel.stage === "prep" && !duel.preps[id] && prepsDone(duel) < PARAMS.maxPreps;
 }
 
 /**
@@ -657,18 +724,18 @@ export function applyPrep(duel, id, result) {
   switch (id) {
     case "scout": {
       d.edges = d.edges.filter(e => e.kind !== "weakness" || e.used);
-      const count = success ? (sl >= 3 ? 2 : 1) : 0;
+      const count = success ? (sl >= PARAMS.greatSL ? 2 : 1) : 0;
       for (let i = 0; i < count; i++) d.edges.push({ id: newId("edge"), kind: "weakness", used: false });
       break;
     }
     case "crowd":
-      d.crowd = success ? (sl >= 3 ? 2 : 1) : (sl <= -3 ? -1 : 0);
+      d.crowd = success ? (sl >= PARAMS.greatSL ? 2 : 1) : (sl <= -PARAMS.greatSL ? -1 : 0);
       break;
     case "bet":
-      d.odds = success ? (sl >= 3 ? 3 : 2) : 1;
+      d.odds = success ? (sl >= PARAMS.greatSL ? 3 : 2) : 1;
       break;
     case "arms":
-      d.negatedEdges = success ? Math.min(d.rivalEdges, sl >= 3 ? 2 : 1) : 0;
+      d.negatedEdges = success ? Math.min(d.rivalEdges, sl >= PARAMS.greatSL ? 2 : 1) : 0;
       break;
     case "surgeon":
       d.surgeonHeal = success ? Math.max(1, 1 + sl) : 0;
@@ -693,19 +760,19 @@ export function resetPrep(duel, id) {
 }
 
 export function hitsNeeded(duel) {
-  return HITS_NEEDED[duel.terms] ?? 1;
+  return { firstBlood: PARAMS.hitsFirstBlood, yield: PARAMS.hitsYield, death: PARAMS.hitsDeath }[duel.terms] ?? 1;
 }
 
 /** Premia z podejścia dla „mine” przeciw „theirs” (+20 albo 0). Brudny chwyt zawsze +20. */
 export function approachBonus(mine, theirs) {
-  if (mine === "dirty") return APPROACH_BONUS;
-  return BEATS[mine] === theirs ? APPROACH_BONUS : 0;
+  if (mine === "dirty") return PARAMS.approachBonus;
+  return BEATS[mine] === theirs ? PARAMS.approachBonus : 0;
 }
 
 /** Premia od Tłumu dla strony (champion | rival): +10 przy ±2. */
 export function crowdBonus(side, crowd) {
   const favour = crowdFavours(crowd);
-  return favour === side ? CROWD_TEST_BONUS : 0;
+  return favour === side ? PARAMS.crowdTestBonus : 0;
 }
 
 /** PS testu WFRP: dziesiątki progu minus dziesiątki rzutu; 01–05 zawsze sukces, 96–00 zawsze porażka. */
@@ -734,7 +801,7 @@ export function resolveExchange(duel, { champApproach, rivalApproach, champ, riv
   let rivalSL = Number(rival.sl) || 0;
   let rivalEdge = false;
   if (activeRivalEdges(d) - d.rivalEdgesUsed > 0) {
-    rivalSL += 1;
+    rivalSL += PARAMS.rivalEdgeSL;
     d.rivalEdgesUsed += 1;
     rivalEdge = true;
   }
@@ -746,14 +813,14 @@ export function resolveExchange(duel, { champApproach, rivalApproach, champ, riv
   let hits = 0;
   let wounds = 0;
   if (winner === "champion") {
-    hits = Math.min(margin >= DOUBLE_HIT_MARGIN ? 2 : 1, needed - d.champScore);
+    hits = Math.min(margin >= PARAMS.doubleHitMargin ? 2 : 1, needed - d.champScore);
     d.champScore += hits;
-    if (margin >= 3) d.crowd = clamp(d.crowd + 1, CROWD_MIN, CROWD_MAX);
+    if (margin >= PARAMS.crowdShiftMargin) d.crowd = clamp(d.crowd + 1, CROWD_MIN, CROWD_MAX);
   } else if (winner === "rival") {
-    hits = Math.min(margin >= DOUBLE_HIT_MARGIN ? 2 : 1, needed - d.rivalScore);
+    hits = Math.min(margin >= PARAMS.doubleHitMargin ? 2 : 1, needed - d.rivalScore);
     d.rivalScore += hits;
-    wounds = 1 + margin;
-    if (margin >= 3) d.crowd = clamp(d.crowd - 1, CROWD_MIN, CROWD_MAX);
+    wounds = PARAMS.woundsBase + margin;
+    if (margin >= PARAMS.crowdShiftMargin) d.crowd = clamp(d.crowd - 1, CROWD_MIN, CROWD_MAX);
   }
   if (champApproach === "dirty") {
     d.dirty += 1;
@@ -792,16 +859,16 @@ export function shiftCrowd(duel, delta) {
 
 /** Kto dostaje Przewagę od Tłumu na początku rundy: "champion", "rival" albo null. */
 export function crowdFavours(crowd) {
-  if (crowd >= CROWD_ADVANTAGE_AT) return "champion";
-  if (crowd <= -CROWD_ADVANTAGE_AT) return "rival";
+  if (crowd >= PARAMS.crowdThreshold) return "champion";
+  if (crowd <= -PARAMS.crowdThreshold) return "rival";
   return null;
 }
 
 /** Waga opowieści z pojedynku: widownia ±1 za Tłum na skraju skali. */
 export function duelWeight(audience, crowd) {
   let w = clamp(audience, 1, 3);
-  if (crowd >= CROWD_ADVANTAGE_AT) w += 1;
-  if (crowd <= -CROWD_ADVANTAGE_AT) w -= 1;
+  if (crowd >= PARAMS.crowdThreshold) w += 1;
+  if (crowd <= -PARAMS.crowdThreshold) w -= 1;
   return clamp(w, MIN_WEIGHT, MAX_WEIGHT);
 }
 
@@ -849,7 +916,7 @@ export function resolveDuel(state, { outcome, fate = "spared", taleOverride = {}
   effect.rival = rival ? clone(rival) : null;
 
   // Opowieść albo przygaśnięcie
-  const heroicLoss = outcome !== "win" && duel.crowd >= CROWD_ADVANTAGE_AT;
+  const heroicLoss = outcome !== "win" && duel.crowd >= PARAMS.crowdThreshold;
   if (outcome === "win" || heroicLoss) {
     const face = taleOverride.face ?? suggestDuelFace({ outcome, fate, dirty: duel.dirty, terms: duel.terms, higherStatus: rival?.higherStatus });
     const weight = taleOverride.weight ?? (outcome === "win" ? duelWeight(duel.audience, duel.crowd) : 1);

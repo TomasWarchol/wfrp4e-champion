@@ -11,6 +11,7 @@ New system: **Champion's Legend**. A single-player add-on to the session: one cl
 - **Preparations:** the champion picks two of five (scouting, crowd, wager, weapons and judges, surgeon) and rolls himself.
 - **The Name**, **petitions** (small ones settled off-screen as endeavours), **rivals** with grudges and **rival moves** in the Echo of Fame, **hood** and **recognition**, **inheritance**, **chronicle** exportable to a journal.
 - New look: tooled leather and gold, parchment, wax seals, circles-of-fame map, faces radar, crowd gauge and illustrated chat cards. Bundled OFL fonts with Polish characters.
+- **GM can edit every parameter:** a "Legend Rules" window (module settings) with every rule number, range and default plus behaviour toggles; GM editors for the legend state and the running duel; GM-only fields for tales, petitions and rivals; editable deeds and chronicle entries. Rule texts show the current numbers.
 - Removed: stances, the gambit catalogue, courts and the Mandate/Folk Standing sliders. Old data is left untouched in the actor flags.
 
 ## 1.3.0

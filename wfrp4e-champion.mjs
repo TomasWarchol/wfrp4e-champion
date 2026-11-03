@@ -9,6 +9,7 @@ import * as Store from "./scripts/store.mjs";
 import * as Ops from "./scripts/operations.mjs";
 import { LegendSheet } from "./scripts/legend-sheet.mjs";
 import { LegendHud } from "./scripts/legend-hud.mjs";
+import { RulesConfig } from "./scripts/rules-config.mjs";
 import { registry, registerSheetButton, addTokenTool } from "../wfrp4e-companion-lib/scripts/companion-lib.mjs";
 
 /* -------------------------------------------- */
@@ -94,14 +95,57 @@ Hooks.once("init", async function () {
     }
   });
 
+  // Liczby zasad (MG: „Zasady Legendy”)
+  game.settings.register(MODULE_ID, "rules", {
+    scope: "world",
+    config: false,
+    type: Object,
+    default: R.defaultParams(),
+    onChange: (value) => {
+      R.configure(value);
+      refreshSheets();
+      resyncAll();
+    }
+  });
+
+  game.settings.registerMenu(MODULE_ID, "rulesMenu", {
+    name: "CHAMPION.Params.Title",
+    label: "CHAMPION.Params.Open",
+    hint: "CHAMPION.Params.MenuHint",
+    icon: "fa-solid fa-gears",
+    type: RulesConfig,
+    restricted: true
+  });
+
   game.settings.register(MODULE_ID, "crowdAdvantage", {
-    name: "CHAMPION.Settings.CrowdAdvantageName",
-    hint: "CHAMPION.Settings.CrowdAdvantageHint",
+    name: "CHAMPION.Settings.crowdAdvantageName",
+    hint: "CHAMPION.Settings.crowdAdvantageHint",
     scope: "world",
     config: true,
     type: Boolean,
     default: true
   });
+
+  game.settings.register(MODULE_ID, "deedPrompt", {
+    name: "CHAMPION.Settings.deedPromptName",
+    hint: "CHAMPION.Settings.deedPromptHint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
+  game.settings.register(MODULE_ID, "dialogToggles", {
+    name: "CHAMPION.Settings.dialogTogglesName",
+    hint: "CHAMPION.Settings.dialogTogglesHint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: () => resyncAll()
+  });
+
+  R.configure(game.settings.get(MODULE_ID, "rules"));
 
   await foundry.applications.handlebars.loadTemplates([
     `${TEMPLATE_ROOT}/legend-sheet.hbs`,
@@ -113,7 +157,8 @@ Hooks.once("init", async function () {
     `${TEMPLATE_ROOT}/parts/tab-rivals.hbs`,
     `${TEMPLATE_ROOT}/parts/tab-chronicle.hbs`,
     `${TEMPLATE_ROOT}/chat/card.hbs`,
-    `${TEMPLATE_ROOT}/hud.hbs`
+    `${TEMPLATE_ROOT}/hud.hbs`,
+    `${TEMPLATE_ROOT}/rules-config.hbs`
   ]);
 });
 
@@ -122,9 +167,12 @@ Hooks.once("init", async function () {
 /* -------------------------------------------- */
 
 Hooks.once("ready", function () {
+  R.configure(game.settings.get(MODULE_ID, "rules"));
   game.champion = {
     openSheet,
     openHud,
+    /** Okno „Zasady Legendy” (MG). */
+    openRules: () => (game.user.isGM ? new RulesConfig().render({ force: true }) : null),
     LegendSheet,
     LegendHud,
     /** Woła to przełącznik „Przywołaj” z okna testu WFRP po wysłaniu testu. */
@@ -176,7 +224,7 @@ Hooks.on("renderChatMessageHTML", (message, html) => {
 
 /** Koniec walki z udziałem szampierza: pytanie „Coś godnego opowieści?” (raz, u aktywnego MG). */
 Hooks.on("deleteCombat", (combat) => {
-  if (!game.users.activeGM?.isSelf || !combat.started) return;
+  if (!game.users.activeGM?.isSelf || !combat.started || !game.settings.get(MODULE_ID, "deedPrompt")) return;
   Ops.combatEndPrompt(combat).catch(err => console.error(`${MODULE_ID} |`, err));
 });
 

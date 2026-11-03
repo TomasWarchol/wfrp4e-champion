@@ -29,7 +29,8 @@ function scriptFor(tale) {
 export async function syncLegendEffect(actor, state) {
   if (!actor?.isOwner || game.system?.id !== "wfrp4e" || !actor.effects) return;
   const session = sessionId();
-  const tales = state.fallen ? [] : R.liveTales(state)
+  const enabled = game.settings.get(MODULE_ID, "dialogToggles") !== false;
+  const tales = state.fallen || !enabled ? [] : R.liveTales(state)
     .filter(tale => R.canInvoke(tale, session, state.incognito))
     .sort((a, b) => b.weight - a.weight || b.created - a.created);
   const scriptData = tales.map(scriptFor);

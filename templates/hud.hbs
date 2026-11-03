@@ -42,7 +42,7 @@
         </label>
         {{/each}}
       </div>
-      {{#if duel.freeEdges}}<label class="lg-check lg-edge-toggle"><input type="checkbox" name="lg-use-edge"/> <span class="lg-edge-chip"></span> {{localize "CHAMPION.Arena.UseEdgeToggle"}} ({{duel.freeEdges}})</label>{{/if}}
+      {{#if duel.freeEdges}}<label class="lg-check lg-edge-toggle"><input type="checkbox" name="lg-use-edge"/> <span class="lg-edge-chip"></span> {{@root.labels.useEdgeToggle}} ({{duel.freeEdges}})</label>{{/if}}
       <div class="lg-hud-row">
         <button type="button" class="lg-btn lg-btn--hero lg-btn--sm lg-hud-grow" data-action="exchange"><i class="fa-solid fa-khanda"></i> {{localize "CHAMPION.Arena.ExchangeGo"}}</button>
         <button type="button" class="lg-btn lg-btn--ghost-dark lg-btn--sm lg-btn--icon" data-action="yieldDuel" data-tooltip="{{localize 'CHAMPION.Arena.Yield'}}"><i class="fa-solid fa-flag"></i></button>
@@ -90,7 +90,7 @@
   {{/if}}
 
   <footer class="lg-hud-foot">
-    <span class="lg-hud-promises" data-tooltip="{{localize 'CHAMPION.Petitions.PromisesHint'}}">{{#each promiseSlots}}<span class="lg-wax lg-wax--sm {{#if this}}is-on{{/if}}"></span>{{/each}}</span>
+    <span class="lg-hud-promises" data-tooltip="{{labels.promisesHint}}">{{#each promiseSlots}}<span class="lg-wax lg-wax--sm {{#if this}}is-on{{/if}}"></span>{{/each}}</span>
     {{#if nearest}}<span class="lg-hud-deadline {{nearest.urgency}}" data-tooltip="{{nearest.petitioner}}"><i class="fa-solid fa-hourglass-half"></i> {{nearest.deadlineLabel}}</span>{{/if}}
     <span class="lg-spacer"></span>
     {{#if deedCount}}<button type="button" class="lg-hud-deeds" data-action="openDeeds"><i class="fa-solid fa-feather"></i> {{deedCount}}</button>{{/if}}

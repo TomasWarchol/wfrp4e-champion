@@ -113,6 +113,23 @@ W trakcie gry szampierz ma pod ręką **mały panel sesji** (przycisk na żetoni
   - na rękawicę w Arenie od razu tworzy wyzwanie.
 - **Wyzwanie przywódcy:** wskaż przywódcę na mapie (cel), a jego Opanowanie i Walka Wręcz zostaną odczytane same.
 
+## Dla MG: edycja każdego parametru
+
+- **Zasady Legendy** (Ustawienia → Ustawienia modułów → „Ustaw zasady”, ikona kół zębatych w księdze albo `game.champion.openRules()`): każda liczba zasad z zakresem i wartością domyślną, w czterech grupach:
+  - **Sława:** progi Sławy, rozpoznanie, Echo, PS za Wagę, kara dementowania, Waga przyjętego Imienia;
+  - **Prośby:** limit obietnic, stawka przygaszająca przy odmowie, przedsięwzięcia;
+  - **Pojedynek:** przygotowania, wielki sukces, trafienia według warunków, podwójne trafienie, rany, premia podejścia, Atuty, domyślne wartości rywala i przywódcy;
+  - **Tłum:** próg, premia, reakcja.
+
+  Do tego trzy przełączniki zachowania: Przewaga od tłumu, pytanie o czyn po walce i przełączniki w oknie testu. Zmiany działają od razu, a opisy „Jak to działa” pokazują aktualne liczby.
+- **Stan legendy** (suwaki w nagłówku księgi): numer sesji, kaptur, Wezwanie Imienia, odnowienie przywołań, poległy, dziedzic, oczekujące wyzwanie.
+- **Stan pojedynku** (Arena): etap (także cofnięcie z rozstrzygnięcia), tryb, wynik, tłum, trafienia obu stron, Walka rywala, Atuty szampierza i rywala (wolne, unieważnione, zużyte), kurs, brudne zagrania, cyrulik, dziennik wymian.
+- **W formularzach pojawiają się pola „Tylko MG”:**
+  - opowieść: przywołana w tej sesji, odziedziczona, kłamstwo, Waga 0–3;
+  - prośba: dowolny status, bez skutków ubocznych;
+  - rywal: rekord zwycięstw, porażek i remisów, przekupstwo, portret.
+- **Edycja czynów i wpisów kroniki** wprost na listach.
+
 ## Instalacja
 
 W Foundry: **Dodatki → Zainstaluj moduł**, w polu *Manifest URL* wklej:

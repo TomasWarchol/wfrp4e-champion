@@ -186,16 +186,16 @@
       "RefuteHint": "Test Plotkowania z karą −10 za punkt Wagi. Sukces: kłamstwo przestaje krążyć.",
       "Empty": "Jeszcze nikt nie opowiada o tym szampierzu. Pierwszy czyn, pierwsza prośba albo pierwszy pojedynek to zmienią.",
       "Faded": "Przygasłe opowieści",
-      "HowTo": "<p><b>Opowieść</b> to nazwany czyn, który krąży wśród ludzi. Ma <b>oblicze</b> (za kogo ludzie mają szampierza), <b>krąg</b> (kto ją opowiada) i <b>Wagę</b>: 1 Plotka (okolica), 2 Opowieść (prowincja), 3 Legenda (całe Imperium).</p><p><b>Sława</b> to suma Wagi. Progi 3 / 7 / 12 / 18 dają Poziomy I–IV. Poziom mówi, jak łatwo obcy rozpoznaje szampierza (k10 ≤ 2 × Poziom) i jak często sława coś ściąga (Echo: k10 ≤ Poziom + 1).</p><p><b>Przywołanie:</b> raz na sesję każdą opowieść można przywołać w teście społecznym wobec kogoś, kto mógł ją słyszeć. Premia +1 PS za punkt Wagi. Jasne opowieści wspierają Charyzmę, Przywództwo i Targowanie, ciemne Zastraszanie.</p><p><b>Imię:</b> gracz ogłasza, kim chce być. Lud nazywa go po obliczu, które ma największą Wagę. Wezwanie Imienia raz na sesję daje 1 Determinację, a przyjęte Imię (oblicze ludu = deklarowane, Waga ≥ 3) także 1 Szczęście.</p>"
+      "HowTo": "<p><b>Opowieść</b> to nazwany czyn, który krąży wśród ludzi. Ma <b>oblicze</b> (za kogo ludzie mają szampierza), <b>krąg</b> (kto ją opowiada) i <b>Wagę</b>: 1 Plotka (okolica), 2 Opowieść (prowincja), 3 Legenda (całe Imperium).</p><p><b>Sława</b> to suma Wagi. Progi {t1} / {t2} / {t3} / {t4} dają Poziomy I–IV. Poziom mówi, jak łatwo obcy rozpoznaje szampierza (k10 ≤ {rec} × Poziom) i jak często sława coś ściąga (Echo: k10 ≤ Poziom + {echo}).</p><p><b>Przywołanie:</b> raz na sesję każdą opowieść można przywołać w teście społecznym wobec kogoś, kto mógł ją słyszeć: +{inv} PS za punkt Wagi. Jasne opowieści wspierają Charyzmę, Przywództwo i Targowanie, ciemne Zastraszanie.</p><p><b>Imię:</b> gracz ogłasza, kim chce być. Lud nazywa go po obliczu, które ma największą Wagę. Wezwanie Imienia raz na sesję daje 1 Determinację, a przyjęte Imię (oblicze ludu = deklarowane, Waga ≥ {accept}) także 1 Szczęście.</p>"
     },
     "Petitions": {
       "Title": "Prośby",
       "Promises": "Obietnice",
-      "PromisesHint": "Szampierz może naraz obiecać pomoc w najwyżej trzech sprawach.",
+      "PromisesHint": "Szampierz może naraz obiecać pomoc w najwyżej {max} sprawach.",
       "Add": "Nowa prośba",
       "Empty": "Nikt jeszcze nie przyszedł z prośbą. Echo Sławy albo MG to zmienią. Przeciągnij tu aktora, żeby dodać proszącego.",
       "Accept": "Obiecaj",
-      "TooMany": "Szampierz ma już trzy obietnice.",
+      "TooMany": "Limit obietnic ({max}) wyczerpany.",
       "Decline": "Odmów",
       "DeclineHint": "Odmowa w sprawie poważnej albo życia i śmierci przygasza legendę w kręgu proszącego.",
       "Fulfill": "Spełniona",
@@ -218,7 +218,7 @@
         "failed": "Zawiedziona",
         "declined": "Odrzucona"
       },
-      "HowTo": "<p>Ludzie przychodzą do szampierza z prośbami. Gracz wybiera, którym obieca pomoc (najwyżej <b>3 obietnice</b> naraz).</p><ul><li><b>Spełniona:</b> powstaje opowieść o Wadze równej stawce, w kręgu proszącego.</li><li><b>Zawiedziona:</b> powstaje opowieść „nie dotrzymał słowa” o obliczu Szelmy i tej samej Wadze.</li><li><b>Odmowa:</b> w drobnej sprawie bez kosztu. W poważnej albo w sprawie życia i śmierci najmocniejsza jasna opowieść w tym kręgu traci 1 Wagę.</li></ul><p>Prośby to gotowe zaczepki przygód dla całej drużyny.</p>",
+      "HowTo": "<p>Ludzie przychodzą do szampierza z prośbami. Gracz wybiera, którym obieca pomoc (najwyżej <b>{max}</b> naraz).</p><ul><li><b>Spełniona:</b> powstaje opowieść o Wadze równej stawce, w kręgu proszącego.</li><li><b>Zawiedziona:</b> powstaje opowieść „nie dotrzymał słowa” o obliczu Szelmy i tej samej Wadze.</li><li><b>Odmowa:</b> od stawki {dim} najmocniejsza jasna opowieść w tym kręgu traci 1 Wagę.</li><li><b>W tle:</b> sprawy o stawce do {endeavour} można załatwić jednym testem między przygodami.</li></ul>",
       "FulfilledTitle": "Słowo dane: {who}",
       "BrokenTitle": "Nie dotrzymał słowa: {who}",
       "EndeavourHint": "Załatw w tle (przedsięwzięcie między przygodami): jeden test, sukces daje opowieść, porażka złą sławę."
@@ -233,14 +233,14 @@
       "Wager": "Zakład",
       "WeightIfWon": "Waga opowieści przy zwycięstwie",
       "RivalEdges": "Atuty rywala",
-      "RivalEdgesHint": "MG ustala, ile brudnych przewag ma rywal (trucizna, przekupiony sędzia, własny zwiad). Każdy Atut rywala to +1 PS do jednego jego testu.",
+      "RivalEdgesHint": "MG ustala, ile brudnych przewag ma rywal (trucizna, przekupiony sędzia, własny zwiad). Każdy Atut rywala to +{sl} PS do jednej jego wymiany.",
       "ThrowGauntlet": "Ogłoś wyzwanie",
       "Roll": "Rzuć",
       "PlayToCrowd": "Gra pod publikę",
-      "PlayToCrowdHint": "Akcja w walce: test Charyzmy. Sukces: Tłum +1 (PS ≥ 3: +2). Porażka o 3+ PS: Tłum −1.",
+      "PlayToCrowdHint": "Akcja w walce: test Charyzmy. Sukces: Tłum +1 (PS ≥ {great}: +2). Porażka o {great}+ PS: Tłum −1.",
       "Edges": "Atuty szampierza",
       "Edge": {
-        "weakness": "Słabość rywala (+2 PS do jednego testu przeciw niemu)"
+        "weakness": "Słabość rywala (+{sl} PS do jednego testu przeciw niemu)"
       },
       "UseEdge": "Użyj",
       "NoEdges": "Brak Atutów. Zwiadowca może je zdobyć w Przygotowaniu.",
@@ -249,7 +249,7 @@
       "DirtyHint": "Piach w oczy, cios poniżej pasa: Tłum −1, a opowieść ze zwycięstwa będzie miała oblicze Szelmy.",
       "LinkCombat": "Połącz z walką",
       "Linked": "Połączono z walką",
-      "LinkCombatHint": "Gdy Tłum ≥ +2, szampierz dostaje +1 Przewagi na początku każdej rundy; przy ≤ −2 dostaje ją rywal.",
+      "LinkCombatHint": "Gdy Tłum ≥ +{at}, szampierz dostaje +1 Przewagi na początku każdej rundy; przy ≤ −{at} dostaje ją rywal.",
       "Heal": "Cyrulik leczy",
       "Resolve": "Rozstrzygnij pojedynek",
       "Cancel": "Odwołaj",
@@ -274,7 +274,7 @@
       },
       "StageHelp": {
         "challenge": "Ustalcie warunki, miejsce i stawkę. MG decyduje, ile Atutów ma rywal. Ogłoś wyzwanie na czacie.",
-        "prep": "Szampierz wybiera najwyżej dwa przygotowania i rzuca własną postacią. Na resztę nie ma czasu.",
+        "prep": "Szampierz wybiera najwyżej {preps} przygotowania i rzuca własną postacią. Na resztę nie ma czasu.",
         "fight": "Szybki pojedynek: wybierz podejście i wymieniaj ciosy. Kilka rzutów i po wszystkim. Albo przełącz na pełną walkę w trackerze.",
         "aftermath": "Kto wygrał i co stało się z pokonanym? Z tego narodzi się opowieść."
       },
@@ -297,7 +297,7 @@
         "rival": "Rywal: +1 Przewagi co rundę",
         "none": "Tłum nie daje jeszcze nikomu Przewagi"
       },
-      "HowTo": "<p><b>Szybki pojedynek</b> to kilka rzutów, nie pół sesji. Każda wymiana to test Walki Wręcz szampierza (w oknie WFRP) przeciw rzutowi rywala. Kto ma więcej PS, trafia; remis to zwarcie. Przewaga 4+ PS to podwójne trafienie. Trafień do zwycięstwa: do pierwszej krwi 1, do poddania się 2, na śmierć 3. Trafiony szampierz traci 1 + przewaga Żywotności.</p><p><b>Podejście:</b> natarcie bije fintę, finta bije gardę, garda bije natarcie (+20 do testu). Rywal wybiera losowo. Brudny chwyt zawsze daje +20, ale Tłum spada, a zwycięstwo da oblicze Szelmy.</p><p><b>Tłum</b> od −3 do +3: przy ±2 popierana strona ma +10. Wygrana o 3+ PS przesuwa Tłum.</p><p><b>Przygotowania:</b> najwyżej dwa z pięciu (zwiad, tłum, zakład, broń i sędziowie, cyrulik), każde to jeden test szampierza.</p><p><b>Wyzwanie przywódcy</b> (w dowolnej walce): Zastraszanie albo Przywództwo przeciw Opanowaniu przywódcy. Wygrana: przyjmuje (szybki pojedynek od razu) albo odmawia (szampierz +1 Przewagi, czyn do ogłoszenia).</p><p><b>Rozstrzygnięcie</b> rodzi opowieść, jak wcześniej: Waga z widowni i Tłumu, oblicze z losu pokonanego.</p>",
+      "HowTo": "<p><b>Szybki pojedynek</b> to kilka rzutów, nie pół sesji. Każda wymiana to test Walki Wręcz szampierza (w oknie WFRP) przeciw rzutowi rywala. Kto ma więcej PS, trafia; remis to zwarcie. Przewaga {double}+ PS to podwójne trafienie. Trafień do zwycięstwa: do pierwszej krwi {fb}, do poddania się {yield}, na śmierć {death}. Trafiony szampierz traci {wb} + przewaga Żywotności.</p><p><b>Podejście:</b> natarcie bije fintę, finta bije gardę, garda bije natarcie (+{bonus} do testu). Rywal wybiera losowo. Brudny chwyt zawsze daje +{bonus}, ale Tłum spada, a zwycięstwo da oblicze Szelmy.</p><p><b>Tłum</b> od −3 do +3: przy ±{at} popierana strona ma +{crowdBonus}. Wygrana o {shift}+ PS przesuwa Tłum.</p><p><b>Przygotowania:</b> najwyżej {preps} z pięciu (zwiad, tłum, zakład, broń i sędziowie, cyrulik), każde to jeden test szampierza. Atut szampierza to +{sl} PS, Atut rywala +{rsl} PS.</p><p><b>Wyzwanie przywódcy</b> (w dowolnej walce): Zastraszanie albo Przywództwo przeciw Opanowaniu przywódcy. Wygrana: przyjmuje (szybki pojedynek od razu) albo odmawia (szampierz +1 Przewagi, czyn do ogłoszenia).</p><p><b>Rozstrzygnięcie</b> rodzi opowieść: Waga z widowni i Tłumu, oblicze z losu pokonanego.</p>",
       "TaleTitle": "Pojedynek z {rival}",
       "Outcome": {
         "win": "Zwycięstwo",
@@ -309,16 +309,16 @@
         "humiliated": "Upokorzony",
         "killed": "Zabity"
       },
-      "HitsHint": "Trafienia: tyle trzeba, by wygrać (do pierwszej krwi 1, do poddania się 2, na śmierć 3).",
+      "HitsHint": "Trafienia: tyle trzeba, by wygrać (do pierwszej krwi {fb}, do poddania się {yield}, na śmierć {death}).",
       "HitsToWin": "Trafień do zwycięstwa",
       "PrepsDone": "Przygotowania:",
       "UndoPrep": "Cofnij przygotowanie",
       "ModeQuick": "Szybki pojedynek",
       "ModeFull": "Pełna walka",
-      "CrowdQuick": "Przy ±2 strona, którą popiera tłum, ma +10 do testów",
+      "CrowdQuick": "Przy ±{at} strona, którą popiera tłum, ma +{bonus} do testów",
       "Exchange": "Wymiana",
-      "ApproachRule": "Natarcie bije fintę, finta bije gardę, garda bije natarcie (+20). Brudny chwyt zawsze daje +20, ale tłum gwiżdże.",
-      "UseEdgeToggle": "Użyj Atutu (+2 PS)",
+      "ApproachRule": "Natarcie bije fintę, finta bije gardę, garda bije natarcie (+{bonus}). Brudny chwyt zawsze daje +{bonus}, ale tłum gwiżdże.",
+      "UseEdgeToggle": "Użyj Atutu (+{sl} PS)",
       "ExchangeGo": "Wymiana!",
       "Yield": "Poddaj się",
       "ExchangeTitle": "Wymiana {n}",
@@ -330,25 +330,25 @@
       "Prep": {
         "scout": {
           "Name": "Zwiad",
-          "Effect": "Wypytaj o rywala. Sukces: Atut „Słabość rywala” (PS ≥ 3: dwa).",
+          "Effect": "Wypytaj o rywala. Sukces: Atut „Słabość rywala” (PS ≥ {great}: dwa).",
           "Success": "Znasz słabości rywala (Atutów: {edges}).",
           "Failure": "Nic nie wiesz o rywalu."
         },
         "crowd": {
           "Name": "Tłum",
-          "Effect": "Podgrzej publiczność. Sukces: Tłum startuje od +1 (PS ≥ 3: +2).",
+          "Effect": "Podgrzej publiczność. Sukces: Tłum startuje od +1 (PS ≥ {great}: +2).",
           "Success": "Tłum jest po twojej stronie ({crowd}).",
           "Failure": "Tłum pozostaje obojętny albo wrogi ({crowd})."
         },
         "bet": {
           "Name": "Zakład",
-          "Effect": "Postaw na siebie. Sukces: kurs 2:1 (PS ≥ 3: 3:1). Porażka: 1:1.",
+          "Effect": "Postaw na siebie. Sukces: kurs 2:1 (PS ≥ {great}: 3:1). Porażka: 1:1.",
           "Success": "Kurs {odds}:1.",
           "Failure": "Kurs tylko {odds}:1."
         },
         "arms": {
           "Name": "Broń i sędziowie",
-          "Effect": "Sprawdź broń rywala i sędziów. Sukces: unieważniasz Atut rywala (PS ≥ 3: dwa).",
+          "Effect": "Sprawdź broń rywala i sędziów. Sukces: unieważniasz Atut rywala (PS ≥ {great}: dwa).",
           "Success": "Unieważnione Atuty rywala: {negated}.",
           "Failure": "Nie wykryłeś podstępu."
         },
@@ -374,7 +374,7 @@
         },
         "dirty": {
           "Name": "Brudny chwyt",
-          "Hint": "Zawsze +20, ale Tłum −1, a zwycięstwo da oblicze Szelmy."
+          "Hint": "Zawsze +{bonus}, ale Tłum −1, a zwycięstwo da oblicze Szelmy."
         }
       }
     },
@@ -457,7 +457,7 @@
       "ChallengeTitle": "{champion} wyzywa: {rival}",
       "ChallengeFoot": "Przygotowania i walka w Arenie szampierza.",
       "EdgeKicker": "Atut użyty",
-      "EdgeBody": "+2 PS do jednego testu przeciw: {rival}.",
+      "EdgeBody": "+{sl} PS do jednego testu przeciw: {rival}.",
       "CrowdShift": "Tłum {delta} (teraz {crowd}).",
       "DirtyTitle": "Piach w oczy!",
       "DirtyBody": "Tłum gwiżdże. Jeśli szampierz wygra, opowieść będzie miała oblicze Szelmy.",
@@ -494,7 +494,7 @@
       "ExchangeKicker": "Wymiana {n} · {champ} : {rival} (do {needed})",
       "ExchangeChamp": "{name}: {approach}, {sl} PS",
       "ExchangeRival": "{name}: {approach}, {sl} PS (k100 = {roll} na {target})",
-      "RivalEdgeUsed": "Rywal użył Atutu (+1 PS)",
+      "RivalEdgeUsed": "Rywal użył Atutu (+{sl} PS)",
       "ChampWounded": "Szampierz traci {n} Żywotności",
       "ExchangeWin": "{name} trafia!",
       "ExchangeWinDouble": "{name} trafia potężnie (×2)!",
@@ -624,7 +624,42 @@
       "LeaderCool": "Opanowanie przywódcy",
       "LeaderMelee": "Jego Walka Wręcz",
       "LeaderSkill": "Test szampierza",
-      "LeaderDefault": "Przywódca wrogów"
+      "LeaderDefault": "Przywódca wrogów",
+      "GMOnly": "Tylko MG",
+      "TaleInvoked": "Przywołana w tej sesji",
+      "TaleInherited": "Odziedziczona po poprzedniku",
+      "PetitionStatus": "Status",
+      "PetitionStatusHint": "Bez skutków ubocznych: nie tworzy opowieści ani nie przygasza legendy.",
+      "RivalImg": "Portret (ścieżka do obrazu)",
+      "Wins": "Zwycięstwa szampierza",
+      "Losses": "Porażki szampierza",
+      "Draws": "Remisy",
+      "Bribe": "Przekupstwo (Atuty w następnym pojedynku)",
+      "DeedEdit": "Edycja czynu",
+      "NoteEdit": "Edycja wpisu kroniki",
+      "LegendStateTitle": "Stan legendy: {name}",
+      "LegendStateButton": "Stan legendy (MG)",
+      "LegendStateHint": "Wszystko, czego nie zmienia się w innych oknach: sesja, kaptur, Wezwanie Imienia, przywołania, poległy, dziedzic.",
+      "SessionNumber": "Numer sesji",
+      "SessionNumberHint": "Wspólny dla całego świata. Zmiana odnawia przywołania i Wezwanie Imienia.",
+      "HeirOf": "Dziedzic (po kim)",
+      "NameCalledFlag": "Wezwanie Imienia użyte w tej sesji",
+      "ResetInvocations": "Odnów przywołania wszystkich opowieści",
+      "FallenFlag": "Szampierz poległ",
+      "ClearChallenge": "Usuń oczekujące wyzwanie ({name})",
+      "DuelStateTitle": "Stan pojedynku (MG)",
+      "DuelStateButton": "Stan pojedynku",
+      "DuelStateHint": "Każda liczba trwającego pojedynku: etap, tryb, wynik, tłum, trafienia, Atuty, kurs i cyrulik.",
+      "DuelStage": "Etap",
+      "DuelMode": "Tryb",
+      "DuelResult": "Wynik",
+      "ChampScore": "Trafienia szampierza",
+      "RivalScore": "Trafienia rywala",
+      "FreeEdges": "Wolne Atuty szampierza",
+      "NegatedEdges": "Unieważnione Atuty rywala",
+      "RivalEdgesUsed": "Zużyte Atuty rywala",
+      "DirtyCount": "Brudne zagrania",
+      "ClearExchanges": "Wyczyść dziennik wymian ({n})"
     },
     "Notify": {
       "SelectToken": "Zaznacz żeton szampierza albo przypisz postać do gracza.",
@@ -648,8 +683,12 @@
       "OwnerOnly": "Tylko gracz szampierza albo MG."
     },
     "Settings": {
-      "CrowdAdvantageName": "Tłum daje Przewagę",
-      "CrowdAdvantageHint": "W pojedynku połączonym z walką: przy Tłumie ±2 strona, którą popiera tłum, dostaje +1 Przewagi na początku każdej rundy."
+      "crowdAdvantageName": "Tłum daje Przewagę (pełna walka)",
+      "crowdAdvantageHint": "W pojedynku rozgrywanym jako pełna walka w trackerze: przy Tłumie na progu strona, którą popiera tłum, dostaje +1 Przewagi na początku każdej rundy.",
+      "deedPromptName": "Pytanie o czyn po walce",
+      "deedPromptHint": "Po każdej walce z udziałem szampierza gracz i MG dostają szept „Coś godnego opowieści?”.",
+      "dialogTogglesName": "Przywołanie w oknie testu",
+      "dialogTogglesHint": "Opowieści pojawiają się jako przełączniki w oknie testu WFRP (efekt „Legenda szampierza”). Wyłączone: przywołanie tylko z panelu."
     },
     "HubDesc": "Legenda szampierza: opowieści i sława, Imię nadane przez lud, prośby, pojedynki przed tłumem z drużyną jako sekundantami, rywale i dziedzictwo.",
     "Effect": {
@@ -694,6 +733,131 @@
       "few": "Garstka",
       "crowd": "Tłum",
       "great": "Wielkie wydarzenie"
+    },
+    "Params": {
+      "Title": "Zasady Legendy",
+      "Open": "Ustaw zasady",
+      "MenuHint": "Wszystkie liczby zasad modułu: progi Sławy, obietnice, pojedynek, tłum.",
+      "Intro": "Każdą liczbę zasad można zmienić. Zmiany działają od razu we wszystkich kartach, panelach i oknach testu. Zmienione wartości są podświetlone.",
+      "Default": "domyślnie",
+      "Reset": "Przywróć domyślne",
+      "Saved": "Zasady Legendy zapisane.",
+      "ResetDone": "Przywrócono domyślne zasady.",
+      "Group": {
+        "fame": "Sława, Imię i przywołania",
+        "petitions": "Prośby",
+        "duel": "Pojedynek",
+        "crowd": "Tłum",
+        "behaviour": "Zachowanie modułu"
+      },
+      "tier1": {
+        "Name": "Próg Poziomu I",
+        "Hint": "Sława potrzebna do Poziomu I."
+      },
+      "tier2": {
+        "Name": "Próg Poziomu II",
+        "Hint": "Sława potrzebna do Poziomu II."
+      },
+      "tier3": {
+        "Name": "Próg Poziomu III",
+        "Hint": "Sława potrzebna do Poziomu III."
+      },
+      "tier4": {
+        "Name": "Próg Poziomu IV",
+        "Hint": "Sława potrzebna do Poziomu IV (Żywa legenda)."
+      },
+      "recognitionPerTier": {
+        "Name": "Rozpoznanie na Poziom",
+        "Hint": "Obcy rozpoznaje szampierza przy k10 ≤ ta liczba × Poziom."
+      },
+      "echoBase": {
+        "Name": "Echo Sławy: premia",
+        "Hint": "Echo coś ściąga przy k10 ≤ Poziom + ta liczba."
+      },
+      "invokePerWeight": {
+        "Name": "PS za punkt Wagi",
+        "Hint": "Premia z przywołania: Waga × ta liczba."
+      },
+      "refutePerWeight": {
+        "Name": "Kara dementowania",
+        "Hint": "Kara do Plotkowania przy dementowaniu: −(ta liczba) za punkt Wagi."
+      },
+      "nameAcceptWeight": {
+        "Name": "Waga przyjętego Imienia",
+        "Hint": "Imię jest przyjęte, gdy oblicze ludu = deklarowane i ma co najmniej tyle Wagi."
+      },
+      "maxPromises": {
+        "Name": "Limit obietnic",
+        "Hint": "Ile próśb szampierz może naraz obiecać."
+      },
+      "declineDimStake": {
+        "Name": "Odmowa przygasza od stawki",
+        "Hint": "Odmowa sprawy o tej stawce lub wyższej przygasza legendę (4 = nigdy)."
+      },
+      "endeavourMaxStake": {
+        "Name": "Przedsięwzięcie do stawki",
+        "Hint": "Prośby o tej stawce lub niższej można załatwić w tle jednym testem (0 = wyłączone)."
+      },
+      "maxPreps": {
+        "Name": "Liczba przygotowań",
+        "Hint": "Ile przygotowań szampierz może wykonać przed pojedynkiem."
+      },
+      "greatSL": {
+        "Name": "Wielki sukces (PS)",
+        "Hint": "Od tylu PS przygotowanie daje podwójny efekt (np. dwa Atuty)."
+      },
+      "hitsFirstBlood": {
+        "Name": "Trafienia: pierwsza krew",
+        "Hint": "Trafień do zwycięstwa w walce do pierwszej krwi."
+      },
+      "hitsYield": {
+        "Name": "Trafienia: do poddania",
+        "Hint": "Trafień do zwycięstwa w walce do poddania się."
+      },
+      "hitsDeath": {
+        "Name": "Trafienia: na śmierć",
+        "Hint": "Trafień do zwycięstwa w walce na śmierć."
+      },
+      "doubleHitMargin": {
+        "Name": "Podwójne trafienie od",
+        "Hint": "Przewaga PS w wymianie, od której trafienie liczy się podwójnie."
+      },
+      "woundsBase": {
+        "Name": "Rany: podstawa",
+        "Hint": "Trafiony szampierz traci (ta liczba + przewaga PS) Żywotności."
+      },
+      "approachBonus": {
+        "Name": "Premia podejścia",
+        "Hint": "Premia do testu, gdy podejście bije podejście przeciwnika (i za brudny chwyt)."
+      },
+      "edgeSL": {
+        "Name": "Atut szampierza (PS)",
+        "Hint": "Ile PS daje Atut szampierza w jednej wymianie albo teście."
+      },
+      "rivalEdgeSL": {
+        "Name": "Atut rywala (PS)",
+        "Hint": "Ile PS dostaje rywal za każdy swój Atut."
+      },
+      "defaultRivalSkill": {
+        "Name": "Domyślna Walka rywala",
+        "Hint": "Walka Wręcz rywala, który nie jest aktorem."
+      },
+      "defaultLeaderCool": {
+        "Name": "Domyślne Opanowanie przywódcy",
+        "Hint": "Opanowanie przywódcy wrogów, gdy nie jest wskazany na mapie."
+      },
+      "crowdThreshold": {
+        "Name": "Próg tłumu",
+        "Hint": "Od tej wartości Tłumu (±) popierana strona dostaje premię."
+      },
+      "crowdTestBonus": {
+        "Name": "Premia od tłumu",
+        "Hint": "Premia do testów w szybkim pojedynku dla strony, którą popiera tłum."
+      },
+      "crowdShiftMargin": {
+        "Name": "Tłum reaguje od (PS)",
+        "Hint": "Wygrana wymiana o tyle PS lub więcej przesuwa Tłum o 1."
+      }
     }
   }
 }

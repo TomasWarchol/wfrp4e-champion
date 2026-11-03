@@ -35,6 +35,9 @@ export const LEGEND_ACTIONS = {
   recognize: action(a => Ops.recognize(a)),
   toggleHood: action(a => Ops.toggleHood(a)),
   inherit: action(a => Ops.inherit(a)),
+  editLegendState: action(a => Ops.editLegendState(a)),
+  editDuelState: action(a => Ops.editDuelState(a)),
+  openRules: action(() => game.champion?.openRules()),
   openHud: action(a => game.champion?.openHud(a)),
   openBook: action(a => game.champion?.openSheet(a)),
   openDeeds: action(a => game.champion?.openSheet(a, "deeds")),
@@ -48,6 +51,7 @@ export const LEGEND_ACTIONS = {
   recordDeed: action(a => Ops.recordDeed(a)),
   promoteDeed: action((a, d) => Ops.promoteDeed(a, d.deedId)),
   dismissDeed: action((a, d) => Ops.dismissDeed(a, d.deedId)),
+  editDeed: action((a, d) => Ops.editDeed(a, d.deedId)),
   // Prośby
   addPetition: action(a => Ops.addPetition(a)),
   editPetition: action((a, d) => Ops.editPetition(a, d.petitionId)),
@@ -85,6 +89,7 @@ export const LEGEND_ACTIONS = {
   // Kronika
   addNote: action(a => Ops.addNote(a)),
   deleteNote: action((a, d) => Ops.deleteNote(a, d.entryId)),
+  editNote: action((a, d) => Ops.editNote(a, d.entryId)),
   exportChronicle: action(a => Ops.exportChronicle(a))
 };
 
