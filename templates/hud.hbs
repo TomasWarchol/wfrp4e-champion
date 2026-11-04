@@ -1,0 +1,105 @@
+<div class="lg-root lg-hud {{#if fallen}}is-fallen{{/if}} {{#if header.incognito}}is-hooded{{/if}}">
+  <header class="lg-hud-head">
+    <div class="lg-hud-portrait"><img src="{{header.img}}" alt=""/>{{#if header.incognito}}<span class="lg-hud-hood"><i class="fa-solid fa-user-secret"></i></span>{{/if}}</div>
+    <div class="lg-hud-id">
+      <div class="lg-hud-name">{{#if header.declared}}{{header.declared}}{{else}}{{header.actorName}}{{/if}}</div>
+      <div class="lg-hud-sub"><span class="lg-hud-tier">{{header.tierName}}</span> · {{localize "CHAMPION.Header.Fame"}} <b>{{header.fame}}</b></div>
+    </div>
+    <div class="lg-hud-tools">
+      {{#if env.canEdit}}<button type="button" class="lg-icon-btn lg-icon-btn--light {{#if header.incognito}}is-active{{/if}}" data-action="toggleHood" data-tooltip="{{localize 'CHAMPION.Hood.Hint'}}"><i class="fa-solid fa-user-secret"></i></button>{{/if}}
+      <button type="button" class="lg-icon-btn lg-icon-btn--light" data-action="openBook" data-tooltip="{{localize 'CHAMPION.Hud.OpenBook'}}"><i class="fa-solid fa-book-open"></i></button>
+    </div>
+  </header>
+
+  {{#if duel}}
+  <section class="lg-hud-duel">
+    <div class="lg-hud-versus">
+      <div class="lg-pips">{{#each duel.champPips}}<span class="lg-pip {{#if this}}is-on{{/if}}"></span>{{/each}}</div>
+      <div class="lg-hud-rival"><i class="fa-solid fa-khanda"></i> {{duel.rival.name}}</div>
+      <div class="lg-pips lg-pips--rival">{{#each duel.rivalPips}}<span class="lg-pip {{#if this}}is-on{{/if}}"></span>{{/each}}</div>
+    </div>
+    <div class="lg-hud-crowd is-{{duel.crowdFavourClass}}"><i class="fa-solid fa-people-group"></i> {{duel.crowdMood}}</div>
+
+    {{#if duel.isChallenge}}
+    <button type="button" class="lg-btn lg-btn--gold lg-btn--sm lg-hud-wide" data-action="duelStage" data-dir="1">{{duel.nextLabel}} <i class="fa-solid fa-chevron-right"></i></button>
+    {{/if}}
+    {{#if duel.isPrep}}
+    <div class="lg-hud-preps">
+      {{#each duel.preps}}
+      <button type="button" class="lg-hud-prep {{#if result}}{{#if result.success}}is-success{{else}}is-failure{{/if}}{{/if}}" data-action="doPrep" data-prep="{{id}}" {{#unless canDo}}disabled{{/unless}} data-tooltip="{{label}}: {{effect}}"><i class="{{icon}}"></i></button>
+      {{/each}}
+      <span class="lg-hud-preps-count">{{duel.prepsDone}}/{{duel.prepsMax}}</span>
+    </div>
+    <button type="button" class="lg-btn lg-btn--gold lg-btn--sm lg-hud-wide" data-action="duelStage" data-dir="1">{{duel.nextLabel}} <i class="fa-solid fa-chevron-right"></i></button>
+    {{/if}}
+    {{#if duel.isFight}}
+      {{#if duel.isQuick}}
+      <div class="lg-approaches lg-approaches--hud" data-approach-group>
+        {{#each duel.approaches}}
+        <label class="lg-approach {{#if dark}}is-dark{{/if}}" data-tooltip="{{label}}: {{hint}}">
+          <input type="radio" name="lg-approach" value="{{id}}" {{#if @first}}checked{{/if}}/>
+          <span><i class="{{icon}}"></i></span>
+        </label>
+        {{/each}}
+      </div>
+      {{#if duel.freeEdges}}<label class="lg-check lg-edge-toggle"><input type="checkbox" name="lg-use-edge"/> <span class="lg-edge-chip"></span> {{@root.labels.useEdgeToggle}} ({{duel.freeEdges}})</label>{{/if}}
+      <div class="lg-hud-row">
+        <button type="button" class="lg-btn lg-btn--hero lg-btn--sm lg-hud-grow" data-action="exchange"><i class="fa-solid fa-khanda"></i> {{localize "CHAMPION.Arena.ExchangeGo"}}</button>
+        <button type="button" class="lg-btn lg-btn--ghost-dark lg-btn--sm lg-btn--icon" data-action="yieldDuel" data-tooltip="{{localize 'CHAMPION.Arena.Yield'}}"><i class="fa-solid fa-flag"></i></button>
+      </div>
+      {{else}}
+      <div class="lg-hud-row">
+        <button type="button" class="lg-btn lg-btn--ghost-dark lg-btn--sm" data-action="crowd" data-delta="-1">−1</button>
+        <button type="button" class="lg-btn lg-btn--gold lg-btn--sm lg-hud-grow" data-action="playToCrowd"><i class="fa-solid fa-masks-theater"></i> {{localize "CHAMPION.Arena.PlayToCrowd"}}</button>
+        <button type="button" class="lg-btn lg-btn--ghost-dark lg-btn--sm" data-action="crowd" data-delta="1">+1</button>
+      </div>
+      <button type="button" class="lg-btn lg-btn--gold lg-btn--sm lg-hud-wide" data-action="duelStage" data-dir="1">{{duel.nextLabel}} <i class="fa-solid fa-chevron-right"></i></button>
+      {{/if}}
+    {{/if}}
+    {{#if duel.isAftermath}}
+    {{#if duel.resultLabel}}<div class="lg-result-banner lg-result-banner--sm is-{{duel.result}}">{{duel.resultLabel}}</div>{{/if}}
+    <button type="button" class="lg-btn lg-btn--hero lg-btn--sm lg-hud-wide" data-action="resolveDuel"><i class="fa-solid fa-scroll"></i> {{localize "CHAMPION.Arena.Resolve"}}</button>
+    {{/if}}
+  </section>
+  {{/if}}
+
+  <section class="lg-hud-tales">
+    <div class="lg-hud-title"><i class="fa-solid fa-bullhorn"></i> {{localize "CHAMPION.Hud.Ready"}} <small>{{readyCount}}</small></div>
+    {{#if header.incognito}}
+    <p class="lg-hud-note"><i class="fa-solid fa-user-secret"></i> {{localize "CHAMPION.Hood.Silent"}}</p>
+    {{else}}
+      {{#each ready}}
+      <div class="lg-hud-tale lg-tone-{{tone}}">
+        <i class="{{faceIcon}}"></i>
+        <span class="lg-hud-tale-title">{{displayTitle}}</span>
+        <button type="button" class="lg-btn lg-btn--gold lg-btn--sm" data-action="invokeTale" data-tale-id="{{id}}" data-tooltip="{{skillsLabel}}">+{{bonus}}</button>
+      </div>
+      {{else}}
+      <p class="lg-hud-note">{{localize "CHAMPION.Hud.NoReady"}}</p>
+      {{/each}}
+      {{#if ready.length}}<p class="lg-hud-hint">{{localize "CHAMPION.Hud.DialogHint"}}</p>{{/if}}
+    {{/if}}
+  </section>
+
+  {{#if env.canEdit}}
+  <section class="lg-hud-actions">
+    <button type="button" class="lg-hud-action" data-action="recordDeed"><i class="fa-solid fa-feather"></i><span>{{localize "CHAMPION.Deeds.Record"}}</span></button>
+    <button type="button" class="lg-hud-action is-blood" data-action="challengeLeader" {{#if duel}}disabled{{/if}}><i class="fa-solid fa-hand-back-fist"></i><span>{{localize "CHAMPION.Leader.Short"}}</span></button>
+    <button type="button" class="lg-hud-action {{#unless header.canCallName}}is-spent{{/unless}}" data-action="callName" {{#unless header.canCallName}}disabled{{/unless}} data-tooltip="{{header.callNameHint}}"><i class="fa-solid fa-sun"></i><span>{{localize "CHAMPION.Name.Call"}}</span></button>
+  </section>
+  {{/if}}
+
+  <footer class="lg-hud-foot">
+    <span class="lg-hud-promises" data-tooltip="{{labels.promisesHint}}">{{#each promiseSlots}}<span class="lg-wax lg-wax--sm {{#if this}}is-on{{/if}}"></span>{{/each}}</span>
+    {{#if nearest}}<span class="lg-hud-deadline {{nearest.urgency}}" data-tooltip="{{nearest.petitioner}}"><i class="fa-solid fa-hourglass-half"></i> {{nearest.deadlineLabel}}</span>{{/if}}
+    <span class="lg-spacer"></span>
+    {{#if deedCount}}<button type="button" class="lg-hud-deeds" data-action="openDeeds"><i class="fa-solid fa-feather"></i> {{deedCount}}</button>{{/if}}
+  </footer>
+
+  {{#if env.isGM}}
+  <div class="lg-hud-gm">
+    <button type="button" class="lg-btn lg-btn--ghost lg-btn--sm" data-action="recognize"><i class="fa-solid fa-eye"></i> {{localize "CHAMPION.Recognize.Button"}}</button>
+    <button type="button" class="lg-btn lg-btn--ghost lg-btn--sm" data-action="rollEcho"><i class="fa-solid fa-tower-broadcast"></i> {{localize "CHAMPION.Echo.Button"}}</button>
+  </div>
+  {{/if}}
+</div>

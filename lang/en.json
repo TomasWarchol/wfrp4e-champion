@@ -1,332 +1,863 @@
 {
   "CHAMPION": {
-    "Title": "Iron Mandate: Champion",
-    "WindowTitle": "WFRP4e – Iron Mandate: Champion",
-    "SheetButton": "Iron Mandate: Champion",
-    "Init": "Initialising Iron Mandate: Champion for WFRP4e…",
-    "Ready": "Module ready. API registered as game.champion.",
-    "Settings": {
-      "AutoDeductName": "Deduct Advantage automatically",
-      "AutoDeductHint": "Whether executing a manoeuvre automatically reduces the character's current Advantage on the sheet."
-    },
-    "Mandate": {
-      "Crown": "+{value} (Crown)",
-      "Commons": "{value} (Commons)",
-      "Balance": "0 (Balance)"
-    },
-    "Notify": {
-      "SelectToken": "Select a token or assign a character to open the Champion panel.",
-      "OpenError": "Error while opening the Champion panel: {error}",
-      "SelectChampionToken": "Select the Champion's token on the map.",
-      "GambitNotFound": "The selected manoeuvre could not be found.",
-      "NoAdvantage": "Not enough Advantage! “{name}” needs {cost} Advantage (you have {current}).",
-      "GambitDone": "Manoeuvre performed: {name}! Roll the opposed test.",
-      "NoFavors": "{name} owes you no more debts of honour!",
-      "FavorUsed": "Called in a favour from {name}! Debts left: {left}.",
-      "ChallengePosted": "Challenge posted to chat!",
-      "StanceTaken": "Combat stance taken: {name}",
-      "KeepOneCourt": "You must keep at least one court!",
-      "AlreadyPinned": "{name} is already pinned to this court!",
-      "Pinned": "{name} pinned to {court}!"
-    },
+    "Title": "Champion's Legend",
+    "WindowTitle": "Champion's Legend",
+    "SheetButton": "Champion's Legend",
+    "SL": "SL",
+    "Edit": "Edit",
+    "Delete": "Delete",
+    "Back": "Back",
+    "Save": "Save",
+    "HowTo": "How it works at the table",
     "Tabs": {
-      "Combat": "School of Combat & Stances",
-      "Courts": "Court Influence (Nuln / Middenheim)",
-      "Challenge": "Ritual of Challenge & Rival Study"
+      "legend": "Legend",
+      "deeds": "Deeds",
+      "arena": "Arena",
+      "rivals": "Rivals",
+      "chronicle": "Chronicle"
     },
-    "Hud": {
-      "Stance": "Combat stance:",
-      "Advantage": "Advantage:",
-      "AdvantageTooltip": "Current Advantage on the character sheet",
-      "Mandate": "Blood Mandate:",
-      "Commons": "COMMONS (−10)",
-      "Crown": "CROWN (+10)",
-      "Folk": "Folk Standing:",
-      "FolkTooltip": "Authority among commoners, the watch and the rank and file (0–100%)",
-      "FolkHint": "Respect of the crowd, militia and servants"
-    },
-    "Combat": {
-      "Stances": "CHAMPION'S COMBAT STANCES:",
-      "Active": "Active",
-      "Manoeuvres": "SPECIAL ACTIONS & FENCING MANOEUVRES:",
-      "AddManoeuvre": "Add Custom Manoeuvre",
-      "Hint": "Advantage lets you declare a manoeuvre, but every one of them still needs the listed opposed test!",
-      "CostTooltip": "Cost in Advantage",
-      "CostShort": "A",
-      "RequiredTest": "Required test:",
-      "Execute": "Perform Manoeuvre",
-      "Edit": "Edit",
-      "Delete": "Delete"
-    },
-    "Courts": {
-      "AddTooltip": "Add a new court (e.g. Altdorf, Talabheim)",
-      "Add": "Add Court",
-      "Influence": "Court influence:",
-      "DeleteTooltip": "Remove this court",
-      "DropZone": "Drag and drop an Actor from the Foundry sidebar to pin them to this court!",
-      "Favors": "Debts of honour / favours:",
-      "FavorDown": "Reduce debt",
-      "FavorUp": "Increase debt",
-      "Hooks": "Hooks & secrets:",
-      "Notes": "Notes:",
-      "UseTooltip": "Spend 1 debt and announce your demand in chat",
-      "Use": "Call in Influence",
-      "EditTooltip": "Edit relationship",
-      "RemoveTooltip": "Remove from court",
-      "Empty": "No notables pinned to this court yet. Drag characters from the Foundry sidebar!"
-    },
-    "Challenge": {
-      "Banner": "RITUAL OF CHALLENGE & RIVAL STUDY",
-      "BannerDesc": "Pre-duel scouting, studying the opponent's weaknesses and a formal challenge to a trial by combat or a clash before the armies.",
-      "Scale": "Scale of the clash:",
-      "Study": "Rival study (opponent's known weaknesses):",
-      "RivalName": "Opponent's name and title:",
-      "RivalNamePlaceholder": "e.g. Baron Heinrich von Todbringer / Champion of Nurgle",
-      "RivalStatus": "Social status / rank:",
-      "RivalStatusPlaceholder": "e.g. Gold 3 / Commander",
-      "Weaknesses": "Weaknesses and fighting style found (click to mark):",
-      "CustomWeakness": "Other weakness / note from the investigation:",
-      "CustomWeaknessPlaceholder": "e.g. Drinks spirits before a fight / Blind in the left eye",
-      "Stakes": "Stakes of the challenge:",
-      "StakesPlaceholder": "What is the fight about? (e.g. freeing prisoners, family honour, surrender of the gate)",
-      "Conditions": "Terms of the duel:",
-      "ConditionsPlaceholder": "e.g. To first blood, on trodden ground, no magic or firearms",
-      "Post": "THROW DOWN THE GAUNTLET IN CHAT",
-      "DefaultTarget": "Appointed opponent",
-      "DefaultTargetStatus": "Aristocrat / Champion",
-      "DefaultStakes": "Establishing truth and honour",
-      "DefaultConditions": "To first blood, on trodden ground"
-    },
-    "Scale": {
-      "personal": {
-        "Title": "Law & Honour",
-        "Desc": "Personal scale (trial by combat, disputes, betrayal, honour)",
-        "Label": "Duel of Law and Honour (personal scale)"
+    "Face": {
+      "protector": {
+        "Name": "Protector",
+        "Desc": "Stands up for the weak, defends people who have no one else."
       },
-      "tactical": {
-        "Title": "Breaking the Will",
-        "Desc": "Tactical scale (warband chief, pack alpha, breaking morale)",
-        "Label": "Breaking the Will / Chieftain's Call (tactical scale)"
+      "slayer": {
+        "Name": "Slayer",
+        "Desc": "Kills what others fear: beasts, monsters, foes in a fight to the death."
       },
-      "strategic": {
-        "Title": "Before the Ranks",
-        "Desc": "War scale (clash of leaders, truce, fate of a garrison)",
-        "Label": "Clash Before the Ranks (war scale)"
+      "rebel": {
+        "Name": "Rebel",
+        "Desc": "Does not kneel to lords. A hero to the commons, a threat to the nobility."
+      },
+      "honorable": {
+        "Name": "Honourable",
+        "Desc": "Keeps his word, fights fair, spares the defeated."
+      },
+      "brute": {
+        "Name": "Brute",
+        "Desc": "Wins by breaking bones and finishing the fallen. Inspires fear, not respect."
+      },
+      "rogue": {
+        "Name": "Rogue",
+        "Desc": "Dirty tricks, sold fights, broken promises."
       }
     },
-    "Weakness": {
-      "kneeInjury": "Old leg injury (vulnerable to sweeps)",
-      "hotTempered": "Hot-tempered (easy to provoke)",
-      "bladePoisoner": "Poisons the blade (antidote ready)",
-      "superstitious": "Superstitious fear of the gods",
-      "rigidStyle": "Rigid textbook style (vulnerable to ripostes)"
+    "Circle": {
+      "commons": "Commons",
+      "nobility": "Nobility",
+      "temples": "Temples",
+      "underworld": "Underworld",
+      "soldiery": "Soldiery"
     },
-    "Category": {
-      "prowokacja": "Provocation",
-      "kontra": "Counter / Riposte",
-      "sztuczka": "Dirty Trick",
-      "finiszer": "Finisher / Display",
-      "default": "Champion's Action"
+    "Weight": {
+      "0": "Faded",
+      "1": "Rumour",
+      "2": "Tale",
+      "3": "Legend"
     },
-    "Relationship": {
-      "patron": "Protector / Patron",
-      "debtor": "Debtor of Honour",
-      "blackmailed": "Cornered / Blackmail",
-      "rival": "Bitter Rival"
+    "WeightReach": {
+      "1": "Locality",
+      "2": "Province",
+      "3": "Empire"
     },
-    "Dialog": {
-      "AddCourtTitle": "Add a New Court / Seat of Influence",
-      "CourtName": "Court name:",
-      "CourtNamePlaceholder": "e.g. Court of Altdorf / Palace in Talabheim",
-      "CourtDesc": "Description and character:",
-      "CourtDescPlaceholder": "What makes this court distinctive…",
-      "CourtDefaultDesc": "A political centre of the Empire.",
-      "Add": "Add",
-      "Save": "Save",
-      "UseFavorTitle": "Call in a Favour: {name}",
-      "FavorsAvailable": "Favours available:",
-      "FavorsCount": "{count} debt(s).",
-      "Hooks": "Hooks:",
-      "NoHooks": "No particular hooks.",
-      "Demand": "What do you demand in return for the debt?",
-      "DemandPlaceholder": "e.g. Force a private audience with the Countess / Withdraw a warrant / Deliver black powder…",
-      "UseAndAnnounce": "Call In and Announce in Chat",
-      "DefaultDemand": "Forcing an audience, a letter of safe conduct or support in a political dispute.",
-      "EditPinnedTitle": "Edit Relationship: {name}",
-      "RelationshipType": "Relationship type:",
-      "FavorCount": "Debts / favours (0–5):",
-      "HooksField": "Hooks and dirty secrets:",
-      "MeetingNotes": "Notes from meetings:",
-      "NewContactHooks": "A fresh contact from the session.",
-      "DefaultStatus": "Noble / Burgher",
-      "EditGambitTitle": "Edit Manoeuvre: {name}",
-      "NewGambitTitle": "New Champion Manoeuvre",
-      "GambitName": "Manoeuvre name:",
-      "Category": "Category:",
-      "Cost": "Cost in Advantage:",
-      "OpposedTest": "Required opposed test:",
-      "OpposedTestPlaceholder": "e.g. Melee (−10) vs Melee",
-      "Effect": "Effect on success and failure:",
-      "Tags": "Tags:",
-      "NewGambitName": "New Combat Manoeuvre",
-      "NewGambitTest": "Melee vs Dodge / Melee",
-      "NewGambitEffect": "Describe the test and its effects on success and failure…",
-      "NewGambitTags": "Melee"
+    "Tier": {
+      "0": {
+        "Name": "Unknown",
+        "Hint": "Nobody has heard this name yet. Echo of Fame: d10 ≤ {echo}."
+      },
+      "1": {
+        "Name": "Known Locally",
+        "Hint": "A stranger from a circle where the legend spreads recognises him: d10 ≤ {target}. Echo of Fame: d10 ≤ {echo}."
+      },
+      "2": {
+        "Name": "A Name Heard",
+        "Hint": "Recognition: d10 ≤ {target}. Echo of Fame: d10 ≤ {echo}. Acting quietly is getting hard."
+      },
+      "3": {
+        "Name": "Famous",
+        "Hint": "Recognition: d10 ≤ {target}. Echo of Fame: d10 ≤ {echo}. Fame draws challengers and enemies."
+      },
+      "4": {
+        "Name": "Living Legend",
+        "Hint": "Recognition: d10 ≤ {target}. Echo of Fame: d10 ≤ {echo}. Every step is watched."
+      }
+    },
+    "Header": {
+      "Fame": "Fame",
+      "NextTier": "To next tier: {missing} (at {next})",
+      "MaxTier": "Highest tier of fame",
+      "Fallen": "Fallen. The legend lives on.",
+      "HeirOf": "Heir of"
+    },
+    "Name": {
+      "Declare": "Declare your Name",
+      "EditHint": "Change the Name, face or homeland",
+      "DeclaredFace": "Declared face",
+      "PeopleFace": "People's face",
+      "Call": "Call the Name",
+      "Called": "Name called",
+      "CallHint": "Once per session, when acting as the people see you: regain 1 Resolve.",
+      "CallHintAccepted": "Once per session, when acting by your Name: regain 1 Resolve and 1 Fortune (Name accepted).",
+      "State": {
+        "none": "The champion has not yet declared who he wants to be.",
+        "unknown": "The people don't talk about you yet.",
+        "aligned": "The people start calling you what you want. Not quite yet.",
+        "accepted": "Name accepted: the people speak of you as you wish.",
+        "drift": "The people call you something else: \"{epithet}\" ({face})."
+      }
+    },
+    "Session": {
+      "Hint": "New session: refreshes tale invocations and Calling the Name."
+    },
+    "Inherit": {
+      "Hint": "The champion's death: pass the legend to an heir."
+    },
+    "Echo": {
+      "Button": "Echo of Fame",
+      "Hint": "At the start of a session or after a journey: d10 ≤ Fame tier + 1 and fame draws something in.",
+      "Silence": "Silence",
+      "SilenceText": "This time fame brought nobody to the door.",
+      "Type": {
+        "petition": "Petition",
+        "challenger": "Challenger",
+        "ballad": "Ballad",
+        "darkRumor": "Dark rumour",
+        "impostor": "Impostor",
+        "offer": "Offer",
+        "notice": "Someone is watching",
+        "rivalMove": "Rival's move"
+      },
+      "Sub": {
+        "petition": "Someone came for help",
+        "challenger": "Someone wants to build a name on yours",
+        "ballad": "A song carries the tale further",
+        "darkRumor": "Enemies have their own version",
+        "impostor": "Someone wears your name",
+        "offer": "A polite proposal (GM only)",
+        "notice": "Fame draws attention (GM only)",
+        "rivalMove": "The rival doesn't wait for a duel"
+      },
+      "RivalReturns": "{name} returns. {grudge}.",
+      "NewChallenger": "{name}, {title}, wants to face the champion.",
+      "ChallengerFoot": "The rival is on the list. The challenge can be taken up in the Arena, or the champion can try to wriggle out.",
+      "BalladGrows": "\"{title}\" grows: it is now a {weight}.",
+      "BalladNothing": "A minstrel looks for a subject, but there is nothing to sing about yet.",
+      "RumorFoot": "The lie has entered the Legend. It can be refuted with a Gossip test.",
+      "ImpostorPetitioner": "Victims of the impostor",
+      "ImpostorReward": "The champion's name cleared of others' crimes",
+      "ImpostorFoot": "The impostor's case is now on the petition board (stake: serious).",
+      "SecretFoot": "Only the GM sees this. Bring it into the fiction when you choose.",
+      "Move": {
+        "slander": "slander",
+        "thugs": "thugs",
+        "bribe": "bribery",
+        "insult": "public insult"
+      },
+      "MoveFoot": {
+        "thugs": "A ready encounter for the GM this session.",
+        "insult": "Not answering will also become a tale."
+      },
+      "SlanderBody": "{name} spreads a rumour: \"{title}\"."
+    },
+    "Skill": {
+      "Charm": "Charm",
+      "Leadership": "Leadership",
+      "Haggle": "Haggle",
+      "Intimidate": "Intimidate",
+      "Gossip": "Gossip",
+      "Gamble": "Gamble",
+      "Perception": "Perception",
+      "Heal": "Heal",
+      "Melee": "Melee",
+      "Cool": "Cool"
+    },
+    "Legend": {
+      "RipplesTitle": "Circles of Fame",
+      "RadarTitle": "Faces of the Legend",
+      "CircleTooltip": "Bright and dark tales in the circle (total Weight)",
+      "Tales": "Tales",
+      "AddTale": "New tale",
+      "Untitled": "Untitled tale",
+      "Lie": "Lie",
+      "Invoked": "Invoked",
+      "Inherited": "Tale inherited from a predecessor",
+      "Invoke": "Invoke",
+      "Refute": "Refute",
+      "RefuteHint": "Gossip test at −10 per point of Weight. Success: the lie stops spreading.",
+      "Empty": "Nobody tells stories about this champion yet. The first deed, petition or duel will change that.",
+      "Faded": "Faded tales",
+      "HowTo": "<p>A <b>tale</b> is a named deed that spreads among people. It has a <b>face</b> (who people think the champion is), a <b>circle</b> (who tells it) and a <b>Weight</b>: 1 Rumour (locality), 2 Tale (province), 3 Legend (the whole Empire).</p><p><b>Fame</b> is the total Weight. Thresholds {t1} / {t2} / {t3} / {t4} give Tiers I–IV. The Tier says how easily a stranger recognises the champion (d10 ≤ {rec} × Tier) and how often fame draws something in (Echo: d10 ≤ Tier + {echo}).</p><p><b>Invoking:</b> once per session each tale can be invoked in a social test against someone who could have heard it: +{inv} SL per point of Weight. Bright tales support Charm, Leadership and Haggle, dark ones Intimidate.</p><p><b>Name:</b> the player declares who he wants to be. The people name him after the face with the highest Weight. Calling the Name once per session gives 1 Resolve, and an accepted Name (people's face = declared, Weight ≥ {accept}) also 1 Fortune.</p>"
+    },
+    "Petitions": {
+      "Title": "Petitions",
+      "Promises": "Promises",
+      "PromisesHint": "The champion can promise help in at most {max} matters at a time.",
+      "Add": "New petition",
+      "Empty": "Nobody has come with a petition yet. The Echo of Fame or the GM will change that. Drag an actor here to add a petitioner.",
+      "Accept": "Promise",
+      "TooMany": "Promise limit ({max}) reached.",
+      "Decline": "Decline",
+      "DeclineHint": "Declining a serious or life-and-death matter dims the legend in the petitioner's circle.",
+      "Fulfill": "Fulfilled",
+      "Fail": "Failed",
+      "Archive": "Closed matters",
+      "StakeHint": "Stake: the Weight of the tale that will be born (or the bad fame if he fails).",
+      "NoDeadline": "No deadline",
+      "Today": "Due today",
+      "DaysLeft": "Days left: {days}",
+      "Overdue": "Overdue by {days} days",
+      "Stake": {
+        "1": "A small matter",
+        "2": "A serious matter",
+        "3": "Life and death"
+      },
+      "Status": {
+        "open": "Waiting",
+        "accepted": "Promised",
+        "fulfilled": "Fulfilled",
+        "failed": "Failed",
+        "declined": "Declined"
+      },
+      "FulfilledTitle": "Word kept: {who}",
+      "BrokenTitle": "He broke his word: {who}",
+      "HowTo": "<p>People come to the champion with petitions. The player chooses which to promise help with (at most <b>{max}</b> at a time).</p><ul><li><b>Fulfilled:</b> a tale is born with Weight equal to the stake, in the petitioner's circle.</li><li><b>Failed:</b> a \"he broke his word\" tale is born with the Rogue face and the same Weight.</li><li><b>Declined:</b> from stake {dim} the strongest bright tale in that circle loses 1 Weight.</li><li><b>Off-screen:</b> matters up to stake {endeavour} can be settled with one test between adventures.</li></ul>",
+      "EndeavourHint": "Settle it off-screen (an endeavour between adventures): one test, success gives a tale, failure bad fame."
+    },
+    "Arena": {
+      "NoDuelTitle": "Throw down the gauntlet",
+      "NoDuelText": "A formal duel is settled in a few rolls. In an ordinary fight the champion can challenge the enemy leader. Drag an actor here or pick a rival.",
+      "NewDuel": "New duel",
+      "UnknownRival": "Unknown rival",
+      "Stakes": "Stakes",
+      "Venue": "Venue",
+      "Wager": "Wager",
+      "WeightIfWon": "Tale Weight if won",
+      "RivalEdges": "Rival's edges",
+      "RivalEdgesHint": "The GM decides how many dirty advantages the rival has (poison, a bribed judge, his own scout). Each rival edge is +{sl} SL to one of his exchanges.",
+      "ThrowGauntlet": "Announce the challenge",
+      "Roll": "Roll",
+      "PlayToCrowd": "Play to the crowd",
+      "PlayToCrowdHint": "An Action in combat: Charm test. Success: Crowd +1 (SL ≥ {great}: +2). Failure by {great}+ SL: Crowd −1.",
+      "Edges": "Champion's edges",
+      "Edge": {
+        "weakness": "Rival's weakness (+{sl} SL to one test against him)"
+      },
+      "UseEdge": "Use",
+      "NoEdges": "No edges. The scout can find some during preparations.",
+      "Odds": "Betting odds",
+      "Dirty": "Dirty trick",
+      "DirtyHint": "Sand in the eyes, a low blow: Crowd −1, and the tale of a victory will have the Rogue face.",
+      "LinkCombat": "Link to combat",
+      "Linked": "Linked to combat",
+      "LinkCombatHint": "With Crowd ≥ +{at} the champion gains +1 Advantage at the start of every round; at ≤ −{at} the rival gains it.",
+      "Heal": "Surgeon heals",
+      "Resolve": "Resolve the duel",
+      "Cancel": "Call off",
+      "Crowd": "Crowd",
+      "CrowdRival": "For the rival",
+      "CrowdChampion": "For the champion",
+      "TaleTitle": "The duel with {rival}",
+      "Terms": {
+        "firstBlood": "To first blood",
+        "yield": "Until one yields",
+        "death": "To the death"
+      },
+      "Audience": {
+        "1": "Private",
+        "2": "Before a crowd",
+        "3": "Spectacle"
+      },
+      "Stage": {
+        "challenge": "Challenge",
+        "prep": "Preparations",
+        "fight": "Fight",
+        "aftermath": "Aftermath"
+      },
+      "StageHelp": {
+        "challenge": "Agree the terms, venue and stakes. The GM decides how many edges the rival has. Announce the challenge in chat.",
+        "prep": "The champion picks at most {preps} preparations and rolls with his own character. There is no time for the rest.",
+        "fight": "Quick duel: pick an approach and trade blows. A few rolls and it's over. Or switch to full combat in the tracker.",
+        "aftermath": "Who won, and what happened to the loser? That is where the tale is born."
+      },
+      "Next": {
+        "prep": "To preparations",
+        "fight": "To the fight",
+        "aftermath": "Aftermath"
+      },
+      "Mood": {
+        "-3": "The crowd whistles and throws mud",
+        "-2": "The crowd cheers the rival",
+        "-1": "The crowd mutters",
+        "0": "The crowd waits, tense",
+        "1": "The crowd starts to cheer",
+        "2": "The crowd chants the champion's name",
+        "3": "The crowd goes wild"
+      },
+      "Favour": {
+        "champion": "Champion: +1 Advantage each round",
+        "rival": "Rival: +1 Advantage each round",
+        "none": "The crowd gives no one Advantage yet"
+      },
+      "Outcome": {
+        "win": "Victory",
+        "loss": "Defeat",
+        "draw": "Draw"
+      },
+      "Fate": {
+        "spared": "Spared",
+        "humiliated": "Humiliated",
+        "killed": "Killed"
+      },
+      "HowTo": "<p>A <b>quick duel</b> is a few rolls, not half a session. Each exchange is the champion's Melee test (in the WFRP dialog) against the rival's roll. More SL hits; a tie is a clash. A margin of {double}+ SL is a double hit. Hits to win: first blood {fb}, until one yields {yield}, to the death {death}. A hit champion loses {wb} + margin Wounds.</p><p><b>Approach:</b> attack beats feint, feint beats guard, guard beats attack (+{bonus} to the test). The rival picks at random. A dirty trick always gives +{bonus}, but the Crowd drops and a victory gets the Rogue face.</p><p><b>Crowd</b> from −3 to +3: at ±{at} the supported side gets +{crowdBonus}. Winning by {shift}+ SL moves the Crowd.</p><p><b>Preparations:</b> at most {preps} of five (scouting, the crowd, wager, weapons and judges, surgeon), each one test by the champion. A champion's edge is +{sl} SL, a rival's edge +{rsl} SL.</p><p><b>Challenge the leader</b> (in any fight): Intimidate or Leadership against the leader's Cool. On a win he accepts (quick duel at once) or refuses (the champion gains +1 Advantage and a deed to proclaim).</p><p>The <b>aftermath</b> births a tale: Weight from audience and Crowd, face from the loser's fate.</p>",
+      "HitsHint": "Hits: this many win the duel (first blood {fb}, until one yields {yield}, to the death {death}).",
+      "HitsToWin": "Hits to win",
+      "PrepsDone": "Preparations:",
+      "UndoPrep": "Undo preparation",
+      "ModeQuick": "Quick duel",
+      "ModeFull": "Full combat",
+      "CrowdQuick": "At ±{at} the side the crowd supports gets +{bonus} to tests",
+      "Exchange": "Exchange",
+      "ApproachRule": "Attack beats feint, feint beats guard, guard beats attack (+{bonus}). A dirty trick always gives +{bonus}, but the crowd jeers.",
+      "UseEdgeToggle": "Use an edge (+{sl} SL)",
+      "ExchangeGo": "Exchange!",
+      "Yield": "Yield",
+      "ExchangeTitle": "Exchange {n}",
+      "ExchangeWon": "Hit ×{hits}",
+      "ExchangeLost": "Hit ×{hits}, −{wounds} Wounds",
+      "ExchangeClash": "Clash",
+      "Battlefield": "Battlefield",
+      "LeaderStakes": "Leaders fight before their men",
+      "Prep": {
+        "scout": {
+          "Name": "Scouting",
+          "Effect": "Ask around about the rival. Success: edge \"Rival's weakness\" (SL ≥ {great}: two).",
+          "Success": "You know the rival's weaknesses (edges: {edges}).",
+          "Failure": "You know nothing about the rival."
+        },
+        "crowd": {
+          "Name": "The crowd",
+          "Effect": "Warm up the audience. Success: the Crowd starts at +1 (SL ≥ {great}: +2).",
+          "Success": "The crowd is on your side ({crowd}).",
+          "Failure": "The crowd stays indifferent or hostile ({crowd})."
+        },
+        "bet": {
+          "Name": "Wager",
+          "Effect": "Bet on yourself. Success: odds 2:1 (SL ≥ {great}: 3:1). Failure: 1:1.",
+          "Success": "Odds {odds}:1.",
+          "Failure": "Odds only {odds}:1."
+        },
+        "arms": {
+          "Name": "Weapons and judges",
+          "Effect": "Check the rival's weapon and the judges. Success: cancel a rival edge (SL ≥ {great}: two).",
+          "Success": "Rival edges cancelled: {negated}.",
+          "Failure": "You didn't spot the trick."
+        },
+        "surgeon": {
+          "Name": "Surgeon",
+          "Effect": "Hire a good surgeon (Haggle). Success: after the fight you regain 1 + SL Wounds.",
+          "Success": "After the fight: +{heal} Wounds.",
+          "Failure": "The surgeon didn't come."
+        }
+      },
+      "Approach": {
+        "attack": {
+          "Name": "Attack",
+          "Hint": "Beats feint. Loses to guard."
+        },
+        "guard": {
+          "Name": "Guard",
+          "Hint": "Beats attack. Loses to feint."
+        },
+        "feint": {
+          "Name": "Feint",
+          "Hint": "Beats guard. Loses to attack."
+        },
+        "dirty": {
+          "Name": "Dirty trick",
+          "Hint": "Always +{bonus}, but Crowd −1, and a victory gets the Rogue face."
+        }
+      }
+    },
+    "Rivals": {
+      "Title": "Rivals",
+      "Add": "New rival",
+      "Challenge": "Challenge",
+      "RecordHint": "The champion's wins – losses – draws against this rival",
+      "Inherited": "Inherited grudge",
+      "Empty": "No rivals. Every defeated foe and every challenger from the Echo of Fame lands here. Drag an actor here.",
+      "Status": {
+        "active": "Enemy",
+        "debtor": "Debtor",
+        "beaten": "Beaten",
+        "dead": "Dead"
+      },
+      "Grudge": {
+        "0": "No grudge",
+        "1": "Remembers",
+        "2": "Swore revenge",
+        "3": "Lives only for revenge"
+      },
+      "HowTo": "<p>Rivals remember. A spared rival becomes a debtor (grudge −1), a humiliated one swears revenge (grudge +2), a killed one is gone, but his kin may come back. A draw is grudge +1.</p><p>When the Echo of Fame rolls a challenger, the rival with the greatest grudge returns first.</p>"
+    },
+    "Chronicle": {
+      "Title": "Chronicle of Deeds",
+      "AddNote": "Add entry",
+      "Export": "To journal",
+      "Empty": "The chronicle is empty. Every tale, duel and promise writes itself here.",
+      "TaleBorn": "A tale was born: \"{title}\" ({face}).",
+      "Rumor": "A lie spreads in the taverns: \"{title}\".",
+      "NameDeclared": "Declared his Name: {name} ({face}).",
+      "Invoked": "Invoked the tale \"{title}\" before: {who}.",
+      "Refuted": "Refuted the rumour \"{title}\".",
+      "PetitionNew": "Came with a petition: {who}.",
+      "PetitionFulfilled": "Fulfilled the petition of: {who}.",
+      "Petition_accept": "Gave his word: {who}.",
+      "Petition_fail": "Failed: {who}.",
+      "Petition_decline": "Declined: {who}.",
+      "RivalNew": "New rival: {name}.",
+      "DuelChallenge": "Threw down the gauntlet: {rival}.",
+      "DuelCancelled": "The duel was called off.",
+      "Duel_win": "Duel with {rival}: victory ({fate}).",
+      "Duel_loss": "Duel with {rival}: defeat.",
+      "Duel_draw": "Duel with {rival}: draw.",
+      "EchoPetition": "The Echo of Fame brought a petitioner: {who}.",
+      "EchoChallenger": "Echo of Fame: challenger {name}.",
+      "EchoBallad": "The song of \"{title}\" travels further.",
+      "EchoImpostor": "Echo of Fame: someone is impersonating the champion.",
+      "Fallen": "{name} has fallen. {heir} carries the legend.",
+      "Inherited": "Inheritance from {fallen}. {heir} carries the legend.",
+      "JournalName": "Chronicle: {name}",
+      "InvokedTest": "Invoked the tale \"{title}\" in a test.",
+      "SecretDeed": "A deed without witnesses: {text}",
+      "LeaderAccepted": "Challenged the enemy leader: {name} accepted the duel.",
+      "RivalMove": "{name} acts: {move}."
     },
     "Chat": {
-      "ChallengeTitle": "⚔️ RITUAL OF CHALLENGED STEEL",
-      "Challenger": "Challenger:",
-      "MandateTag": "Mandate: {value}",
-      "Target": "Challenged:",
-      "Stakes": "Stakes of the duel:",
-      "Conditions": "Terms imposed:",
-      "Weaknesses": "Rival's weaknesses uncovered (study):",
-      "ChallengeFlavor": "„When the law fails and diplomacy becomes a lie, the justice of steel and the verdict of the gods speak.”",
-      "DossierTitle": "📜 COURT INFLUENCE CALLED IN",
-      "FavorsLeft": "Debts left:",
-      "Demand": "The Champion's demand:",
-      "HookUsed": "Hook used:",
-      "DossierFlavor": "„A noble may deny his words, but he cannot deny a blood debt to a Champion.”",
-      "GambitTitle": "⚔️ CHAMPION'S MANOEUVRE",
-      "GambitLine": "performs a manoeuvre in the stance: {stance}!",
-      "Cost": "Cost: {cost} Advantage",
-      "RequiredTest": "Required opposed test:",
-      "Effects": "Effects of the manoeuvre:",
-      "RemainingAdvantage": "Actor's remaining Advantage:"
+      "TaleKicker": "A tale is born",
+      "RumorKicker": "A rumour spreads in the taverns",
+      "RumorFoot": "It is a lie. The champion can refute it with a Gossip test.",
+      "NameKicker": "Calling the Name",
+      "NameDrift": "The people see this face in him: {face}",
+      "NameFoot": "Once per session, when the champion acts as people see him.",
+      "ResolveGained": "Resolve: +{n}",
+      "FortuneGained": "Fortune: +{n}",
+      "InvokeKicker": "A tale invoked",
+      "InvokeTitle": "\"That's the one from: {title}!\"",
+      "InvokeWho": "Before: {who}",
+      "InvokeBody": "Test: {skill} with a +{bonus} SL bonus.",
+      "InvokeNoRoll": "The tale opens doors: +{bonus} SL to the next social test against this person.",
+      "RefuteSuccess": "People stop repeating the rumour.",
+      "RefuteFailure": "The rumour keeps spreading. The more it is denied, the more eagerly it is repeated.",
+      "PromiseKicker": "The champion gave his word",
+      "PromiseFoot": "A kept promise becomes a tale. So does a broken one.",
+      "DimKicker": "The legend dims",
+      "DimDecline": "{who} left with nothing. In the {circle} circle people start talking more quietly.",
+      "Dimmed": "A tale dims: {title}",
+      "ChallengeKicker": "The gauntlet is thrown",
+      "ChallengeTitle": "{champion} challenges: {rival}",
+      "ChallengeFoot": "Preparations and the fight in the champion's Arena.",
+      "EdgeKicker": "Edge used",
+      "EdgeBody": "+{sl} SL to one test against: {rival}.",
+      "CrowdShift": "Crowd {delta} (now {crowd}).",
+      "DirtyTitle": "Sand in the eyes!",
+      "DirtyBody": "The crowd jeers. If the champion wins, the tale will have the Rogue face.",
+      "RoundKicker": "Round {round}",
+      "RoundAdvantage": "The crowd carries them: {name} gains +1 Advantage.",
+      "DuelKicker": "The duel is decided",
+      "Duel_win": "{champion} defeats: {rival}",
+      "Duel_loss": "{rival} defeats: {champion}",
+      "Duel_draw": "{champion} and {rival}: a draw",
+      "RivalAfter": "{name}: {status}, {grudge}",
+      "BetWon": "Wager won: {wager} at {odds}:1",
+      "BetLost": "Wager lost: {wager}",
+      "Healed": "Surgeon: +{n} Wounds",
+      "EchoKicker": "Echo of Fame · d10 = {roll} (target {target})",
+      "InheritKicker": "The legend does not die",
+      "InheritTitle": "After {fallen}, {heir} carries the legend",
+      "InheritTales": "Tales inherited: {n}",
+      "InheritPromises": "The dead man's promises to keep: {n}",
+      "InheritRivals": "Rivals who did not forget: {n}",
+      "InheritFoot": "Every tale loses 1 Weight. Rumours remain only in the chronicle.",
+      "DeedPromptKicker": "After the fight",
+      "DeedPromptTitle": "Did {name} do anything worth a tale?",
+      "DeedPromptFoot": "If so: one line now, Weight after the scene.",
+      "DeedPromptButton": "Record a deed",
+      "RecognizeKicker": "Recognition",
+      "RecognizeHooded": "Nobody recognises him",
+      "RecognizeHoodedBody": "{name} is hooded.",
+      "RecognizeRoll": "Recognition · d10 = {roll} (target {target})",
+      "Recognized": "Recognised!",
+      "NotRecognized": "Not recognised",
+      "RecognizedBody": "\"Why, that's {name}!\" Fame opens doors, but someone may remember this.",
+      "NotRecognizedBody": "To these people he is just another stranger with a sword.",
+      "PrepKicker": "Preparing for the duel",
+      "ExchangeKicker": "Exchange {n} · {champ} : {rival} (to {needed})",
+      "ExchangeChamp": "{name}: {approach}, {sl} SL",
+      "ExchangeRival": "{name}: {approach}, {sl} SL (d100 = {roll} vs {target})",
+      "RivalEdgeUsed": "The rival used an edge (+{sl} SL)",
+      "ChampWounded": "The champion loses {n} Wounds",
+      "ExchangeWin": "{name} lands a hit!",
+      "ExchangeWinDouble": "{name} lands a mighty hit (×2)!",
+      "ExchangeLoss": "{name} hits the champion",
+      "ExchangeLossDouble": "{name} hits the champion hard (×2)",
+      "ExchangeClash": "Clash! Blades cross, nobody lands a hit",
+      "DuelOver_win": "The duel is won. Time to decide the loser's fate.",
+      "DuelOver_loss": "The duel is lost.",
+      "LeaderKicker": "Challenging the leader",
+      "LeaderWon": "{name} cannot ignore the challenge!",
+      "LeaderLost": "{name} shrugs off the challenge",
+      "LeaderChamp": "{name}: {skill}, {sl} SL",
+      "LeaderCool": "{name}: Cool, {sl} SL (d100 = {roll} vs {target})",
+      "LeaderChoice": "The GM decides: the leader accepts the challenge or refuses before his men.",
+      "LeaderIgnored": "The fight goes on.",
+      "LeaderAccept": "Accepts",
+      "LeaderRefuse": "Refuses",
+      "LeaderRefusedTitle": "{name} refuses!",
+      "LeaderRefusedBody": "{name} gains +1 Advantage, and the deed waits to be proclaimed. The leader's men saw him back down.",
+      "LeaderAcceptedTitle": "{name} accepts the challenge!",
+      "LeaderAcceptedBody": "A duel in the middle of battle: quick exchanges in the champion's panel."
     },
-    "Defaults": {
-      "Stances": {
-        "peasant": {
-          "Name": "Peasant Barricade",
-          "School": "Middenland style",
-          "Desc": "+10 to Strength-based tests and Parry. Immune to Prone. You may take a blow aimed at an adjacent ally on your own guard without a roll.",
-          "Bonus": "+10 Strength/Parry, protect an ally"
-        },
-        "court": {
-          "Name": "Nuln Fencer",
-          "School": "Southern style (sword and rapier)",
-          "Desc": "+10 to Initiative and Agility. Every clean successful parry grants +1 extra Advantage. Attacks from surprise ignore the enemy's Armour Points.",
-          "Bonus": "+10 Initiative/Agility, +1 Advantage per parry"
-        },
-        "gutter": {
-          "Name": "Alley Cardsharp",
-          "School": "Dirty brawler",
-          "Desc": "No penalties for improvised weapons, knives and main gauches. All Dirty Tricks cost 1 Advantage less.",
-          "Bonus": "Improvised weapons without penalty, Dirty Tricks 1 A cheaper"
-        }
+    "Dialog": {
+      "NameTitle": "The champion's Name",
+      "Name": "The Name you want to be called",
+      "NameHint": "The epithet the player wants to earn, e.g. \"Shield of the Poor\". The people will name him after the face of his deeds.",
+      "DeclaredFace": "The face you strive for",
+      "Homeland": "Homeland",
+      "HomelandHint": "The village or area where the legend began (centre of the Circles of Fame).",
+      "EpithetIdeas": "Epithet ideas",
+      "NewTale": "New tale",
+      "EditTale": "Edit tale",
+      "FulfillTitle": "Petition fulfilled: how do they tell it?",
+      "TaleTitle": "Tale title",
+      "TaleTitlePlaceholder": "E.g. \"The Ogre of Bögenhafen\"",
+      "TaleText": "What happened",
+      "TaleTextPlaceholder": "A sentence or two, the way a witness would tell it.",
+      "Face": "Face (who people think he is)",
+      "Circle": "Circle (who tells it)",
+      "Weight": "Weight",
+      "WeightHint": "1 Rumour: a small local deed. 2 Tale: a loud deed in the province. 3 Legend: a deed the whole Empire will hear of.",
+      "WeightNow": "Weight now",
+      "WeightNowHint": "0 means the tale has faded and does not count towards Fame.",
+      "Trophy": "Trophy",
+      "TrophyPlaceholder": "E.g. the rival's sword, an ogre's tooth",
+      "Lie": "Lie (cannot be invoked, can be refuted)",
+      "Tavern": "Tavern version",
+      "Proclaim": "Proclaim",
+      "DeleteTitle": "Delete?",
+      "DeleteTale": "Delete the tale \"{title}\"?",
+      "DeletePetition": "Delete this petition?",
+      "DeleteRival": "Delete this rival?",
+      "InvokeTitle": "Invoking a tale",
+      "InvokeHint": "\"{title}\": +{bonus} SL to a social test against someone who could have heard of it.",
+      "InvokeSkill": "Test",
+      "InvokeNoRoll": "No roll",
+      "InvokeWho": "Before whom",
+      "InvokeWhoPlaceholder": "E.g. the gate guard, a guild merchant",
+      "Invoke": "Invoke",
+      "NewPetition": "New petition",
+      "EditPetition": "Edit petition",
+      "Petitioner": "Who asks",
+      "Anonymous": "A stranger",
+      "Request": "What they ask for",
+      "RequestPlaceholder": "A wrong, a threat, a matter to settle.",
+      "Stake": "Stake",
+      "StakeHint": "The stake is the Weight of the tale if fulfilled and the weight of bad fame if failed.",
+      "Deadline": "Deadline (days)",
+      "Reward": "Reward",
+      "DeclineWarn": "This is a serious matter. Declining will dim the strongest bright tale in the petitioner's circle. Decline?",
+      "NewRival": "New rival",
+      "EditRival": "Edit rival",
+      "RivalName": "Name",
+      "RivalTitle": "Who they are",
+      "Grudge": "Grudge",
+      "RivalStatus": "Status",
+      "HigherStatus": "Mightier than the champion (humiliating him is a Rebel's deed)",
+      "Notes": "Notes",
+      "NewDuel": "New duel",
+      "EditDuel": "Duel terms",
+      "Rival": "Rival",
+      "NewRivalOption": "— new rival —",
+      "NewRivalName": "or a new rival's name",
+      "NewRivalPlaceholder": "E.g. Dieter \"Hammer\" Haas",
+      "Terms": "Terms",
+      "Audience": "Audience",
+      "AudienceHint": "The audience is the base Weight of the tale of a victory.",
+      "VenuePlaceholder": "E.g. the market square, a tavern, the lists before an army",
+      "StakesPlaceholder": "What the fight is about",
+      "WagerPlaceholder": "E.g. 10 gold crowns",
+      "Challenge": "Throw down the gauntlet",
+      "CancelDuel": "Call off the duel? No tale will come of it.",
+      "ResolveTitle": "Resolving the duel",
+      "Outcome": "Outcome",
+      "Fate": "The loser's fate (on victory)",
+      "FateHint": "A spared rival becomes a debtor. A humiliated one swears revenge. A killed one leaves the list of living rivals.",
+      "FaceAuto": "The tale's face follows from the outcome and the loser's fate (e.g. now: {face}). You can change it below.",
+      "OverrideFace": "Choose the face by hand",
+      "InheritTitle": "Inheriting the legend",
+      "InheritHint": "{name} has fallen. Who takes up his legend? Tales lose 1 Weight; promises and rivals pass to the heir.",
+      "Heir": "Heir",
+      "Inherit": "Pass on the legend",
+      "InheritOverwrite": "{name} already has a legend. Replace it with the inheritance?",
+      "NoteText": "Entry",
+      "DeedTitle": "Record a deed",
+      "DeedSave": "Record",
+      "DeedText": "What the champion did",
+      "DeedPlaceholder": "E.g. \"Held the ogre on the bridge\"",
+      "DeedHint": "One line. Weight and circle are decided after the scene.",
+      "WitnessTitle": "Who saw it?",
+      "Witnesses": "Witnesses",
+      "WitnessHint": "Nobody: chronicle only. A few: Rumour. A crowd: Tale. A great event: Legend.",
+      "WitnessCircle": "Who the witnesses were (circle)",
+      "EndeavourTitle": "Settle it off-screen",
+      "EndeavourHint": "{who}'s matter is a small one. The champion settles it between adventures with one test.",
+      "EndeavourSkill": "Test",
+      "RivalSkill": "Rival's Melee",
+      "RivalSkillHint": "For the quick duel. Read automatically from the rival's actor.",
+      "YieldConfirm": "Yield? The duel ends in defeat.",
+      "LeaderTitle": "Challenge the leader",
+      "LeaderRoll": "Challenge",
+      "LeaderHint": "As an Action the champion challenges the enemy leader. His test against the leader's Cool.",
+      "LeaderTargeted": "targeted on the map",
+      "LeaderNameOption": "— another leader —",
+      "LeaderName": "or who",
+      "LeaderNamePlaceholder": "E.g. the gang boss",
+      "LeaderCool": "Leader's Cool",
+      "LeaderMelee": "His Melee",
+      "LeaderSkill": "Champion's test",
+      "LeaderDefault": "The enemy leader",
+      "GMOnly": "GM only",
+      "TaleInvoked": "Invoked this session",
+      "TaleInherited": "Inherited from a predecessor",
+      "PetitionStatus": "Status",
+      "PetitionStatusHint": "No side effects: creates no tale and dims nothing.",
+      "RivalImg": "Portrait (image path)",
+      "Wins": "Champion's wins",
+      "Losses": "Champion's losses",
+      "Draws": "Draws",
+      "Bribe": "Bribery (edges in the next duel)",
+      "DeedEdit": "Edit deed",
+      "NoteEdit": "Edit chronicle entry",
+      "LegendStateTitle": "Legend state: {name}",
+      "LegendStateButton": "Legend state (GM)",
+      "LegendStateHint": "Everything not changed in other windows: session, hood, Calling the Name, invocations, fallen, heir.",
+      "SessionNumber": "Session number",
+      "SessionNumberHint": "Shared by the whole world. Changing it refreshes invocations and Calling the Name.",
+      "HeirOf": "Heir (of whom)",
+      "NameCalledFlag": "Calling the Name used this session",
+      "ResetInvocations": "Refresh invocations of all tales",
+      "FallenFlag": "The champion has fallen",
+      "ClearChallenge": "Remove the pending challenge ({name})",
+      "DuelStateTitle": "Duel state (GM)",
+      "DuelStateButton": "Duel state",
+      "DuelStateHint": "Every number of the running duel: stage, mode, result, crowd, hits, edges, odds and surgeon.",
+      "DuelStage": "Stage",
+      "DuelMode": "Mode",
+      "DuelResult": "Result",
+      "ChampScore": "Champion's hits",
+      "RivalScore": "Rival's hits",
+      "FreeEdges": "Champion's free edges",
+      "NegatedEdges": "Rival edges cancelled",
+      "RivalEdgesUsed": "Rival edges used",
+      "DirtyCount": "Dirty tricks",
+      "ClearExchanges": "Clear the exchange log ({n})"
+    },
+    "Notify": {
+      "SelectToken": "Select the champion's token or assign a character to the player.",
+      "SelectChampionToken": "Select the token of a character with a legend.",
+      "OpenError": "Could not open the Legend: {error}",
+      "NameAlreadyCalled": "The Name has already been called this session (or the people don't speak of him yet).",
+      "AlreadyInvoked": "This tale has already been invoked this session.",
+      "NewSession": "Session {n}: tale invocations and Calling the Name refreshed.",
+      "DuelActive": "The champion already has a duel under way.",
+      "NeedRival": "Pick a rival or type a new one's name.",
+      "ActorMissing": "Character not found.",
+      "NoHeir": "There are no other player characters to take up the legend.",
+      "Hooded": "You are hooded: your tales stay silent.",
+      "DeedSaved": "Deed recorded. Proclaim it after the scene.",
+      "SecretDeed": "A deed without witnesses went only into the chronicle.",
+      "HoodOn": "Hood up: nobody will recognise you.",
+      "HoodOff": "Hood down: you are yourself again.",
+      "PrepLimit": "At most {max} preparations before a duel.",
+      "PickApproach": "Pick an approach.",
+      "NoPendingChallenge": "There is no pending challenge.",
+      "OwnerOnly": "Only the champion's player or the GM."
+    },
+    "Settings": {
+      "crowdAdvantageName": "Crowd grants Advantage (full combat)",
+      "crowdAdvantageHint": "In a duel played as full combat in the tracker: at the Crowd threshold the side the crowd supports gains +1 Advantage at the start of every round.",
+      "deedPromptName": "Ask about deeds after a fight",
+      "deedPromptHint": "After every fight with the champion, the player and the GM get a whisper: \"Anything worth a tale?\".",
+      "dialogTogglesName": "Invoke in the test dialog",
+      "dialogTogglesHint": "Tales show up as toggles in the WFRP test dialog (\"Champion's Legend\" effect). Off: invoking only from the panel."
+    },
+    "HubDesc": "The champion's legend: tales and fame, the Name the people give him, petitions, duels before the crowd with the party as seconds, rivals and inheritance.",
+    "Effect": {
+      "Name": "Champion's Legend",
+      "Invoke": "Invoke: {title} (+{bonus} SL)"
+    },
+    "Hud": {
+      "Title": "Champion's panel",
+      "Open": "Session panel",
+      "OpenHint": "A small panel for play: tales to invoke, deeds, the challenge and the duel.",
+      "OpenBook": "Open the book of legend",
+      "Ready": "At hand",
+      "NoReady": "All tales have been invoked this session, or there are none yet.",
+      "DialogHint": "Invoking also works in the test dialog: switch on \"Invoke\" when rolling Charm or Intimidate."
+    },
+    "Hood": {
+      "On": "Hooded",
+      "Hint": "Hood: nobody recognises you, but your tales stay silent (they can't be invoked).",
+      "Silent": "You are hooded. Nobody will recognise you, but your tales stay silent."
+    },
+    "Recognize": {
+      "Hint": "Does a stranger recognise him? d10 ≤ 2 × Fame tier (nobody while hooded). Only the GM sees the result.",
+      "Button": "Recognition"
+    },
+    "Leader": {
+      "Button": "Challenge the leader",
+      "Short": "Challenge",
+      "Hint": "In any fight, as an Action: Intimidate or Leadership against the enemy leader's Cool."
+    },
+    "Deeds": {
+      "Title": "Deeds to proclaim",
+      "Record": "Record a deed",
+      "Promote": "Who saw it?",
+      "PromoteHint": "Proclaim the deed: the number of witnesses sets the tale's Weight.",
+      "Dismiss": "Dismiss",
+      "Empty": "No deeds to proclaim. During play one click on \"Record a deed\" is enough, and after a fight the module will ask.",
+      "LeaderRefused": "{name} refused the champion's challenge",
+      "HowTo": "<p><b>Deeds:</b> during play record one line; decide after the scene. After every fight with the champion the module asks: \"Anything worth a tale?\".</p><p><b>Who saw it?</b> Nobody: the deed stays only in the chronicle. A few: Rumour. A crowd or important witnesses: Tale. A great event: Legend. The circle is whoever was watching.</p>"
+    },
+    "Witness": {
+      "none": "Nobody",
+      "few": "A few",
+      "crowd": "A crowd",
+      "great": "A great event"
+    },
+    "Params": {
+      "Title": "Legend Rules",
+      "Open": "Set the rules",
+      "MenuHint": "Every rule number of the module: fame thresholds, promises, the duel, the crowd.",
+      "Intro": "Every rule number can be changed. Changes apply at once in all sheets, panels and test dialogs. Changed values are highlighted.",
+      "Default": "default",
+      "Reset": "Restore defaults",
+      "Saved": "Legend Rules saved.",
+      "ResetDone": "Default rules restored.",
+      "Group": {
+        "fame": "Fame, the Name and invoking",
+        "petitions": "Petitions",
+        "duel": "Duel",
+        "crowd": "Crowd",
+        "behaviour": "Module behaviour"
       },
-      "Gambits": {
-        "act-taunt-1": {
-          "Name": "Cold Mockery",
-          "Test": "Intimidate vs enemy's Cool",
-          "Effect": "The enemy loses 1 Advantage (+1 per 2 SL of difference) and focuses their next attack on you alone. On failure: the Advantage is lost.",
-          "Tags": "Provocation, Control"
-        },
-        "act-taunt-2": {
-          "Name": "Feigned Weakness",
-          "Test": "Acting vs enemy's Intuition",
-          "Effect": "You fake a stumble. The enemy charges with +10, but if you parry that blow the opponent immediately becomes Surprised. Failure: the enemy gains +1 Advantage.",
-          "Tags": "Deceit, Surprise"
-        },
-        "act-riposte-1": {
-          "Name": "Nuln Riposte",
-          "Test": "Melee (+10) vs Dodge / Melee",
-          "Effect": "An immediate counter-attack after a successful parry with +10 to hit. Deals normal damage with the Fast quality.",
-          "Tags": "Riposte, Quick strike"
-        },
-        "act-riposte-2": {
-          "Name": "Hilt Catch (Bind)",
-          "Test": "Strength / Melee vs enemy's Strength",
-          "Effect": "You lock the enemy's blade. The rival's weapon is Trapped – the enemy cannot attack or parry with it until they spend an action on a Strength test.",
-          "Tags": "Bind, Weapon trap"
-        },
-        "act-riposte-3": {
-          "Name": "Step Behind",
-          "Test": "Agility vs enemy's Initiative",
-          "Effect": "A smooth pass in melee. You gain a flanking position (+20 to your next attack) and the enemy loses 1 Advantage from disorientation.",
-          "Tags": "Positioning, Flank"
-        },
-        "act-trick-1": {
-          "Name": "Sand and Sewage",
-          "Test": "Agility vs enemy's Dodge (a helmet gives +20)",
-          "Effect": "Dust thrown in the eyes. The opponent gains 1 Blinded Condition. Failure: no effect, the Advantage is lost.",
-          "Tags": "Blinding, Dirty fighting"
-        },
-        "act-trick-2": {
-          "Name": "Tendon Stamp",
-          "Test": "Melee / Strength vs enemy's Dodge / Strength",
-          "Effect": "A foot sweep or a kick to the knee. The opponent becomes Prone. On failure: the Champion loses balance (−10 to defence until the end of the round).",
-          "Tags": "Sweep, Knockdown"
-        },
-        "act-trick-3": {
-          "Name": "Pommel to the Teeth",
-          "Test": "Melee (−10) vs Melee / Dodge",
-          "Effect": "A pommel strike with the Pummel quality. If it deals at least 1 Wound after armour, the enemy must pass an Endurance test or become Stunned.",
-          "Tags": "Stun, Blunt strike"
-        },
-        "act-finisher-1": {
-          "Name": "Cheek Cut (Humiliation)",
-          "Test": "Melee (−20, target: face) vs Melee / Dodge",
-          "Effect": "Deals 1–2 Wounds. The enemy must immediately pass a Difficult (−10) Cool test. On failure: loses 2 Advantage, becomes Broken and loses face at court. On success: falls into a Frenzy.",
-          "Tags": "Finisher, Humiliation, Applause"
-        },
-        "act-finisher-2": {
-          "Name": "Masterful Disarm (Nuln Flick)",
-          "Test": "Melee (−10) vs enemy's Melee (+2 SL)",
-          "Effect": "Needs at least +2 SL in the opposed test. The enemy's weapon flies 1d10 m through the air. The enemy is disarmed and must give ground or reach for a knife.",
-          "Tags": "Finisher, Disarm"
-        },
-        "act-finisher-3": {
-          "Name": "Breaking Beheading",
-          "Test": "Intimidate (+10 per critical wound) vs enemies' Cool",
-          "Effect": "After slaying the enemy leader: every subordinate within the Champion's Willpower range tests Cool against your SL or Panics / Flees.",
-          "Tags": "Finisher, Horde panic"
-        }
+      "tier1": {
+        "Name": "Tier I threshold",
+        "Hint": "Fame needed for Tier I."
       },
-      "Courts": {
-        "court-middenheim": {
-          "Name": "Court of Middenheim",
-          "Desc": "City of the White Wolf. Stern aristocracy, intrigues of the Law Lords, priests of Ulric and the constant shadow of carnival plots."
-        },
-        "court-nuln": {
-          "Name": "Court of Nuln",
-          "Desc": "Jewel of the South, ruled by Countess Emmanuelle. A realm of fashion, rapier duels, cannon and university intrigue."
-        }
+      "tier2": {
+        "Name": "Tier II threshold",
+        "Hint": "Fame needed for Tier II."
       },
-      "Pins": {
-        "pin-1": {
-          "Name": "Graf Boris Todbringer",
-          "Status": "Gold 5 (Ruler)",
-          "Hooks": "I know about his worsening state of mind and the visits of a suspicious physician from Altdorf.",
-          "Notes": "Grants private audiences and protection from the accusations of the Law Lords."
-        },
-        "pin-2": {
-          "Name": "Baron Heinrich von Todbringer",
-          "Status": "Gold 3",
-          "Hooks": "I saved his life and reputation in a disputed duel with an Ostland swordsman during the carnival.",
-          "Notes": "Young and hot-headed, but ready to vouch for us before the City Council."
-        },
-        "pin-3": {
-          "Name": "Gotthard von Witgenstein",
-          "Status": "Gold 2",
-          "Hooks": "I know the details of his shady dealings with the merchants' guild and his contacts with dubious types from the docks.",
-          "Notes": "He hates me, but must yield as long as I hold the evidence."
-        },
-        "pin-4": {
-          "Name": "Countess Emmanuelle von Liebwitz",
-          "Status": "Gold 5 (Elector)",
-          "Hooks": "She likes to surround herself with unusual people from the provinces, as long as they bring her renown and elegance at balls.",
-          "Notes": "Her favour opens the doors to the cannon foundries and fencing schools."
-        },
-        "pin-5": {
-          "Name": "Don Esteban de la Vega",
-          "Status": "Silver 5 (Fencing master)",
-          "Hooks": "He never forgave me for winning on the river pier; he seeks an official rematch.",
-          "Notes": "Superb with a rapier, knows every fencing master from Nuln to Altdorf."
-        }
+      "tier3": {
+        "Name": "Tier III threshold",
+        "Hint": "Fame needed for Tier III."
       },
-      "ChallengeStakes": "Release of the prisoner and a public withdrawal of the accusations",
-      "ChallengeConditions": "To first blood, on trodden ground, steel only"
+      "tier4": {
+        "Name": "Tier IV threshold",
+        "Hint": "Fame needed for Tier IV (Living legend)."
+      },
+      "recognitionPerTier": {
+        "Name": "Recognition per Tier",
+        "Hint": "A stranger recognises the champion on d10 ≤ this number × Tier."
+      },
+      "echoBase": {
+        "Name": "Echo of Fame: bonus",
+        "Hint": "The Echo draws something in on d10 ≤ Tier + this number."
+      },
+      "invokePerWeight": {
+        "Name": "SL per point of Weight",
+        "Hint": "Invoking bonus: Weight × this number."
+      },
+      "refutePerWeight": {
+        "Name": "Refuting penalty",
+        "Hint": "Gossip penalty when refuting: −(this number) per point of Weight."
+      },
+      "nameAcceptWeight": {
+        "Name": "Accepted Name weight",
+        "Hint": "The Name is accepted when the people's face = declared and has at least this much Weight."
+      },
+      "maxPromises": {
+        "Name": "Promise limit",
+        "Hint": "How many petitions the champion can promise at a time."
+      },
+      "declineDimStake": {
+        "Name": "Declining dims from stake",
+        "Hint": "Declining a matter of this stake or higher dims the legend (4 = never)."
+      },
+      "endeavourMaxStake": {
+        "Name": "Endeavour up to stake",
+        "Hint": "Petitions of this stake or lower can be settled off-screen with one test (0 = off)."
+      },
+      "maxPreps": {
+        "Name": "Number of preparations",
+        "Hint": "How many preparations the champion can make before a duel."
+      },
+      "greatSL": {
+        "Name": "Great success (SL)",
+        "Hint": "From this many SL a preparation has a double effect (e.g. two edges)."
+      },
+      "hitsFirstBlood": {
+        "Name": "Hits: first blood",
+        "Hint": "Hits to win a fight to first blood."
+      },
+      "hitsYield": {
+        "Name": "Hits: until one yields",
+        "Hint": "Hits to win a fight until one yields."
+      },
+      "hitsDeath": {
+        "Name": "Hits: to the death",
+        "Hint": "Hits to win a fight to the death."
+      },
+      "doubleHitMargin": {
+        "Name": "Double hit from",
+        "Hint": "SL margin in an exchange from which a hit counts double."
+      },
+      "woundsBase": {
+        "Name": "Wounds: base",
+        "Hint": "A hit champion loses (this number + SL margin) Wounds."
+      },
+      "approachBonus": {
+        "Name": "Approach bonus",
+        "Hint": "Test bonus when your approach beats the opponent's (and for a dirty trick)."
+      },
+      "edgeSL": {
+        "Name": "Champion's edge (SL)",
+        "Hint": "How many SL a champion's edge gives in one exchange or test."
+      },
+      "rivalEdgeSL": {
+        "Name": "Rival's edge (SL)",
+        "Hint": "How many SL the rival gets for each of his edges."
+      },
+      "defaultRivalSkill": {
+        "Name": "Default rival Melee",
+        "Hint": "Melee of a rival who is not an actor."
+      },
+      "defaultLeaderCool": {
+        "Name": "Default leader Cool",
+        "Hint": "Cool of the enemy leader when he isn't targeted on the map."
+      },
+      "crowdThreshold": {
+        "Name": "Crowd threshold",
+        "Hint": "From this Crowd value (±) the supported side gets a bonus."
+      },
+      "crowdTestBonus": {
+        "Name": "Crowd bonus",
+        "Hint": "Test bonus in a quick duel for the side the crowd supports."
+      },
+      "crowdShiftMargin": {
+        "Name": "Crowd reacts from (SL)",
+        "Hint": "Winning an exchange by this many SL or more moves the Crowd by 1."
+      }
     }
   }
 }

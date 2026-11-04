@@ -1,0 +1,20 @@
+<div class="lg-note-head">
+  {{#if img}}<img class="lg-note-avatar" src="{{img}}" alt=""/>{{/if}}
+  <div>
+    <div class="lg-note-from">{{petitioner}}</div>
+    <div class="lg-note-meta"><i class="{{circleIcon}}"></i> {{circleLabel}}{{#if inherited}} · <i class="fa-solid fa-dove"></i>{{/if}}</div>
+  </div>
+</div>
+<p class="lg-note-request">{{request}}</p>
+<div class="lg-note-stake" data-tooltip="{{localize 'CHAMPION.Petitions.StakeHint'}}">
+  {{#each seals}}<span class="lg-seal lg-seal--sm {{#if this}}is-on{{/if}}"></span>{{/each}}
+  <em>{{stakeLabel}}</em>
+</div>
+{{#if reward}}<div class="lg-note-reward"><i class="fa-solid fa-coins"></i> {{reward}}</div>{{/if}}
+<div class="lg-note-deadline"><i class="fa-solid fa-hourglass-half"></i> {{deadlineLabel}}</div>
+{{#if canEdit}}
+<div class="lg-note-tools">
+  <button type="button" class="lg-icon-btn" data-action="editPetition" data-petition-id="{{id}}" data-tooltip="{{localize 'CHAMPION.Edit'}}"><i class="fa-solid fa-pen"></i></button>
+  <button type="button" class="lg-icon-btn" data-action="deletePetition" data-petition-id="{{id}}" data-tooltip="{{localize 'CHAMPION.Delete'}}"><i class="fa-solid fa-trash"></i></button>
+</div>
+{{/if}}

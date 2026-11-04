@@ -1,0 +1,30 @@
+<div class="lg-root {{#if fallen}}is-fallen{{/if}}">
+  {{> "modules/wfrp4e-champion/templates/parts/header.hbs"}}
+
+  <nav class="lg-tabs" data-group="primary" role="tablist">
+    {{#each tabs}}
+    <a class="lg-tab {{#if active}}active{{/if}}" data-action="lgTab" data-group="primary" data-tab="{{id}}">
+      <i class="{{icon}}"></i><span>{{label}}</span>
+      {{#if badge}}<em class="lg-tab-badge">{{badge}}</em>{{/if}}
+    </a>
+    {{/each}}
+  </nav>
+
+  <section class="lg-body">
+    <div class="lg-page {{#if (bajeryEq env.activeTab 'legend')}}active{{/if}}" data-group="primary" data-tab="legend">
+      {{> "modules/wfrp4e-champion/templates/parts/tab-legend.hbs"}}
+    </div>
+    <div class="lg-page {{#if (bajeryEq env.activeTab 'deeds')}}active{{/if}}" data-group="primary" data-tab="deeds">
+      {{> "modules/wfrp4e-champion/templates/parts/tab-deeds.hbs"}}
+    </div>
+    <div class="lg-page {{#if (bajeryEq env.activeTab 'arena')}}active{{/if}}" data-group="primary" data-tab="arena">
+      {{> "modules/wfrp4e-champion/templates/parts/tab-arena.hbs"}}
+    </div>
+    <div class="lg-page {{#if (bajeryEq env.activeTab 'rivals')}}active{{/if}}" data-group="primary" data-tab="rivals">
+      {{> "modules/wfrp4e-champion/templates/parts/tab-rivals.hbs"}}
+    </div>
+    <div class="lg-page {{#if (bajeryEq env.activeTab 'chronicle')}}active{{/if}}" data-group="primary" data-tab="chronicle">
+      {{> "modules/wfrp4e-champion/templates/parts/tab-chronicle.hbs"}}
+    </div>
+  </section>
+</div>

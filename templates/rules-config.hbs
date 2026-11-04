@@ -1,0 +1,42 @@
+<div class="lg-root lg-rules">
+  <header class="lg-rules-head">
+    <i class="fa-solid fa-gears"></i>
+    <div>
+      <h2>{{localize "CHAMPION.Params.Title"}}</h2>
+      <p>{{localize "CHAMPION.Params.Intro"}}</p>
+    </div>
+  </header>
+
+  <div class="lg-rules-body">
+    {{#each groups}}
+    <fieldset class="lg-rules-group">
+      <legend>{{label}}</legend>
+      <div class="lg-rules-grid">
+        {{#each fields}}
+        <label class="lg-rules-field {{#if changed}}is-changed{{/if}}">
+          <span class="lg-rules-label">{{label}}</span>
+          <input type="number" name="{{key}}" value="{{value}}" min="{{min}}" max="{{max}}" step="1"/>
+          <span class="lg-rules-hint">{{hint}} <em>({{localize "CHAMPION.Params.Default"}}: {{defaultValue}})</em></span>
+        </label>
+        {{/each}}
+      </div>
+    </fieldset>
+    {{/each}}
+
+    <fieldset class="lg-rules-group">
+      <legend>{{localize "CHAMPION.Params.Group.behaviour"}}</legend>
+      {{#each toggles}}
+      <label class="lg-rules-toggle">
+        <input type="checkbox" name="{{key}}" {{#if value}}checked{{/if}}/>
+        <span><b>{{label}}</b><br/><small>{{hint}}</small></span>
+      </label>
+      {{/each}}
+    </fieldset>
+  </div>
+
+  <footer class="lg-rules-foot">
+    <button type="button" class="lg-btn lg-btn--ghost-dark" data-action="resetDefaults"><i class="fa-solid fa-rotate-left"></i> {{localize "CHAMPION.Params.Reset"}}</button>
+    <span class="lg-spacer"></span>
+    <button type="submit" class="lg-btn lg-btn--gold"><i class="fa-solid fa-check"></i> {{localize "CHAMPION.Save"}}</button>
+  </footer>
+</div>

@@ -1,0 +1,29 @@
+<div class="lg-card lg-card--{{theme}} lg-card-kind--{{kind}}">
+  <header class="lg-card-head">
+    {{#if versus}}
+    <div class="lg-card-versus">
+      <img src="{{versus.left}}" alt=""/>
+      <span class="lg-card-vs"><i class="fa-solid fa-khanda"></i></span>
+      <img src="{{versus.right}}" alt=""/>
+    </div>
+    {{else}}
+    <div class="lg-card-icon"><i class="{{icon}}"></i></div>
+    {{/if}}
+    {{#if kicker}}<div class="lg-card-kicker">{{kicker}}</div>{{/if}}
+    <h3 class="lg-card-title">{{title}}</h3>
+    {{#if subtitle}}<div class="lg-card-subtitle">{{subtitle}}</div>{{/if}}
+  </header>
+  <div class="lg-card-body">
+    {{#if seals}}<div class="lg-card-seals">{{#each seals}}<span class="lg-seal {{#if this}}is-on{{/if}}"></span>{{/each}}{{#if sealsLabel}}<em>{{sealsLabel}}</em>{{/if}}</div>{{/if}}
+    {{#if chips}}<div class="lg-card-chips">{{#each chips}}<span class="lg-chip"><i class="{{icon}}"></i> {{label}}</span>{{/each}}</div>{{/if}}
+    {{#if body}}<p class="lg-card-text">{{body}}</p>{{/if}}
+    {{#if lines}}<ul class="lg-card-lines">{{#each lines}}<li><i class="{{icon}}"></i> <span>{{text}}</span></li>{{/each}}</ul>{{/if}}
+    {{#if quote}}<blockquote class="lg-card-quote">„{{quote}}”{{#if quoteBy}}<cite>— {{quoteBy}}</cite>{{/if}}</blockquote>{{/if}}
+    {{#if footnote}}<p class="lg-card-foot">{{footnote}}</p>{{/if}}
+  </div>
+  {{#if buttons}}
+  <footer class="lg-card-buttons">
+    {{#each buttons}}<button type="button" class="lg-btn lg-btn--{{#if style}}{{style}}{{else}}gold{{/if}} lg-btn--sm" data-lg-chat="{{action}}" {{{dataAttrs}}}><i class="{{icon}}"></i> {{label}}</button>{{/each}}
+  </footer>
+  {{/if}}
+</div>

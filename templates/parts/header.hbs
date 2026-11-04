@@ -1,0 +1,77 @@
+<header class="lg-hero">
+  <div class="lg-hero-glow"></div>
+
+  <div class="lg-portrait">
+    {{{header.laurel}}}
+    <div class="lg-portrait-frame">
+      <img src="{{header.img}}" alt="{{header.actorName}}"/>
+    </div>
+    {{#if header.fallen}}<div class="lg-mourning" data-tooltip="{{localize 'CHAMPION.Header.Fallen'}}"><i class="fa-solid fa-cross"></i></div>{{/if}}
+  </div>
+
+  <div class="lg-identity">
+    <div class="lg-kicker">
+      <span class="lg-actor-name">{{header.actorName}}</span>
+      {{#if header.homeland}}<span class="lg-dot">◆</span><span class="lg-homeland"><i class="fa-solid fa-house-chimney"></i> {{header.homeland}}</span>{{/if}}
+      {{#if header.heirOf}}<span class="lg-dot">◆</span><span class="lg-heir"><i class="fa-solid fa-dove"></i> {{localize "CHAMPION.Header.HeirOf"}} {{header.heirOf.name}}</span>{{/if}}
+    </div>
+
+    {{#if header.declared}}
+    <h1 class="lg-name" data-action="declareName" data-tooltip="{{localize 'CHAMPION.Name.EditHint'}}">{{header.declared}}</h1>
+    {{else}}
+    <h1 class="lg-name is-empty" data-action="declareName">{{localize "CHAMPION.Name.Declare"}}</h1>
+    {{/if}}
+
+    <div class="lg-name-state is-{{header.nameState}}">
+      {{#if (bajeryEq header.nameState "accepted")}}<i class="fa-solid fa-sun"></i>
+      {{else if (bajeryEq header.nameState "drift")}}<i class="fa-solid fa-arrows-split-up-and-left"></i>
+      {{else if (bajeryEq header.nameState "aligned")}}<i class="fa-solid fa-seedling"></i>
+      {{else}}<i class="fa-regular fa-comment-dots"></i>{{/if}}
+      <span>{{header.nameStateLabel}}</span>
+    </div>
+
+    <div class="lg-name-faces">
+      <span class="lg-face-chip" data-tooltip="{{localize 'CHAMPION.Name.DeclaredFace'}}"><i class="fa-solid fa-star"></i> <i class="{{header.declaredFaceIcon}}"></i> {{header.declaredFaceLabel}}</span>
+      {{#if header.peopleFace}}
+      <span class="lg-face-chip is-people" data-tooltip="{{localize 'CHAMPION.Name.PeopleFace'}}"><i class="fa-solid fa-users"></i> <i class="{{header.peopleFaceIcon}}"></i> {{header.peopleFaceLabel}}</span>
+      {{/if}}
+      {{#if header.incognito}}
+      <span class="lg-face-chip is-hood" data-tooltip="{{localize 'CHAMPION.Hood.Hint'}}"><i class="fa-solid fa-user-secret"></i> {{localize "CHAMPION.Hood.On"}}</span>
+      {{/if}}
+    </div>
+  </div>
+
+  <div class="lg-fame" data-tooltip="{{header.tierHint}}">
+    <div class="lg-fame-ring">
+      {{{header.tierRing}}}
+    </div>
+    <div class="lg-fame-text">
+      <div class="lg-fame-label">{{localize "CHAMPION.Header.Fame"}}</div>
+      <div class="lg-fame-value">{{header.fame}}</div>
+      <div class="lg-tier-name">{{header.tierName}}</div>
+      <div class="lg-tier-next">{{header.nextLabel}}</div>
+    </div>
+  </div>
+
+  <div class="lg-hero-actions">
+    {{#if env.canEdit}}
+    <div class="lg-gm-row">
+      <button type="button" class="lg-btn lg-btn--ghost" data-action="openHud" data-tooltip="{{localize 'CHAMPION.Hud.OpenHint'}}"><i class="fa-solid fa-window-restore"></i> {{localize "CHAMPION.Hud.Open"}}</button>
+      <button type="button" class="lg-btn lg-btn--ghost lg-btn--icon {{#if header.incognito}}is-active{{/if}}" data-action="toggleHood" data-tooltip="{{localize 'CHAMPION.Hood.Hint'}}"><i class="fa-solid fa-user-secret"></i></button>
+    </div>
+    <button type="button" class="lg-btn lg-btn--gold {{#unless header.canCallName}}is-spent{{/unless}}" data-action="callName" {{#unless header.canCallName}}disabled{{/unless}} data-tooltip="{{header.callNameHint}}">
+      <i class="fa-solid fa-sun"></i> {{#if header.nameCalled}}{{localize "CHAMPION.Name.Called"}}{{else}}{{localize "CHAMPION.Name.Call"}}{{/if}}
+    </button>
+    {{/if}}
+    {{#if env.isGM}}
+    <div class="lg-gm-row">
+      <button type="button" class="lg-btn lg-btn--ghost" data-action="rollEcho" data-tooltip="{{localize 'CHAMPION.Echo.Hint'}}"><i class="fa-solid fa-tower-broadcast"></i> {{localize "CHAMPION.Echo.Button"}}</button>
+      <button type="button" class="lg-btn lg-btn--ghost lg-btn--icon" data-action="recognize" data-tooltip="{{localize 'CHAMPION.Recognize.Hint'}}"><i class="fa-solid fa-eye"></i></button>
+      <button type="button" class="lg-btn lg-btn--ghost lg-btn--icon" data-action="newSession" data-tooltip="{{localize 'CHAMPION.Session.Hint'}}"><i class="fa-solid fa-hourglass-start"></i></button>
+      <button type="button" class="lg-btn lg-btn--ghost lg-btn--icon" data-action="editLegendState" data-tooltip="{{localize 'CHAMPION.Dialog.LegendStateButton'}}"><i class="fa-solid fa-sliders"></i></button>
+      <button type="button" class="lg-btn lg-btn--ghost lg-btn--icon" data-action="openRules" data-tooltip="{{localize 'CHAMPION.Params.Title'}}"><i class="fa-solid fa-gears"></i></button>
+      <button type="button" class="lg-btn lg-btn--ghost lg-btn--icon lg-btn--danger" data-action="inherit" data-tooltip="{{localize 'CHAMPION.Inherit.Hint'}}"><i class="fa-solid fa-dove"></i></button>
+    </div>
+    {{/if}}
+  </div>
+</header>

@@ -1,90 +1,257 @@
 /**
- * WFRP4e - Żelazny Mandat: Szampierz i Prawo Pojedynku
- * Główny punkt startowy modułu Foundry VTT
+ * WFRP4e – Legenda Szampierza (Iron Mandate: Champion)
+ * Punkt startowy modułu Foundry VTT.
  */
 
-import { ChampionData, t, formatMandate } from "./scripts/champion-data.mjs";
-import { ChampionSheet } from "./scripts/champion-sheet.mjs";
-import { ChallengeOperations } from "./scripts/challenge-ops.mjs";
+import { MODULE_ID, TEMPLATE_ROOT, t } from "./scripts/constants.mjs";
+import * as R from "./scripts/rules.mjs";
+import * as Store from "./scripts/store.mjs";
+import * as Ops from "./scripts/operations.mjs";
+import { LegendSheet } from "./scripts/legend-sheet.mjs";
+import { LegendHud } from "./scripts/legend-hud.mjs";
+import { RulesConfig } from "./scripts/rules-config.mjs";
 import { registry, registerSheetButton, addTokenTool } from "../wfrp4e-companion-lib/scripts/companion-lib.mjs";
 
-const MODULE_ID = "wfrp4e-champion";
+/* -------------------------------------------- */
+/*  Otwieranie karty                            */
+/* -------------------------------------------- */
+
+function resolveTarget(actor) {
+  return actor || canvas.tokens?.controlled?.[0]?.actor || game.user.character || null;
+}
+
+/** Księga legendy (opcjonalnie od wskazanej zakładki). */
+function openSheet(actor, tab = null) {
+  try {
+    const target = resolveTarget(actor);
+    if (!target) return ui.notifications.warn(t("Notify.SelectToken"));
+    const app = foundry.applications.instances.get(`${MODULE_ID}-legend-${target.id}`) ?? new LegendSheet(target);
+    if (tab) app.tabGroups.primary = tab;
+    app.render({ force: true });
+    app.bringToFront?.();
+    return app;
+  } catch (err) {
+    console.error(`${MODULE_ID} | LegendSheet:`, err);
+    ui.notifications.error(t("Notify.OpenError", { error: err.message }));
+  }
+}
+
+/** Mały panel sesji. */
+function openHud(actor) {
+  try {
+    const target = resolveTarget(actor);
+    if (!target) return ui.notifications.warn(t("Notify.SelectToken"));
+    const app = foundry.applications.instances.get(`${MODULE_ID}-hud-${target.id}`) ?? new LegendHud(target);
+    app.render({ force: true });
+    app.bringToFront?.();
+    return app;
+  } catch (err) {
+    console.error(`${MODULE_ID} | LegendHud:`, err);
+    ui.notifications.error(t("Notify.OpenError", { error: err.message }));
+  }
+}
+
+/** Odświeża otwarte okna Legendy (wszystkie albo jednego aktora). */
+function refreshSheets(actorId = null) {
+  for (const app of foundry.applications.instances.values()) {
+    if ((app instanceof LegendSheet || app instanceof LegendHud) && (!actorId || app.actor.id === actorId)) app.render();
+  }
+}
+
+/** Postacie z legendą (do synchronizacji przełączników po nowej sesji). */
+function champions() {
+  return game.actors.filter(a => a.getFlag(MODULE_ID, "legend"));
+}
+
+async function resyncAll() {
+  if (!game.users.activeGM?.isSelf) return;
+  for (const actor of champions()) await Store.resync(actor);
+}
 
 /* -------------------------------------------- */
-/*  Inicjalizacja Modułu (Init)                 */
+/*  Init                                        */
 /* -------------------------------------------- */
 
 Hooks.once("init", async function () {
-  console.log(`${MODULE_ID} | Iron Mandate: Champion – init`);
+  console.log(`${MODULE_ID} | Legenda Szampierza – init`);
 
-  // Rejestracja w Centrum Dodatków dla MG (GM Hub)
   registry.registerFeature({
     id: "champion",
-    name: "WFRP4E_COMPANION.Features.Champion",
-    icon: "fas fa-shield-halved",
-    description: "WFRP4E_COMPANION.Features.ChampionDesc",
+    name: "CHAMPION.Title",
+    icon: "fas fa-book-open",
+    description: "CHAMPION.HubDesc",
     module: MODULE_ID,
-    open: (actor) => game.champion.openSheet(actor)
+    open: (actor) => openSheet(actor)
   });
 
-  // 1. Rejestracja ustawień świata
-  game.settings.register(MODULE_ID, "autoDeductAdvantage", {
-    name: "CHAMPION.Settings.AutoDeductName",
-    hint: "CHAMPION.Settings.AutoDeductHint",
+  game.settings.register(MODULE_ID, "session", {
+    scope: "world",
+    config: false,
+    type: Number,
+    default: 1,
+    onChange: () => {
+      refreshSheets();
+      resyncAll();
+    }
+  });
+
+  // Liczby zasad (MG: „Zasady Legendy”)
+  game.settings.register(MODULE_ID, "rules", {
+    scope: "world",
+    config: false,
+    type: Object,
+    default: R.defaultParams(),
+    onChange: (value) => {
+      R.configure(value);
+      refreshSheets();
+      resyncAll();
+    }
+  });
+
+  game.settings.registerMenu(MODULE_ID, "rulesMenu", {
+    name: "CHAMPION.Params.Title",
+    label: "CHAMPION.Params.Open",
+    hint: "CHAMPION.Params.MenuHint",
+    icon: "fa-solid fa-gears",
+    type: RulesConfig,
+    restricted: true
+  });
+
+  game.settings.register(MODULE_ID, "crowdAdvantage", {
+    name: "CHAMPION.Settings.crowdAdvantageName",
+    hint: "CHAMPION.Settings.crowdAdvantageHint",
     scope: "world",
     config: true,
     type: Boolean,
     default: true
   });
 
-  // 2. Preload szablonów Handlebars
-  await foundry.applications.handlebars.loadTemplates([
-    `modules/${MODULE_ID}/templates/champion-sheet.hbs`,
-    `modules/${MODULE_ID}/templates/parts/header-hud.hbs`,
-    `modules/${MODULE_ID}/templates/parts/challenge-tab.hbs`,
-    `modules/${MODULE_ID}/templates/parts/gambits-tab.hbs`,
-    `modules/${MODULE_ID}/templates/parts/dossier-tab.hbs`,
-    `modules/${MODULE_ID}/templates/chat/challenge-card.hbs`,
-    `modules/${MODULE_ID}/templates/chat/gambit-card.hbs`,
-    `modules/${MODULE_ID}/templates/chat/dossier-card.hbs`
-  ]);
+  game.settings.register(MODULE_ID, "deedPrompt", {
+    name: "CHAMPION.Settings.deedPromptName",
+    hint: "CHAMPION.Settings.deedPromptHint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
 
-  // 3. Rejestracja pomocników Handlebars (porównania i pętle są w wfrp4e-companion-lib)
-  Handlebars.registerHelper("champFormatMandate", val => formatMandate(val));
+  game.settings.register(MODULE_ID, "dialogToggles", {
+    name: "CHAMPION.Settings.dialogTogglesName",
+    hint: "CHAMPION.Settings.dialogTogglesHint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: () => resyncAll()
+  });
+
+  R.configure(game.settings.get(MODULE_ID, "rules"));
+
+  await foundry.applications.handlebars.loadTemplates([
+    `${TEMPLATE_ROOT}/legend-sheet.hbs`,
+    `${TEMPLATE_ROOT}/parts/header.hbs`,
+    `${TEMPLATE_ROOT}/parts/tab-legend.hbs`,
+    `${TEMPLATE_ROOT}/parts/tab-deeds.hbs`,
+    `${TEMPLATE_ROOT}/parts/petition-body.hbs`,
+    `${TEMPLATE_ROOT}/parts/tab-arena.hbs`,
+    `${TEMPLATE_ROOT}/parts/tab-rivals.hbs`,
+    `${TEMPLATE_ROOT}/parts/tab-chronicle.hbs`,
+    `${TEMPLATE_ROOT}/chat/card.hbs`,
+    `${TEMPLATE_ROOT}/hud.hbs`,
+    `${TEMPLATE_ROOT}/rules-config.hbs`
+  ]);
 });
 
 /* -------------------------------------------- */
-/*  Po załadowaniu świata (Ready)               */
+/*  Ready: API dla makr                         */
 /* -------------------------------------------- */
 
 Hooks.once("ready", function () {
-  console.log(`${MODULE_ID} | Ready – API: game.champion`);
-
-  // Eksport API do makr i konsoli
+  R.configure(game.settings.get(MODULE_ID, "rules"));
   game.champion = {
-    ChampionData,
-    ChampionSheet,
-    ChallengeOperations,
-    openSheet: (actor) => {
-      try {
-        const targetActor = actor || canvas.tokens?.controlled[0]?.actor || game.user.character;
-        if (!targetActor) {
-          ui.notifications.warn(t("Notify.SelectToken"));
-          return;
-        }
-        const existing = foundry.applications.instances.get(`wfrp4e-champion-sheet-${targetActor.id}`);
-        if (existing) {
-          existing.render({ force: true });
-          existing.bringToFront();
-          return;
-        }
-        new ChampionSheet(targetActor).render({ force: true });
-      } catch (err) {
-        console.error(`${MODULE_ID} | ChampionSheet:`, err);
-        ui.notifications.error(t("Notify.OpenError", { error: err.message }));
-      }
-    }
+    openSheet,
+    openHud,
+    /** Okno „Zasady Legendy” (MG). */
+    openRules: () => (game.user.isGM ? new RulesConfig().render({ force: true }) : null),
+    LegendSheet,
+    LegendHud,
+    /** Woła to przełącznik „Przywołaj” z okna testu WFRP po wysłaniu testu. */
+    markInvoked: (actorUuid, taleId) => Ops.markInvoked(actorUuid, taleId),
+    rules: R,
+    getState: Store.getState,
+    operations: Ops,
+    /** Echo Sławy z makra (MG): game.champion.echo(aktor) */
+    echo: (actor) => Ops.rollEcho(actor ?? canvas.tokens?.controlled?.[0]?.actor),
+    newSession: () => Ops.newSession()
   };
+  resyncAll();
+});
+
+/* -------------------------------------------- */
+/*  Odświeżanie i przyciski czatu               */
+/* -------------------------------------------- */
+
+Hooks.on("updateActor", (actor, changes) => {
+  if (foundry.utils.hasProperty(changes, `flags.${MODULE_ID}`) || "name" in changes || "img" in changes) {
+    refreshSheets(actor.id);
+  }
+});
+
+Hooks.on("createCombat", () => refreshSheets());
+Hooks.on("deleteCombat", () => refreshSheets());
+
+Hooks.on("renderChatMessageHTML", (message, html) => {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  if (!root) return;
+  for (const btn of root.querySelectorAll("[data-lg-chat]")) {
+    btn.addEventListener("click", async (event) => {
+      event.preventDefault();
+      const { lgChat, actorUuid } = btn.dataset;
+      const champion = actorUuid ? await fromUuid(actorUuid) : null;
+      if (!champion) return ui.notifications.warn(t("Notify.ActorMissing"));
+      if (!champion.isOwner) return ui.notifications.warn(t("Notify.OwnerOnly"));
+      try {
+        if (lgChat === "recordDeed") await Ops.recordDeed(champion);
+        else if (lgChat === "leaderAccept") await Ops.answerChallenge(champion, true);
+        else if (lgChat === "leaderRefuse") await Ops.answerChallenge(champion, false);
+      } catch (err) {
+        console.error(`${MODULE_ID} |`, err);
+        ui.notifications.error(err.message);
+      }
+    });
+  }
+});
+
+/** Koniec walki z udziałem szampierza: pytanie „Coś godnego opowieści?” (raz, u aktywnego MG). */
+Hooks.on("deleteCombat", (combat) => {
+  if (!game.users.activeGM?.isSelf || !combat.started || !game.settings.get(MODULE_ID, "deedPrompt")) return;
+  Ops.combatEndPrompt(combat).catch(err => console.error(`${MODULE_ID} |`, err));
+});
+
+/** Przycisk panelu sesji na HUD-zie żetonu szampierza. */
+Hooks.on("renderTokenHUD", (hud, html) => {
+  const actor = hud.object?.actor ?? hud.actor;
+  if (!actor?.isOwner || actor.type !== "character") return;
+  if (!actor.getFlag(MODULE_ID, "legend") && !registry.isFeatureUnlocked(actor, "champion")) return;
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  const col = root?.querySelector(".col.right") ?? root?.querySelector(".col.left");
+  if (!col || col.querySelector(".lg-token-hud")) return;
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "control-icon lg-token-hud";
+  btn.dataset.tooltip = t("Hud.Title");
+  btn.innerHTML = `<i class="fa-solid fa-book-open"></i>`;
+  btn.addEventListener("click", ev => { ev.preventDefault(); ev.stopPropagation(); openHud(actor); });
+  col.appendChild(btn);
+});
+
+/** Tłum przy ±2 daje Przewagę na początku każdej nowej rundy (u aktywnego MG). */
+Hooks.on("updateCombat", (combat, changes, options) => {
+  if (!game.users.activeGM?.isSelf) return;
+  if (!("round" in changes) || !game.settings.get(MODULE_ID, "crowdAdvantage")) return;
+  // Tylko nowa runda (nie cofanie w trackerze)
+  if ((changes.round ?? 0) < 1 || options?.direction === -1) return;
+  Ops.onCombatRound(combat).catch(err => console.error(`${MODULE_ID} |`, err));
 });
 
 /* -------------------------------------------- */
@@ -93,23 +260,22 @@ Hooks.once("ready", function () {
 
 registerSheetButton({
   featureId: "champion",
-  className: "open-champion-mandate",
-  icon: "fa-solid fa-shield-halved",
+  className: "open-champion-legend",
+  icon: "fa-solid fa-book-open",
   label: "CHAMPION.SheetButton",
-  action: "championMandate",
-  legacyClasses: ["champion-sheet-tab"],
-  onClick: (actor) => game.champion.openSheet(actor)
+  action: "championLegend",
+  legacyClasses: ["champion-sheet-tab", "open-champion-mandate"],
+  onClick: (actor) => openSheet(actor)
 });
 
-// Skrót do Szampierza dla MG
 addTokenTool({
-  name: "champion-manager",
+  name: "champion-legend",
   title: "CHAMPION.SheetButton",
-  icon: "fas fa-shield-halved",
+  icon: "fas fa-book-open",
   onClick: () => {
-    const controlled = canvas.tokens?.controlled[0]?.actor;
-    const character = controlled || game.actors.find(a => a.type === "character" && a.hasPlayerOwner);
-    if (character) game.champion.openSheet(character);
+    const controlled = canvas.tokens?.controlled?.[0]?.actor;
+    const character = controlled || game.actors.find(a => a.type === "character" && a.getFlag(MODULE_ID, "legend"));
+    if (character) openSheet(character);
     else ui.notifications.info(t("Notify.SelectChampionToken"));
   }
 });
